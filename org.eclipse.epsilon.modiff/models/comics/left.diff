@@ -1,0 +1,9 @@
+--- left.model	2022-10-28 20:56:11.123875277 +0200
++++ base.model	2022-10-28 20:56:11.123875277 +0200
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="ASCII"?>
+ <comicshop:Shop xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:comicshop="comicshop" xmi:id="_rqtZkBUPEeut3qj6TjgmMQ" name="Travelling Man">
+   <comics xmi:id="comic1" title="A Basketful of Heads"/>
+-  <comics xmi:id="comic2" title="Bad Winter"/>
++  <comics xmi:id="comic2" title="Cruel Summer"/>
+ </comicshop:Shop>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ASCII"?>
+<comicshop:Shop xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:comicshop="comicshop" xmi:id="_rqtZkBUPEeut3qj6TjgmMQ" name="Travelling Man">
+  <comics xmi:id="comic1" title="A Basketful of Heads"/>
+</comicshop:Shop>
