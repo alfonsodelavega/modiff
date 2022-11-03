@@ -26,16 +26,15 @@ public class TestJGitDiff {
 	public static void main(String[] args) throws IOException {
 
 		try (PipedInputStream in = new PipedInputStream()) {
-			// file diff (piped streams allow sharing memory but require threading)
+			// file diff (piped streams allow sharing memory)
+			// they usually require threading but here writting finishes before reading
 			// https://stackoverflow.com/a/1226031
-			new Thread(() -> {
-				try (PipedOutputStream out = new PipedOutputStream(in)) {
-					getDiff(out, "models/comics/left.model", "models/comics/base.model");
-				}
-				catch (IOException iox) {
-					iox.printStackTrace();
-				}
-			}).start();
+			try (PipedOutputStream out = new PipedOutputStream(in)) {
+				getDiff(out, "models/comics/left.model", "models/comics/base.model");
+			}
+			catch (IOException iox) {
+				iox.printStackTrace();
+			}
 
 			// parsing the diff
 			DiffParser parser = new UnifiedDiffParser();
@@ -57,8 +56,8 @@ public class TestJGitDiff {
 		// jgit does not generate unified format headers (done elsewhere)
 		// required by diffparser, so we do it by hand
 		PrintWriter writer = new PrintWriter(out);
-		writer.println(String.format("--- %s", fromFile));
-		writer.println(String.format("+++ %s", toFile));
+		writer.printf("--- %s\n", fromFile);
+		writer.printf("+++ %s\n", toFile);
 		writer.flush();
 
 		try {
@@ -66,6 +65,8 @@ public class TestJGitDiff {
 			RawText rt2 = new RawText(new File(toFile));
 			EditList diffList = new EditList();
 
+			// FIXME: we would probably want to omit trailing and leading whitespace
+			//   (container changes modify indentations)
 			diffList.addAll(new HistogramDiff().diff(RawTextComparator.DEFAULT, rt1, rt2));
 			try (DiffFormatter f = new DiffFormatter(out)) {
 				f.format(diffList, rt1, rt2);
