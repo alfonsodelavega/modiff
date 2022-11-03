@@ -8,7 +8,10 @@ import io.reflectoring.diffparser.api.DiffParser;
 import io.reflectoring.diffparser.api.UnifiedDiffParser;
 import io.reflectoring.diffparser.api.model.Diff;
 
-public class TestDiff {
+/**
+ * Example testing the diff parser from a diff file stored on disk
+ */
+public class TestDiffParser {
 
 	public static void main(String[] args) throws IOException {
 		DiffParser parser = new UnifiedDiffParser();
