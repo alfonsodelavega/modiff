@@ -30,7 +30,7 @@ public class TestJGitDiff {
 			// they usually require threading but here writting finishes before reading
 			// https://stackoverflow.com/a/1226031
 			try (PipedOutputStream out = new PipedOutputStream(in)) {
-				getDiff(out, "models/comics/left.model", "models/comics/base.model");
+				getDiff(out, "models/comics/base.model", "models/comics/left.model");
 			}
 			catch (IOException iox) {
 				iox.printStackTrace();
