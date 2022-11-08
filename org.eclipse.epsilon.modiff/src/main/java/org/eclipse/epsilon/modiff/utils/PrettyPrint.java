@@ -44,7 +44,7 @@ public class PrettyPrint {
 					return result;
 				})
 				.collect(Collectors.joining(",\n\t" + prefix)));
-		s.append("}");
+		s.append("\n}");
 		return s.toString();
 	}
 

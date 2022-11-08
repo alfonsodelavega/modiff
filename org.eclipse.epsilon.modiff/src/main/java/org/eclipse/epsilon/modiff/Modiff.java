@@ -220,8 +220,8 @@ public class Modiff {
 				if (matcher.matches(addedElement, removedElement)) {
 					System.out.println("*************************************");
 					System.out.println("Modified element");
-					System.out.printf("Previous version:\n%s\n", PrettyPrint.featuresMap(removedElement));
-					System.out.printf("New version:\n%s\n", PrettyPrint.featuresMap(addedElement));
+					System.out.printf("- %s\n", PrettyPrint.featuresMap(removedElement));
+					System.out.printf("+ %s\n", PrettyPrint.featuresMap(addedElement));
 
 					matched = true;
 					removedElements.remove(removedElement);
@@ -231,13 +231,13 @@ public class Modiff {
 			if (!matched) {
 				System.out.println("*************************************");
 				System.out.println("New Element");
-				System.out.println(PrettyPrint.featuresMap(addedElement));
+				System.out.printf("+ %s\n", PrettyPrint.featuresMap(addedElement));
 			}
 		}
 		for (EObject removedElement : removedElements) {
 			System.out.println("*************************************");
 			System.out.println("Removed element");
-			System.out.println(PrettyPrint.featuresMap(removedElement));
+			System.out.printf("- %s\n", PrettyPrint.featuresMap(removedElement));
 		}
 	}
 }
