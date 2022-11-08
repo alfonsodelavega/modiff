@@ -15,6 +15,10 @@ public class PrettyPrint {
 		return featuresMap(obj, obj.eClass().getEAllStructuralFeatures(), "");
 	}
 
+	public static String featuresMap(EObject obj, String prefix) {
+		return featuresMap(obj, obj.eClass().getEAllStructuralFeatures(), prefix);
+	}
+
 	public static String featuresMap(EObject obj, List<EStructuralFeature> features, String prefix) {
 		StringBuilder s = new StringBuilder();
 

@@ -7,7 +7,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,11 +84,11 @@ public class Modiff {
 	protected String fromModelFile;
 	protected String toModelFile;
 
-	protected Set<Integer> addedLines = new HashSet<>();
-	protected Set<Integer> removedLines = new HashSet<>();
+	protected Set<Integer> addedLines = new LinkedHashSet<>();
+	protected Set<Integer> removedLines = new LinkedHashSet<>();
 
-	protected Set<EObject> addedElements = new HashSet<>();
-	protected Set<EObject> removedElements = new HashSet<>();
+	protected Set<EObject> addedElements = new LinkedHashSet<>();
+	protected Set<EObject> removedElements = new LinkedHashSet<>();
 
 	protected Resource fromModel;
 	protected Resource toModel;
@@ -225,7 +225,6 @@ public class Modiff {
 					List<EStructuralFeature> changedFeatures =
 							finder.compare(removedElement, addedElement).getChangedFeatures();
 					System.out.println("*************************************");
-					System.out.println("Modified element");
 					System.out.printf("- %s\n", PrettyPrint.featuresMap(removedElement, changedFeatures, "- "));
 					System.out.printf("+ %s\n", PrettyPrint.featuresMap(addedElement, changedFeatures, "+ "));
 
@@ -236,14 +235,12 @@ public class Modiff {
 			}
 			if (!matched) {
 				System.out.println("*************************************");
-				System.out.println("Added Element");
-				System.out.printf("+ %s\n", PrettyPrint.featuresMap(addedElement));
+				System.out.printf("+ %s\n", PrettyPrint.featuresMap(addedElement, "+ "));
 			}
 		}
 		for (EObject removedElement : removedElements) {
 			System.out.println("*************************************");
-			System.out.println("Removed element");
-			System.out.printf("- %s\n", PrettyPrint.featuresMap(removedElement));
+			System.out.printf("- %s\n", PrettyPrint.featuresMap(removedElement, "- "));
 		}
 	}
 }
