@@ -6,22 +6,23 @@ import java.util.stream.Collectors;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 
 public class PrettyPrint {
 
 	public static String featuresMap(EObject obj) {
-		return featuresMap(obj, "");
+		return featuresMap(obj, obj.eClass().getEAllStructuralFeatures(), "");
 	}
 
-	private static String featuresMap(EObject obj, String prefix) {
+	public static String featuresMap(EObject obj, List<EStructuralFeature> features, String prefix) {
 		StringBuilder s = new StringBuilder();
 
 		EClass eclass = obj.eClass();
 		String objId = ((XMIResource) obj.eResource()).getID(obj);
 
 		s.append(eclass.getName()).append(" ").append(objId).append(" {\n\t" + prefix);
-		s.append(eclass.getEAllStructuralFeatures().stream()
+		s.append(features.stream()
 				.filter(feat -> obj.eIsSet(feat))
 				.map(feat -> {
 					String result = feat.getName();
@@ -44,7 +45,7 @@ public class PrettyPrint {
 					return result;
 				})
 				.collect(Collectors.joining(",\n\t" + prefix)));
-		s.append("\n}");
+		s.append("\n" + prefix + "}");
 		return s.toString();
 	}
 

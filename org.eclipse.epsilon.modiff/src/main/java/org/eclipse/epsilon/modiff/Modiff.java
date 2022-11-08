@@ -15,6 +15,7 @@ import java.util.Set;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -22,6 +23,7 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.matcher.IDBasedMatcher;
 import org.eclipse.epsilon.modiff.matcher.Matcher;
+import org.eclipse.epsilon.modiff.utils.DifferencesFinder;
 import org.eclipse.epsilon.modiff.utils.PrettyPrint;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.EditList;
@@ -214,14 +216,18 @@ public class Modiff {
 	}
 
 	protected void identifyDifferences() {
+		DifferencesFinder finder = new DifferencesFinder();
+
 		for (EObject addedElement : addedElements) {
 			boolean matched = false;
 			for (EObject removedElement : removedElements) {
 				if (matcher.matches(addedElement, removedElement)) {
+					List<EStructuralFeature> changedFeatures =
+							finder.compare(removedElement, addedElement).getChangedFeatures();
 					System.out.println("*************************************");
 					System.out.println("Modified element");
-					System.out.printf("- %s\n", PrettyPrint.featuresMap(removedElement));
-					System.out.printf("+ %s\n", PrettyPrint.featuresMap(addedElement));
+					System.out.printf("- %s\n", PrettyPrint.featuresMap(removedElement, changedFeatures, "- "));
+					System.out.printf("+ %s\n", PrettyPrint.featuresMap(addedElement, changedFeatures, "+ "));
 
 					matched = true;
 					removedElements.remove(removedElement);
@@ -230,7 +236,7 @@ public class Modiff {
 			}
 			if (!matched) {
 				System.out.println("*************************************");
-				System.out.println("New Element");
+				System.out.println("Added Element");
 				System.out.printf("+ %s\n", PrettyPrint.featuresMap(addedElement));
 			}
 		}
