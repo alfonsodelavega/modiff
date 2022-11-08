@@ -1,4 +1,4 @@
-package org.eclipse.epsilon.modiff;
+package org.eclipse.epsilon.modiff.misc;
 
 import java.io.File;
 import java.io.IOException;
