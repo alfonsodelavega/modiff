@@ -7,13 +7,6 @@
 	<name>Modiff</name>
 	<description>Line-based model comparison</description>
 
-	<repositories>
-		<repository>
-			<id>jcenter</id>
-			<url>https://jcenter.bintray.com/</url>
-		</repository>
-	</repositories>
-
 	<properties>
 		<!-- https://maven.apache.org/general.html#encoding-warning -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
