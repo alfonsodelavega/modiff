@@ -17,17 +17,17 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @Command(name = "ModiffApp", mixinStandardHelpOptions = true, version = "1.0",
-		description = "CLI-based Java application that reproduces the behavior of the given main program using the Picocli library.")
+		description = "CLI- and diff-based model comparison tool.")
 public class ModiffCli implements Runnable {
 
 	@Option(names = { "-ecore" }, required = true, description = "List of Ecore file paths to load")
 	private String[] ecoreFiles;
 
-	@Option(names = { "-base" }, required = true, description = "Base (old) model file path")
-	private String baseModelFile;
+	@Option(names = { "-from" }, required = true, description = "From (old) model file path")
+	private String fromModelFile;
 
-	@Option(names = { "-left" }, required = true, description = "Left (new) model file path")
-	private String leftModelFile;
+	@Option(names = { "-to" }, required = true, description = "To (new) model file path")
+	private String toModelFile;
 
 	public void run() {
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
@@ -51,7 +51,7 @@ public class ModiffCli implements Runnable {
 			}
 		}
 
-		Modiff modiff = new Modiff(baseModelFile, leftModelFile);
+		Modiff modiff = new Modiff(fromModelFile, toModelFile);
 		modiff.setMatcher(new IDBasedMatcher());
 
 		try {
