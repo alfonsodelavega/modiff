@@ -41,19 +41,19 @@
 			<artifactId>picocli</artifactId>
 			<version>4.7.1</version>
 		</dependency>
-
-		<!-- Model-loading related dependencies -->
-		<!-- https://mvnrepository.com/artifact/org.eclipse.uml2/uml -->
-		<dependency>
-			<groupId>org.eclipse.uml2</groupId>
-			<artifactId>uml</artifactId>
-			<version>5.0.0-v20140602-0749</version>
-		</dependency>
-
 	</dependencies>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>org/eclipse/epsilon/modiff/misc/*.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
