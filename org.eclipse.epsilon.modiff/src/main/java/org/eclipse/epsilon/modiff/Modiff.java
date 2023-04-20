@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.epsilon.modiff.matcher.IDBasedMatcher;
+import org.eclipse.epsilon.modiff.matcher.IdMatcher;
 import org.eclipse.epsilon.modiff.matcher.Matcher;
 import org.eclipse.epsilon.modiff.utils.DifferencesFinder;
 import org.eclipse.epsilon.modiff.utils.PrettyPrint;
@@ -75,7 +75,7 @@ public class Modiff {
 		}
 
 		Modiff modiff = new Modiff("models/comics/base.model", "models/comics/left.model");
-		modiff.setMatcher(new IDBasedMatcher());
+		modiff.setMatcher(new IdMatcher());
 		modiff.compare();
 
 		System.out.println("Done");
@@ -115,12 +115,14 @@ public class Modiff {
 			// file diff (piped streams allow sharing memory)
 			// they usually require threading but here writting finishes before reading
 			// https://stackoverflow.com/a/1226031
-			try (PipedOutputStream out = new PipedOutputStream(in)) {
-				getLineDiff(out);
-			}
-			catch (IOException iox) {
-				iox.printStackTrace();
-			}
+			new Thread(() -> {
+				try (PipedOutputStream out = new PipedOutputStream(in)) {
+					getLineDiff(out);
+				}
+				catch (IOException iox) {
+					iox.printStackTrace();
+				}
+			}).start();
 
 			// parse the diffs to a workable format
 			diffs = new UnifiedDiffParser().parse(in);
@@ -141,13 +143,6 @@ public class Modiff {
 
 	protected void getLineDiff(OutputStream out) throws IOException {
 
-		// jgit does not generate unified format headers (done elsewhere)
-		// required by diffparser, so we do it by hand
-		PrintWriter writer = new PrintWriter(out);
-		writer.printf("--- %s\n", fromModelFile);
-		writer.printf("+++ %s\n", toModelFile);
-		writer.flush();
-
 		RawText rt1 = new RawText(new File(fromModelFile));
 		RawText rt2 = new RawText(new File(toModelFile));
 		EditList diffList = new EditList();
@@ -155,8 +150,17 @@ public class Modiff {
 		// FIXME: we would probably want to omit trailing and leading whitespace
 		//   (container changes modify indentations)
 		diffList.addAll(new HistogramDiff().diff(RawTextComparator.DEFAULT, rt1, rt2));
-		try (DiffFormatter f = new DiffFormatter(out)) {
-			f.format(diffList, rt1, rt2);
+
+		if (!diffList.isEmpty()) {
+			// jgit does not generate unified format headers (done elsewhere)
+			// required by diffparser, so we do it by hand
+			PrintWriter writer = new PrintWriter(out);
+			writer.printf("--- %s\n", fromModelFile);
+			writer.printf("+++ %s\n", toModelFile);
+			writer.flush();
+			try (DiffFormatter f = new DiffFormatter(out)) {
+				f.format(diffList, rt1, rt2);
+			}
 		}
 	}
 
