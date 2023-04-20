@@ -10,7 +10,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.Modiff;
-import org.eclipse.epsilon.modiff.matcher.IDBasedMatcher;
+import org.eclipse.epsilon.modiff.matcher.IdMatcher;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -52,7 +52,7 @@ public class ModiffCli implements Runnable {
 		}
 
 		Modiff modiff = new Modiff(fromModelFile, toModelFile);
-		modiff.setMatcher(new IDBasedMatcher());
+		modiff.setMatcher(new IdMatcher());
 
 		try {
 			modiff.compare();
