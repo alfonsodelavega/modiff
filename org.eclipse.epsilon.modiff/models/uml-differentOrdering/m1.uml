@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML">
+  <uml:Model name="org.eclipse.core.databinding.beans">
+    <packagedElement xsi:type="uml:Package" name="org">
+      <packagedElement xsi:type="uml:Package" name="eclipse">
+        <packagedElement xsi:type="uml:Package" name="core">
+          <packagedElement xsi:type="uml:Package" name="databinding">
+            <packagedElement xsi:type="uml:Package" name="beans">
+              <packagedElement xsi:type="uml:Class" name="BeanProperties"/>
+              <packagedElement xsi:type="uml:Class" name="PojoObservables"/>
+              <packagedElement xsi:type="uml:Class" name="PojoProperties"/>
+              <packagedElement xsi:type="uml:Class" name="BeansObservables"/>
+            </packagedElement>
+          </packagedElement>
+          <packagedElement xsi:type="uml:Package" name="internal">
+            <packagedElement xsi:type="uml:Package" name="databinding">
+              <packagedElement xsi:type="uml:Package" name="beans">
+                <packagedElement xsi:type="uml:Class" name="PojoValuePropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="BeanValuePropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="Util"/>
+                <packagedElement xsi:type="uml:Class" name="BeanObservableValueDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousBeanListProperty"/>
+                <packagedElement xsi:type="uml:Class" name="BeanObservableSetDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="BeanPropertyListener"/>
+                <packagedElement xsi:type="uml:Class" name="BeanListPropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="BeanObservableMapDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousPojoListProperty"/>
+                <packagedElement xsi:type="uml:Class" name="PojoValueProperty"/>
+                <packagedElement xsi:type="uml:Class" name="BeanSetProperty"/>
+                <packagedElement xsi:type="uml:Class" name="BeanValueProperty"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousBeanSetProperty"/>
+                <packagedElement xsi:type="uml:Class" name="PojoMapProperty"/>
+                <packagedElement xsi:type="uml:Class" name="BeanPropertyListenerSupport"/>
+                <packagedElement xsi:type="uml:Class" name="PojoMapPropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="PojoListProperty"/>
+                <packagedElement xsi:type="uml:Class" name="BeanObservableListDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="TypedSet"/>
+                <packagedElement xsi:type="uml:Class" name="BeanPropertyHelper"/>
+                <packagedElement xsi:type="uml:Class" name="BeanSetPropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="BeanMapProperty"/>
+                <packagedElement xsi:type="uml:Class" name="PojoSetPropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousPojoMapProperty"/>
+                <packagedElement xsi:type="uml:Class" name="PojoListPropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousBeanMapProperty"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousBeanValueProperty"/>
+                <packagedElement xsi:type="uml:Class" name="BeanListProperty"/>
+                <packagedElement xsi:type="uml:Class" name="BeanMapPropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousPojoValueProperty"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousPojoSetProperty"/>
+                <packagedElement xsi:type="uml:Class" name="PojoSetProperty"/>
+              </packagedElement>
+            </packagedElement>
+          </packagedElement>
+        </packagedElement>
+      </packagedElement>
+    </packagedElement>
+  </uml:Model>
+  <uml:Model name="org.eclipse.core.databinding.observable">
+    <packagedElement xsi:type="uml:Package" name="org">
+      <packagedElement xsi:type="uml:Package" name="eclipse">
+        <packagedElement xsi:type="uml:Package" name="core">
+          <packagedElement xsi:type="uml:Package" name="databinding">
+            <packagedElement xsi:type="uml:Package" name="observable">
+              <packagedElement xsi:type="uml:Package" name="list">
+                <packagedElement xsi:type="uml:Class" name="ListDiffVisitor"/>
+                <packagedElement xsi:type="uml:Class" name="WritableList"/>
+                <packagedElement xsi:type="uml:Class" name="ObservableList"/>
+                <packagedElement xsi:type="uml:Class" name="ListListenerManager"/>
+                <packagedElement xsi:type="uml:Class" name="ComputedList"/>
+                <packagedElement xsi:type="uml:Class" name="MultiList"/>
+                <packagedElement xsi:type="uml:Class" name="ListDiff"/>
+                <packagedElement xsi:type="uml:Class" name="AbstractObservableList"/>
+                <packagedElement xsi:type="uml:Class" name="DecoratingObservableList"/>
+                <packagedElement xsi:type="uml:Class" name="ListDiffEntry"/>
+                <packagedElement xsi:type="uml:Class" name="UnmodifiableObservableList"/>
+                <packagedElement xsi:type="uml:Class" name="ListChangeEvent"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from ObservableList to AbstractObservable" client="/1/org/eclipse/core/databinding/observable/list/ObservableList" supplier="/1/org/eclipse/core/databinding/observable/AbstractObservable"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from UnmodifiableObservableList to DecoratingObservable" client="/1/org/eclipse/core/databinding/observable/list/UnmodifiableObservableList" supplier="/1/org/eclipse/core/databinding/observable/DecoratingObservable"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Realm" client="/1/org/eclipse/core/databinding/observable/list/AbstractObservableList" supplier="/1/org/eclipse/core/databinding/observable/Realm"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to PrivateChangeSupport" client="/1/org/eclipse/core/databinding/observable/list/AbstractObservableList" supplier="/15"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="map">
+                <packagedElement xsi:type="uml:Class" name="MapDiff"/>
+                <packagedElement xsi:type="uml:Class" name="MapChangeEvent"/>
+                <packagedElement xsi:type="uml:Class" name="ObservableMap"/>
+                <packagedElement xsi:type="uml:Class" name="CompositeMap"/>
+                <packagedElement xsi:type="uml:Class" name="AbstractObservableMap"/>
+                <packagedElement xsi:type="uml:Class" name="WritableMap"/>
+                <packagedElement xsi:type="uml:Class" name="ComputedObservableMap"/>
+                <packagedElement xsi:type="uml:Class" name="BidiObservableMap"/>
+                <packagedElement xsi:type="uml:Class" name="BidirectionalMap"/>
+                <packagedElement xsi:type="uml:Class" name="DecoratingObservableMap"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from ObservableMap to AbstractObservable" client="/1/org/eclipse/core/databinding/observable/map/ObservableMap" supplier="/1/org/eclipse/core/databinding/observable/AbstractObservable"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from BidirectionalMap to ObservableMap" client="/1/org/eclipse/core/databinding/observable/map/BidirectionalMap" supplier="/1/org/eclipse/core/databinding/observable/map/ObservableMap"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from DecoratingObservableMap to DecoratingObservable" client="/1/org/eclipse/core/databinding/observable/map/DecoratingObservableMap" supplier="/1/org/eclipse/core/databinding/observable/DecoratingObservable"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Realm" client="/1/org/eclipse/core/databinding/observable/map/AbstractObservableMap" supplier="/1/org/eclipse/core/databinding/observable/Realm"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to PrivateChangeSupport" client="/1/org/eclipse/core/databinding/observable/map/AbstractObservableMap" supplier="/23"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="masterdetail">
+                <packagedElement xsi:type="uml:Class" name="MasterDetailObservables"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="set">
+                <packagedElement xsi:type="uml:Class" name="WritableSet"/>
+                <packagedElement xsi:type="uml:Class" name="SetChangeEvent"/>
+                <packagedElement xsi:type="uml:Class" name="UnionSet"/>
+                <packagedElement xsi:type="uml:Class" name="MappedSet"/>
+                <packagedElement xsi:type="uml:Class" name="AbstractObservableSet"/>
+                <packagedElement xsi:type="uml:Class" name="SetListenerManager"/>
+                <packagedElement xsi:type="uml:Class" name="ComputedSet"/>
+                <packagedElement xsi:type="uml:Class" name="DecoratingObservableSet"/>
+                <packagedElement xsi:type="uml:Class" name="ListToSetAdapter"/>
+                <packagedElement xsi:type="uml:Class" name="ObservableSet"/>
+                <packagedElement xsi:type="uml:Class" name="SetDiff"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from MappedSet to ObservableSet" client="/1/org/eclipse/core/databinding/observable/set/MappedSet" supplier="/1/org/eclipse/core/databinding/observable/set/ObservableSet"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from AbstractObservableSet to AbstractObservable" client="/1/org/eclipse/core/databinding/observable/set/AbstractObservableSet" supplier="/1/org/eclipse/core/databinding/observable/AbstractObservable"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from ObservableSet to AbstractObservable" client="/1/org/eclipse/core/databinding/observable/set/ObservableSet" supplier="/1/org/eclipse/core/databinding/observable/AbstractObservable"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to StalenessTracker" client="/1/org/eclipse/core/databinding/observable/set/UnionSet" supplier="/1/org/eclipse/core/internal/databinding/observable/StalenessTracker"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="value">
+                <packagedElement xsi:type="uml:Class" name="ValueChangingEvent"/>
+                <packagedElement xsi:type="uml:Class" name="ComputedValue"/>
+                <packagedElement xsi:type="uml:Class" name="DateAndTimeObservableValue"/>
+                <packagedElement xsi:type="uml:Class" name="ChangeVetoException"/>
+                <packagedElement xsi:type="uml:Class" name="AbstractObservableValue"/>
+                <packagedElement xsi:type="uml:Class" name="AbstractVetoableValue"/>
+                <packagedElement xsi:type="uml:Class" name="ValueChangeEvent"/>
+                <packagedElement xsi:type="uml:Class" name="ValueDiff"/>
+                <packagedElement xsi:type="uml:Class" name="DuplexingObservableValue"/>
+                <packagedElement xsi:type="uml:Class" name="SelectObservableValue"/>
+                <packagedElement xsi:type="uml:Class" name="WritableValue"/>
+                <packagedElement xsi:type="uml:Class" name="DecoratingVetoableValue"/>
+                <packagedElement xsi:type="uml:Class" name="DecoratingObservableValue"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from AbstractObservableValue to AbstractObservable" client="/1/org/eclipse/core/databinding/observable/value/AbstractObservableValue" supplier="/1/org/eclipse/core/databinding/observable/AbstractObservable"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from DecoratingObservableValue to DecoratingObservable" client="/1/org/eclipse/core/databinding/observable/value/DecoratingObservableValue" supplier="/1/org/eclipse/core/databinding/observable/DecoratingObservable"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to PrivateChangeInterface" client="/1/org/eclipse/core/databinding/observable/value/DateAndTimeObservableValue" supplier="/35"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to PrivateStaleInterface" client="/1/org/eclipse/core/databinding/observable/value/DateAndTimeObservableValue" supplier="/36"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to PrivateDisposeInterface" client="/1/org/eclipse/core/databinding/observable/value/DateAndTimeObservableValue" supplier="/37"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Class" name="ObservableEvent"/>
+              <packagedElement xsi:type="uml:Class" name="ChangeEvent"/>
+              <packagedElement xsi:type="uml:Class" name="ChangeManager"/>
+              <packagedElement xsi:type="uml:Class" name="DecoratingObservableCollection"/>
+              <packagedElement xsi:type="uml:Class" name="DisposeEvent"/>
+              <packagedElement xsi:type="uml:Class" name="ListenerList"/>
+              <packagedElement xsi:type="uml:Class" name="StaleEvent"/>
+              <packagedElement xsi:type="uml:Class" name="Realm"/>
+              <packagedElement xsi:type="uml:Class" name="AbstractObservable"/>
+              <packagedElement xsi:type="uml:Class" name="Diffs"/>
+              <packagedElement xsi:type="uml:Class" name="Observables"/>
+              <packagedElement xsi:type="uml:Class" name="AbstractChangeEvent"/>
+              <packagedElement xsi:type="uml:Class" name="ListenerListCopy"/>
+              <packagedElement xsi:type="uml:Class" name="DecoratingObservable"/>
+              <packagedElement xsi:type="uml:Class" name="ObservableTracker"/>
+              <packagedElement xsi:type="uml:Class" name="ChangeSupport"/>
+              <packagedElement xsi:type="uml:Dependency" name="generalization pointing from DecoratingObservableCollection to DecoratingObservable" client="/1/org/eclipse/core/databinding/observable/DecoratingObservableCollection" supplier="/1/org/eclipse/core/databinding/observable/DecoratingObservable"/>
+              <packagedElement xsi:type="uml:Dependency" name="generalization pointing from AbstractObservable to ChangeSupport" client="/1/org/eclipse/core/databinding/observable/AbstractObservable" supplier="/1/org/eclipse/core/databinding/observable/ChangeSupport"/>
+              <packagedElement xsi:type="uml:Dependency" name="generalization pointing from DecoratingObservable to AbstractObservable" client="/1/org/eclipse/core/databinding/observable/DecoratingObservable" supplier="/1/org/eclipse/core/databinding/observable/AbstractObservable"/>
+              <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Queue" client="/1/org/eclipse/core/databinding/observable/Realm" supplier="/1/org/eclipse/core/internal/databinding/observable/Queue"/>
+              <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Realm" client="/1/org/eclipse/core/databinding/observable/AbstractObservable" supplier="/1/org/eclipse/core/databinding/observable/Realm"/>
+            </packagedElement>
+            <packagedElement xsi:type="uml:Package" name="util">
+              <packagedElement xsi:type="uml:Class" name="Policy"/>
+            </packagedElement>
+          </packagedElement>
+          <packagedElement xsi:type="uml:Package" name="internal">
+            <packagedElement xsi:type="uml:Package" name="databinding">
+              <packagedElement xsi:type="uml:Package" name="identity">
+                <packagedElement xsi:type="uml:Class" name="IdentityMap"/>
+                <packagedElement xsi:type="uml:Class" name="IdentityObservableSet"/>
+                <packagedElement xsi:type="uml:Class" name="IdentitySet"/>
+                <packagedElement xsi:type="uml:Class" name="IdentityWrapper"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="observable">
+                <packagedElement xsi:type="uml:Package" name="masterdetail">
+                  <packagedElement xsi:type="uml:Class" name="DetailObservableMap"/>
+                  <packagedElement xsi:type="uml:Class" name="DetailObservableSet"/>
+                  <packagedElement xsi:type="uml:Class" name="DetailObservableHelper"/>
+                  <packagedElement xsi:type="uml:Class" name="DetailObservableValue"/>
+                  <packagedElement xsi:type="uml:Class" name="SetDetailValueObservableMap"/>
+                  <packagedElement xsi:type="uml:Class" name="DetailObservableList"/>
+                  <packagedElement xsi:type="uml:Class" name="ListDetailValueObservableList"/>
+                  <packagedElement xsi:type="uml:Class" name="MapDetailValueObservableMap"/>
+                </packagedElement>
+                <packagedElement xsi:type="uml:Class" name="UnmodifiableObservableValue"/>
+                <packagedElement xsi:type="uml:Class" name="EmptyObservableSet"/>
+                <packagedElement xsi:type="uml:Class" name="Queue"/>
+                <packagedElement xsi:type="uml:Class" name="EmptyObservableList"/>
+                <packagedElement xsi:type="uml:Class" name="DelayedObservableValue"/>
+                <packagedElement xsi:type="uml:Class" name="MapEntryObservableValue"/>
+                <packagedElement xsi:type="uml:Class" name="UnmodifiableObservableMap"/>
+                <packagedElement xsi:type="uml:Class" name="Util"/>
+                <packagedElement xsi:type="uml:Class" name="Activator"/>
+                <packagedElement xsi:type="uml:Class" name="StalenessObservableValue"/>
+                <packagedElement xsi:type="uml:Class" name="ConstantObservableValue"/>
+                <packagedElement xsi:type="uml:Class" name="StalenessTracker"/>
+                <packagedElement xsi:type="uml:Class" name="UnmodifiableObservableSet"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Realm" client="/1/org/eclipse/core/internal/databinding/observable/EmptyObservableSet" supplier="/1/org/eclipse/core/databinding/observable/Realm"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Entry" client="/1/org/eclipse/core/internal/databinding/observable/Queue" supplier="/42"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Entry" client="/1/org/eclipse/core/internal/databinding/observable/Queue" supplier="/42"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Realm" client="/1/org/eclipse/core/internal/databinding/observable/EmptyObservableList" supplier="/1/org/eclipse/core/databinding/observable/Realm"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to ValueUpdater" client="/1/org/eclipse/core/internal/databinding/observable/DelayedObservableValue" supplier="/43"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to MyChangeListener" client="/1/org/eclipse/core/internal/databinding/observable/StalenessObservableValue" supplier="/44"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to MyStaleListener" client="/1/org/eclipse/core/internal/databinding/observable/StalenessObservableValue" supplier="/45"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Realm" client="/1/org/eclipse/core/internal/databinding/observable/ConstantObservableValue" supplier="/1/org/eclipse/core/databinding/observable/Realm"/>
+              </packagedElement>
+            </packagedElement>
+          </packagedElement>
+        </packagedElement>
+      </packagedElement>
+    </packagedElement>
+  </uml:Model>
+  <uml:Model name="org.eclipse.core.databinding">
+    <packagedElement xsi:type="uml:Package" name="org">
+      <packagedElement xsi:type="uml:Package" name="eclipse">
+        <packagedElement xsi:type="uml:Package" name="core">
+          <packagedElement xsi:type="uml:Package" name="databinding">
+            <packagedElement xsi:type="uml:Package" name="conversion">
+              <packagedElement xsi:type="uml:Class" name="StringToNumberConverter"/>
+              <packagedElement xsi:type="uml:Class" name="NumberToStringConverter"/>
+              <packagedElement xsi:type="uml:Class" name="Converter"/>
+              <packagedElement xsi:type="uml:Dependency" name="generalization pointing from StringToNumberConverter to NumberFormatConverter" client="/2/org/eclipse/core/databinding/conversion/StringToNumberConverter" supplier="/2/org/eclipse/core/internal/databinding/validation/NumberFormatConverter"/>
+            </packagedElement>
+            <packagedElement xsi:type="uml:Package" name="validation">
+              <packagedElement xsi:type="uml:Class" name="MultiValidator"/>
+              <packagedElement xsi:type="uml:Class" name="ValidationStatus"/>
+              <packagedElement xsi:type="uml:Dependency" name="generalization pointing from MultiValidator to ValidationStatusProvider" client="/2/org/eclipse/core/databinding/validation/MultiValidator" supplier="/2/org/eclipse/core/databinding/ValidationStatusProvider"/>
+              <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to ValidationStatusObservableValue" client="/2/org/eclipse/core/databinding/validation/MultiValidator" supplier="/54"/>
+            </packagedElement>
+            <packagedElement xsi:type="uml:Class" name="ValidationStatusProvider"/>
+            <packagedElement xsi:type="uml:Class" name="UpdateValueStrategy"/>
+            <packagedElement xsi:type="uml:Class" name="UpdateSetStrategy"/>
+            <packagedElement xsi:type="uml:Class" name="BindingProperties"/>
+            <packagedElement xsi:type="uml:Class" name="UpdateStrategy"/>
+            <packagedElement xsi:type="uml:Class" name="ObservablesManager"/>
+            <packagedElement xsi:type="uml:Class" name="Binding"/>
+            <packagedElement xsi:type="uml:Class" name="BindingException"/>
+            <packagedElement xsi:type="uml:Class" name="AggregateValidationStatus"/>
+            <packagedElement xsi:type="uml:Class" name="DataBindingContext"/>
+            <packagedElement xsi:type="uml:Class" name="ListBinding"/>
+            <packagedElement xsi:type="uml:Class" name="ValueBinding"/>
+            <packagedElement xsi:type="uml:Class" name="UpdateListStrategy"/>
+            <packagedElement xsi:type="uml:Class" name="SetBinding"/>
+            <packagedElement xsi:type="uml:Dependency" name="generalization pointing from UpdateValueStrategy to UpdateStrategy" client="/2/org/eclipse/core/databinding/UpdateValueStrategy" supplier="/2/org/eclipse/core/databinding/UpdateStrategy"/>
+            <packagedElement xsi:type="uml:Dependency" name="generalization pointing from UpdateSetStrategy to UpdateStrategy" client="/2/org/eclipse/core/databinding/UpdateSetStrategy" supplier="/2/org/eclipse/core/databinding/UpdateStrategy"/>
+            <packagedElement xsi:type="uml:Dependency" name="generalization pointing from Binding to ValidationStatusProvider" client="/2/org/eclipse/core/databinding/Binding" supplier="/2/org/eclipse/core/databinding/ValidationStatusProvider"/>
+            <packagedElement xsi:type="uml:Dependency" name="generalization pointing from UpdateListStrategy to UpdateStrategy" client="/2/org/eclipse/core/databinding/UpdateListStrategy" supplier="/2/org/eclipse/core/databinding/UpdateStrategy"/>
+            <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to ValidatorRegistry" client="/2/org/eclipse/core/databinding/UpdateValueStrategy" supplier="/51"/>
+            <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to DataBindingContext" client="/2/org/eclipse/core/databinding/Binding" supplier="/2/org/eclipse/core/databinding/DataBindingContext"/>
+          </packagedElement>
+          <packagedElement xsi:type="uml:Package" name="internal">
+            <packagedElement xsi:type="uml:Package" name="databinding">
+              <packagedElement xsi:type="uml:Package" name="conversion">
+                <packagedElement xsi:type="uml:Class" name="StringToCharacterConverter"/>
+                <packagedElement xsi:type="uml:Class" name="DateToStringConverter"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToBigDecimalConverter"/>
+                <packagedElement xsi:type="uml:Class" name="IdentityConverter"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToLongConverter"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToByteConverter"/>
+                <packagedElement xsi:type="uml:Class" name="StringToBooleanPrimitiveConverter"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToDoubleConverter"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToNumberConverter"/>
+                <packagedElement xsi:type="uml:Class" name="StatusToStringConverter"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToBigIntegerConverter"/>
+                <packagedElement xsi:type="uml:Class" name="ObjectToStringConverter"/>
+                <packagedElement xsi:type="uml:Class" name="StringToDateConverter"/>
+                <packagedElement xsi:type="uml:Class" name="CharacterToStringConverter"/>
+                <packagedElement xsi:type="uml:Class" name="StringToBooleanConverter"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToIntegerConverter"/>
+                <packagedElement xsi:type="uml:Class" name="IntegerToStringConverter"/>
+                <packagedElement xsi:type="uml:Class" name="StringToByteConverter"/>
+                <packagedElement xsi:type="uml:Class" name="StringToShortConverter"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToFloatConverter"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToShortConverter"/>
+                <packagedElement xsi:type="uml:Class" name="StringToNumberParser"/>
+                <packagedElement xsi:type="uml:Class" name="DateConversionSupport"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from DateToStringConverter to DateConversionSupport" client="/2/org/eclipse/core/internal/databinding/conversion/DateToStringConverter" supplier="/2/org/eclipse/core/internal/databinding/conversion/DateConversionSupport"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToBigDecimalConverter to NumberToNumberConverter" client="/2/org/eclipse/core/internal/databinding/conversion/NumberToBigDecimalConverter" supplier="/2/org/eclipse/core/internal/databinding/conversion/NumberToNumberConverter"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToLongConverter to NumberToNumberConverter" client="/2/org/eclipse/core/internal/databinding/conversion/NumberToLongConverter" supplier="/2/org/eclipse/core/internal/databinding/conversion/NumberToNumberConverter"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToByteConverter to NumberToNumberConverter" client="/2/org/eclipse/core/internal/databinding/conversion/NumberToByteConverter" supplier="/2/org/eclipse/core/internal/databinding/conversion/NumberToNumberConverter"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToDoubleConverter to NumberToNumberConverter" client="/2/org/eclipse/core/internal/databinding/conversion/NumberToDoubleConverter" supplier="/2/org/eclipse/core/internal/databinding/conversion/NumberToNumberConverter"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToBigIntegerConverter to NumberToNumberConverter" client="/2/org/eclipse/core/internal/databinding/conversion/NumberToBigIntegerConverter" supplier="/2/org/eclipse/core/internal/databinding/conversion/NumberToNumberConverter"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from StringToDateConverter to DateConversionSupport" client="/2/org/eclipse/core/internal/databinding/conversion/StringToDateConverter" supplier="/2/org/eclipse/core/internal/databinding/conversion/DateConversionSupport"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from StringToBooleanConverter to StringToBooleanPrimitiveConverter" client="/2/org/eclipse/core/internal/databinding/conversion/StringToBooleanConverter" supplier="/2/org/eclipse/core/internal/databinding/conversion/StringToBooleanPrimitiveConverter"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToIntegerConverter to NumberToNumberConverter" client="/2/org/eclipse/core/internal/databinding/conversion/NumberToIntegerConverter" supplier="/2/org/eclipse/core/internal/databinding/conversion/NumberToNumberConverter"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from StringToByteConverter to NumberFormatConverter" client="/2/org/eclipse/core/internal/databinding/conversion/StringToByteConverter" supplier="/2/org/eclipse/core/internal/databinding/validation/NumberFormatConverter"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from StringToShortConverter to NumberFormatConverter" client="/2/org/eclipse/core/internal/databinding/conversion/StringToShortConverter" supplier="/2/org/eclipse/core/internal/databinding/validation/NumberFormatConverter"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToFloatConverter to NumberToNumberConverter" client="/2/org/eclipse/core/internal/databinding/conversion/NumberToFloatConverter" supplier="/2/org/eclipse/core/internal/databinding/conversion/NumberToNumberConverter"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToShortConverter to NumberToNumberConverter" client="/2/org/eclipse/core/internal/databinding/conversion/NumberToShortConverter" supplier="/2/org/eclipse/core/internal/databinding/conversion/NumberToNumberConverter"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="provisional">
+                <packagedElement xsi:type="uml:Package" name="bind">
+                  <packagedElement xsi:type="uml:Class" name="OneWayBinding"/>
+                  <packagedElement xsi:type="uml:Class" name="OneWayConversionBinding"/>
+                  <packagedElement xsi:type="uml:Class" name="Bind"/>
+                  <packagedElement xsi:type="uml:Class" name="TwoWayConversionBinding"/>
+                  <packagedElement xsi:type="uml:Class" name="TwoWayBinding"/>
+                  <packagedElement xsi:type="uml:Class" name="TwoWayValidationBinding"/>
+                  <packagedElement xsi:type="uml:Class" name="DefaultValueBinding"/>
+                  <packagedElement xsi:type="uml:Class" name="TwoWayTrackedConversionBinding"/>
+                  <packagedElement xsi:type="uml:Class" name="OneWayTrackedConversionBinding"/>
+                </packagedElement>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="validation">
+                <packagedElement xsi:type="uml:Class" name="NumberToLongValidator"/>
+                <packagedElement xsi:type="uml:Class" name="StringToCharacterValidator"/>
+                <packagedElement xsi:type="uml:Class" name="ReadOnlyValidator"/>
+                <packagedElement xsi:type="uml:Class" name="ValidatedObservableList"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToUnboundedNumberValidator"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToByteValidator"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToDoubleValidator"/>
+                <packagedElement xsi:type="uml:Class" name="StringToIntegerValidator"/>
+                <packagedElement xsi:type="uml:Class" name="ObjectToPrimitiveValidator"/>
+                <packagedElement xsi:type="uml:Class" name="StringToDateValidator"/>
+                <packagedElement xsi:type="uml:Class" name="StringToDoubleValidator"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToIntegerValidator"/>
+                <packagedElement xsi:type="uml:Class" name="AbstractStringToNumberValidator"/>
+                <packagedElement xsi:type="uml:Class" name="StringToLongValidator"/>
+                <packagedElement xsi:type="uml:Class" name="StringToShortValidator"/>
+                <packagedElement xsi:type="uml:Class" name="StringToFloatValidator"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToNumberValidator"/>
+                <packagedElement xsi:type="uml:Class" name="StringToByteValidator"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToFloatValidator"/>
+                <packagedElement xsi:type="uml:Class" name="NumberToShortValidator"/>
+                <packagedElement xsi:type="uml:Class" name="ValidatedObservableMap"/>
+                <packagedElement xsi:type="uml:Class" name="ValidatedObservableSet"/>
+                <packagedElement xsi:type="uml:Class" name="NumberFormatConverter"/>
+                <packagedElement xsi:type="uml:Class" name="ValidatedObservableValue"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToLongValidator to NumberToNumberValidator" client="/2/org/eclipse/core/internal/databinding/validation/NumberToLongValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/NumberToNumberValidator"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToUnboundedNumberValidator to NumberToNumberValidator" client="/2/org/eclipse/core/internal/databinding/validation/NumberToUnboundedNumberValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/NumberToNumberValidator"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToByteValidator to NumberToNumberValidator" client="/2/org/eclipse/core/internal/databinding/validation/NumberToByteValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/NumberToNumberValidator"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToDoubleValidator to NumberToNumberValidator" client="/2/org/eclipse/core/internal/databinding/validation/NumberToDoubleValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/NumberToNumberValidator"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from StringToIntegerValidator to AbstractStringToNumberValidator" client="/2/org/eclipse/core/internal/databinding/validation/StringToIntegerValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/AbstractStringToNumberValidator"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from StringToDoubleValidator to AbstractStringToNumberValidator" client="/2/org/eclipse/core/internal/databinding/validation/StringToDoubleValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/AbstractStringToNumberValidator"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToIntegerValidator to NumberToNumberValidator" client="/2/org/eclipse/core/internal/databinding/validation/NumberToIntegerValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/NumberToNumberValidator"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from StringToLongValidator to AbstractStringToNumberValidator" client="/2/org/eclipse/core/internal/databinding/validation/StringToLongValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/AbstractStringToNumberValidator"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from StringToShortValidator to AbstractStringToNumberValidator" client="/2/org/eclipse/core/internal/databinding/validation/StringToShortValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/AbstractStringToNumberValidator"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from StringToFloatValidator to AbstractStringToNumberValidator" client="/2/org/eclipse/core/internal/databinding/validation/StringToFloatValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/AbstractStringToNumberValidator"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from StringToByteValidator to AbstractStringToNumberValidator" client="/2/org/eclipse/core/internal/databinding/validation/StringToByteValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/AbstractStringToNumberValidator"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToFloatValidator to NumberToNumberValidator" client="/2/org/eclipse/core/internal/databinding/validation/NumberToFloatValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/NumberToNumberValidator"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from NumberToShortValidator to NumberToNumberValidator" client="/2/org/eclipse/core/internal/databinding/validation/NumberToShortValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/NumberToNumberValidator"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to StringToCharacterConverter" client="/2/org/eclipse/core/internal/databinding/validation/StringToCharacterValidator" supplier="/2/org/eclipse/core/internal/databinding/conversion/StringToCharacterConverter"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to ReadOnlyValidator" client="/2/org/eclipse/core/internal/databinding/validation/ReadOnlyValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/ReadOnlyValidator"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to StringToDateConverter" client="/2/org/eclipse/core/internal/databinding/validation/StringToDateValidator" supplier="/2/org/eclipse/core/internal/databinding/conversion/StringToDateConverter"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to NumberFormatConverter" client="/2/org/eclipse/core/internal/databinding/validation/AbstractStringToNumberValidator" supplier="/2/org/eclipse/core/internal/databinding/validation/NumberFormatConverter"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to NumberToNumberConverter" client="/2/org/eclipse/core/internal/databinding/validation/NumberToNumberValidator" supplier="/2/org/eclipse/core/internal/databinding/conversion/NumberToNumberConverter"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Class" name="ValidationStatusProviderTargetsProperty"/>
+              <packagedElement xsi:type="uml:Class" name="Util"/>
+              <packagedElement xsi:type="uml:Class" name="Activator"/>
+              <packagedElement xsi:type="uml:Class" name="ClassLookupSupport"/>
+              <packagedElement xsi:type="uml:Class" name="ConverterValueProperty"/>
+              <packagedElement xsi:type="uml:Class" name="BindingModelProperty"/>
+              <packagedElement xsi:type="uml:Class" name="BindingStatus"/>
+              <packagedElement xsi:type="uml:Class" name="BindingMessages"/>
+              <packagedElement xsi:type="uml:Class" name="Queue"/>
+              <packagedElement xsi:type="uml:Class" name="ValidationStatusProviderValidationStatusProperty"/>
+              <packagedElement xsi:type="uml:Class" name="ValidationStatusProviderModelsProperty"/>
+              <packagedElement xsi:type="uml:Class" name="IdentitySet"/>
+              <packagedElement xsi:type="uml:Class" name="IdentityWrapper"/>
+              <packagedElement xsi:type="uml:Class" name="ValidationStatusMap"/>
+              <packagedElement xsi:type="uml:Class" name="Pair"/>
+              <packagedElement xsi:type="uml:Class" name="BindingTargetProperty"/>
+              <packagedElement xsi:type="uml:Class" name="DataBindingContextBindingsProperty"/>
+              <packagedElement xsi:type="uml:Class" name="DataBindingContextValidationStatusProvidersProperty"/>
+              <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Entry" client="/2/org/eclipse/core/internal/databinding/Queue" supplier="/55"/>
+              <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Entry" client="/2/org/eclipse/core/internal/databinding/Queue" supplier="/55"/>
+            </packagedElement>
+          </packagedElement>
+        </packagedElement>
+      </packagedElement>
+    </packagedElement>
+  </uml:Model>
+  <uml:Model name="org.eclipse.e4.core.deeplink.typehandler.extensionpt">
+    <packagedElement xsi:type="uml:Package" name="org">
+      <packagedElement xsi:type="uml:Package" name="eclipse">
+        <packagedElement xsi:type="uml:Package" name="e4">
+          <packagedElement xsi:type="uml:Package" name="core">
+            <packagedElement xsi:type="uml:Package" name="deeplink">
+              <packagedElement xsi:type="uml:Package" name="typehandler">
+                <packagedElement xsi:type="uml:Package" name="extensionpt">
+                  <packagedElement xsi:type="uml:Class" name="DeepLinkExtensionPointTypeHandler"/>
+                  <packagedElement xsi:type="uml:Class" name="Activator"/>
+                  <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Activator" client="/3/org/eclipse/e4/core/deeplink/typehandler/extensionpt/Activator" supplier="/3/org/eclipse/e4/core/deeplink/typehandler/extensionpt/Activator"/>
+                </packagedElement>
+              </packagedElement>
+            </packagedElement>
+          </packagedElement>
+        </packagedElement>
+      </packagedElement>
+    </packagedElement>
+  </uml:Model>
+  <uml:Model name="org.eclipse.e4.core.metaconfig.example">
+    <packagedElement xsi:type="uml:Package" name="org">
+      <packagedElement xsi:type="uml:Package" name="eclipse">
+        <packagedElement xsi:type="uml:Package" name="e4">
+          <packagedElement xsi:type="uml:Package" name="core">
+            <packagedElement xsi:type="uml:Package" name="metaconfig">
+              <packagedElement xsi:type="uml:Package" name="example">
+                <packagedElement xsi:type="uml:Package" name="rcp">
+                  <packagedElement xsi:type="uml:Class" name="Application"/>
+                  <packagedElement xsi:type="uml:Class" name="Perspective"/>
+                  <packagedElement xsi:type="uml:Class" name="ApplicationActionBarAdvisor"/>
+                  <packagedElement xsi:type="uml:Class" name="ApplicationWorkbenchAdvisor"/>
+                  <packagedElement xsi:type="uml:Class" name="ApplicationWorkbenchWindowAdvisor"/>
+                  <packagedElement xsi:type="uml:Class" name="View"/>
+                </packagedElement>
+                <packagedElement xsi:type="uml:Class" name="Activator"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Activator" client="/4/org/eclipse/e4/core/metaconfig/example/Activator" supplier="/4/org/eclipse/e4/core/metaconfig/example/Activator"/>
+              </packagedElement>
+            </packagedElement>
+          </packagedElement>
+        </packagedElement>
+      </packagedElement>
+    </packagedElement>
+  </uml:Model>
+  <uml:Model name="org.eclipse.e4.core.services">
+    <packagedElement xsi:type="uml:Package" name="org">
+      <packagedElement xsi:type="uml:Package" name="eclipse">
+        <packagedElement xsi:type="uml:Package" name="e4">
+          <packagedElement xsi:type="uml:Package" name="core">
+            <packagedElement xsi:type="uml:Package" name="internal">
+              <packagedElement xsi:type="uml:Package" name="services">
+                <packagedElement xsi:type="uml:Class" name="ServicesActivator"/>
+                <packagedElement xsi:type="uml:Class" name="EclipseAdapter"/>
+                <packagedElement xsi:type="uml:Class" name="BundleTranslationProvider"/>
+                <packagedElement xsi:type="uml:Class" name="EclipseWorkScheduler"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from EclipseAdapter to Adapter" client="/5/org/eclipse/e4/core/internal/services/EclipseAdapter" supplier="/5/org/eclipse/e4/core/services/adapter/Adapter"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from BundleTranslationProvider to TranslationService" client="/5/org/eclipse/e4/core/internal/services/BundleTranslationProvider" supplier="/5/org/eclipse/e4/core/services/translation/TranslationService"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to ServicesActivator" client="/5/org/eclipse/e4/core/internal/services/ServicesActivator" supplier="/5/org/eclipse/e4/core/internal/services/ServicesActivator"/>
+              </packagedElement>
+            </packagedElement>
+            <packagedElement xsi:type="uml:Package" name="services">
+              <packagedElement xsi:type="uml:Package" name="adapter">
+                <packagedElement xsi:type="uml:Class" name="Adapter"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="contributions"/>
+              <packagedElement xsi:type="uml:Package" name="events"/>
+              <packagedElement xsi:type="uml:Package" name="log">
+                <packagedElement xsi:type="uml:Class" name="Logger"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="statusreporter">
+                <packagedElement xsi:type="uml:Class" name="StatusReporter"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="translation">
+                <packagedElement xsi:type="uml:Class" name="TranslationProviderFactory"/>
+                <packagedElement xsi:type="uml:Class" name="TranslationService"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="util">
+                <packagedElement xsi:type="uml:Class" name="JSONObject"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="work">
+                <packagedElement xsi:type="uml:Class" name="WorkListener"/>
+                <packagedElement xsi:type="uml:Class" name="AsyncFuture"/>
+                <packagedElement xsi:type="uml:Class" name="WorkRunnable"/>
+                <packagedElement xsi:type="uml:Class" name="WorkScheduler"/>
+                <packagedElement xsi:type="uml:Class" name="WorkContext"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from WorkContext to WorkScheduler" client="/5/org/eclipse/e4/core/services/work/WorkContext" supplier="/5/org/eclipse/e4/core/services/work/WorkScheduler"/>
+              </packagedElement>
+            </packagedElement>
+          </packagedElement>
+        </packagedElement>
+      </packagedElement>
+    </packagedElement>
+  </uml:Model>
+  <uml:Model name="org.eclipse.e4.demo.contacts">
+    <packagedElement xsi:type="uml:Package" name="org">
+      <packagedElement xsi:type="uml:Package" name="eclipse">
+        <packagedElement xsi:type="uml:Package" name="e4">
+          <packagedElement xsi:type="uml:Package" name="demo">
+            <packagedElement xsi:type="uml:Package" name="contacts">
+              <packagedElement xsi:type="uml:Package" name="databinding">
+                <packagedElement xsi:type="uml:Class" name="AggregateNameObservableValue"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="handlers">
+                <packagedElement xsi:type="uml:Class" name="SaveHandler"/>
+                <packagedElement xsi:type="uml:Class" name="SwitchThemeHandler"/>
+                <packagedElement xsi:type="uml:Class" name="ExitHandler"/>
+                <packagedElement xsi:type="uml:Class" name="ThemeUtil"/>
+                <packagedElement xsi:type="uml:Class" name="DeleteContactHandler"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="model">
+                <packagedElement xsi:type="uml:Package" name="internal">
+                  <packagedElement xsi:type="uml:Class" name="ModelLifeCycleExtension"/>
+                  <packagedElement xsi:type="uml:Class" name="BinaryTranslatorProvider"/>
+                  <packagedElement xsi:type="uml:Class" name="VCardContactsRepository"/>
+                </packagedElement>
+                <packagedElement xsi:type="uml:Class" name="ContactsRepositoryFactory"/>
+                <packagedElement xsi:type="uml:Class" name="Contact"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="processors">
+                <packagedElement xsi:type="uml:Class" name="AbstractThemeProcessor"/>
+                <packagedElement xsi:type="uml:Class" name="MenuThemeProcessor"/>
+                <packagedElement xsi:type="uml:Class" name="ToolbarThemeProcessor"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from MenuThemeProcessor to AbstractThemeProcessor" client="/6/org/eclipse/e4/demo/contacts/processors/MenuThemeProcessor" supplier="/6/org/eclipse/e4/demo/contacts/processors/AbstractThemeProcessor"/>
+                <packagedElement xsi:type="uml:Dependency" name="generalization pointing from ToolbarThemeProcessor to AbstractThemeProcessor" client="/6/org/eclipse/e4/demo/contacts/processors/ToolbarThemeProcessor" supplier="/6/org/eclipse/e4/demo/contacts/processors/AbstractThemeProcessor"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Package" name="views">
+                <packagedElement xsi:type="uml:Class" name="ContactViewerComparator"/>
+                <packagedElement xsi:type="uml:Class" name="DetailComposite"/>
+                <packagedElement xsi:type="uml:Class" name="ListView"/>
+                <packagedElement xsi:type="uml:Class" name="DetailsView"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Contact" client="/6/org/eclipse/e4/demo/contacts/views/DetailComposite" supplier="/6/org/eclipse/e4/demo/contacts/model/Contact"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to Contact" client="/6/org/eclipse/e4/demo/contacts/views/DetailComposite" supplier="/6/org/eclipse/e4/demo/contacts/model/Contact"/>
+                <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to DetailComposite" client="/6/org/eclipse/e4/demo/contacts/views/DetailsView" supplier="/6/org/eclipse/e4/demo/contacts/views/DetailComposite"/>
+              </packagedElement>
+              <packagedElement xsi:type="uml:Class" name="BundleActivatorImpl"/>
+              <packagedElement xsi:type="uml:Dependency" name="field pointing from xx to BundleActivatorImpl" client="/6/org/eclipse/e4/demo/contacts/BundleActivatorImpl" supplier="/6/org/eclipse/e4/demo/contacts/BundleActivatorImpl"/>
+            </packagedElement>
+          </packagedElement>
+        </packagedElement>
+      </packagedElement>
+    </packagedElement>
+  </uml:Model>
+  <uml:Class name="SyncRunnable"/>
+  <uml:Class name="PrivateChangeInterface"/>
+  <uml:Class name="PrivateStaleInterface"/>
+  <uml:Class name="PrivateRunnableInterface"/>
+  <uml:Class name="MultiListItr"/>
+  <uml:Class name="MultiListListItr"/>
+  <uml:Class name="ResultReference"/>
+  <uml:Class name="ConcatList"/>
+  <uml:Class name="PrivateChangeSupport"/>
+  <uml:Class name="MyListenerManager"/>
+  <uml:Class name="DeltaMap"/>
+  <uml:Class name="DeltaMapEntrySet"/>
+  <uml:Class name="AbstractMapEntry"/>
+  <uml:Class name="MapEntryWrapper"/>
+  <uml:Class name="DeltaMapEntry"/>
+  <uml:Class name="WritableSetPlus"/>
+  <uml:Class name="PrivateChangeSupport"/>
+  <uml:Class name="EntrySet"/>
+  <uml:Class name="BackedCollection"/>
+  <uml:Class name="BackedSet"/>
+  <uml:Class name="MyListenerManager"/>
+  <uml:Class name="PrivateChangeInterface"/>
+  <uml:Class name="PrivateStaleInterface"/>
+  <uml:Class name="PrivateRunnableInterface"/>
+  <uml:Class name="DeltaSet"/>
+  <uml:Class name="PrivateChangeInterface"/>
+  <uml:Class name="PrivateStaleInterface"/>
+  <uml:Class name="PrivateRunnableInterface"/>
+  <uml:Class name="PrivateChangeInterface"/>
+  <uml:Class name="PrivateStaleInterface"/>
+  <uml:Class name="PrivateDisposeInterface"/>
+  <uml:Class name="PrivateChangeInterface"/>
+  <uml:Class name="PrivateStaleInterface"/>
+  <uml:Class name="Option"/>
+  <uml:Class name="QueuedEvent"/>
+  <uml:Class name="Entry"/>
+  <uml:Class name="ValueUpdater"/>
+  <uml:Class name="MyChangeListener"/>
+  <uml:Class name="MyStaleListener"/>
+  <uml:Class name="ChildChangeListener"/>
+  <uml:Class name="ChildStaleListener"/>
+  <uml:Class name="DetailEntry"/>
+  <uml:Class name="EntrySet"/>
+  <uml:Class name="MapEntry"/>
+  <uml:Class name="ValidatorRegistry"/>
+  <uml:Class name="DefaultConverter"/>
+  <uml:Class name="ValidationRunnable"/>
+  <uml:Class name="ValidationStatusObservableValue"/>
+  <uml:Class name="Entry"/>
+  <uml:Class name="ParseResult"/>
+  <uml:Class name="TwoWayModelBinding"/>
+  <uml:Class name="OneWayModelBinding"/>
+  <uml:Class name="PrivateChangeInterface"/>
+  <uml:Class name="PrivateChangeInterface"/>
+  <uml:Class name="FormatUtil"/>
+</xmi:XMI>
