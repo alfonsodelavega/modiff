@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML">
+  <uml:Model name="org.eclipse.core.databinding.beans">
+    <packagedElement xsi:type="uml:Package" name="org">
+      <packagedElement xsi:type="uml:Package" name="eclipse">
+        <packagedElement xsi:type="uml:Package" name="core">
+          <packagedElement xsi:type="uml:Package" name="databinding">
+            <packagedElement xsi:type="uml:Package" name="beans">
+              <packagedElement xsi:type="uml:Class" name="BeanProperties"/>
+              <packagedElement xsi:type="uml:Class" name="PojoObservables"/>
+              <packagedElement xsi:type="uml:Class" name="PojoProperties"/>
+              <packagedElement xsi:type="uml:Class" name="BeansObservables"/>
+            </packagedElement>
+          </packagedElement>
+          <packagedElement xsi:type="uml:Package" name="internal">
+            <packagedElement xsi:type="uml:Package" name="databinding">
+              <packagedElement xsi:type="uml:Package" name="beans">
+                <packagedElement xsi:type="uml:Class" name="PojoValuePropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="BeanValuePropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="Util"/>
+                <packagedElement xsi:type="uml:Class" name="BeanObservableValueDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousBeanListProperty"/>
+                <packagedElement xsi:type="uml:Class" name="BeanObservableSetDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="BeanPropertyListener"/>
+                <packagedElement xsi:type="uml:Class" name="BeanListPropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="BeanObservableMapDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousPojoListProperty"/>
+                <packagedElement xsi:type="uml:Class" name="PojoValueProperty"/>
+                <packagedElement xsi:type="uml:Class" name="BeanSetProperty"/>
+                <packagedElement xsi:type="uml:Class" name="BeanValueProperty"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousBeanSetProperty"/>
+                <packagedElement xsi:type="uml:Class" name="PojoMapProperty"/>
+                <packagedElement xsi:type="uml:Class" name="BeanPropertyListenerSupport"/>
+                <packagedElement xsi:type="uml:Class" name="PojoMapPropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="PojoListProperty"/>
+                <packagedElement xsi:type="uml:Class" name="BeanObservableListDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="TypedSet"/>
+                <packagedElement xsi:type="uml:Class" name="BeanPropertyHelper"/>
+                <packagedElement xsi:type="uml:Class" name="BeanSetPropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="BeanMapProperty"/>
+                <packagedElement xsi:type="uml:Class" name="PojoSetPropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousPojoMapProperty"/>
+                <packagedElement xsi:type="uml:Class" name="PojoListPropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousBeanMapProperty"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousBeanValueProperty"/>
+                <packagedElement xsi:type="uml:Class" name="BeanListProperty"/>
+                <packagedElement xsi:type="uml:Class" name="BeanMapPropertyDecorator"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousPojoValueProperty"/>
+                <packagedElement xsi:type="uml:Class" name="AnonymousPojoSetProperty"/>
+                <packagedElement xsi:type="uml:Class" name="PojoSetProperty"/>
+              </packagedElement>
+            </packagedElement>
+          </packagedElement>
+        </packagedElement>
+      </packagedElement>
+    </packagedElement>
+  </uml:Model>
+</xmi:XMI>
