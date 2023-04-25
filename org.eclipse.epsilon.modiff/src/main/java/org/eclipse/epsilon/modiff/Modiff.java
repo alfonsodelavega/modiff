@@ -56,6 +56,9 @@ import io.reflectoring.diffparser.api.model.Line;
  */
 public class Modiff {
 
+	private static final String DIFFERENCE_SEPARATOR =
+			"************************************************************";
+
 	public static void main(String[] args) throws IOException {
 
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
@@ -228,26 +231,27 @@ public class Modiff {
 				if (matcher.matches(addedElement, removedElement)) {
 					List<EStructuralFeature> changedFeatures =
 							finder.compare(removedElement, addedElement).getChangedFeatures();
-					System.out.println("*************************************");
-					System.out.printf("- %s\n", PrettyPrint.featuresMap(
-							removedElement, matcher.getIdentifier(removedElement), changedFeatures, "- "));
-					System.out.printf("+ %s\n", PrettyPrint.featuresMap(
-							addedElement, matcher.getIdentifier(addedElement), changedFeatures, "+ "));
+					System.out.println(DIFFERENCE_SEPARATOR);
+					System.out.println(PrettyPrint.featureDiferences(
+							addedElement, matcher.getIdentifier(addedElement), "+ ",
+							removedElement, matcher.getIdentifier(removedElement), "- ",
+							changedFeatures, "~ "));
 
+					
 					matched = true;
 					removedElements.remove(removedElement);
 					break;
 				}
 			}
 			if (!matched) {
-				System.out.println("*************************************");
-				System.out.printf("+ %s\n", PrettyPrint.featuresMap(
+				System.out.println(DIFFERENCE_SEPARATOR);
+				System.out.println(PrettyPrint.featuresMap(
 						addedElement, matcher.getIdentifier(addedElement), "+ "));
 			}
 		}
 		for (EObject removedElement : removedElements) {
-			System.out.println("*************************************");
-			System.out.printf("- %s\n", PrettyPrint.featuresMap(
+			System.out.println(DIFFERENCE_SEPARATOR);
+			System.out.println(PrettyPrint.featuresMap(
 					removedElement, matcher.getIdentifier(removedElement), "- "));
 		}
 	}
