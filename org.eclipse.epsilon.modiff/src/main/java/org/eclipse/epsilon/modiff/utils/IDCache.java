@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.xmi.XMLResource;
 
 public class IDCache {
 
@@ -14,12 +12,9 @@ public class IDCache {
 	
 	class IDKey {
 
-		// TODO: we might be able to simplify this to use only eobjects
-		protected XMLResource resource;
 		protected EObject eObj;
 
-		public IDKey(XMLResource resource, EObject eObj) {
-			this.resource = resource;
+		public IDKey(EObject eObj) {
 			this.eObj = eObj;
 		}
 
@@ -28,7 +23,7 @@ public class IDCache {
 			final int prime = 31;
 			int result = 1;
 			result = prime * result + getEnclosingInstance().hashCode();
-			result = prime * result + Objects.hash(eObj, resource);
+			result = prime * result + Objects.hash(eObj);
 			return result;
 		}
 
@@ -43,7 +38,7 @@ public class IDCache {
 			IDKey other = (IDKey) obj;
 			if (!getEnclosingInstance().equals(other.getEnclosingInstance()))
 				return false;
-			return eObj == other.eObj && resource == other.resource;
+			return eObj == other.eObj;
 		}
 
 		private IDCache getEnclosingInstance() {
@@ -52,24 +47,15 @@ public class IDCache {
 
 	}
 
-	public String getAvailableID(EObject eObj) {
+	protected IDKey getKey(EObject element) {
+		return new IDKey(element);
+	}
 
-		XMLResource resource = (XMLResource) eObj.eResource();
-		IDKey key = new IDKey(resource, eObj);
-		String ID = null;
+	public String getId(EObject element) {
+		return cache.get(getKey(element));
+	}
 
-		if (cache.containsKey(key)) {
-			return cache.get(key);
-		}
-		else {
-			ID = resource.getID(eObj); // XMI id
-			if (ID == null) {
-				ID = EcoreUtil.getID(eObj); // Ecore's id attribute
-			}
-			if (ID != null) {
-				cache.put(key, ID);
-			}
-		}
-		return ID;
+	public void putId(EObject element, String id) {
+		cache.put(getKey(element), id);
 	}
 }

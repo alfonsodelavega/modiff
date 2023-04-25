@@ -11,19 +11,19 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
 
 public class PrettyPrint {
 
-	public static String featuresMap(EObject obj) {
-		return featuresMap(obj, obj.eClass().getEAllStructuralFeatures(), "");
+	public static String featuresMap(EObject obj, String objId) {
+		return featuresMap(obj, objId, obj.eClass().getEAllStructuralFeatures(), "");
 	}
 
-	public static String featuresMap(EObject obj, String prefix) {
-		return featuresMap(obj, obj.eClass().getEAllStructuralFeatures(), prefix);
+	public static String featuresMap(EObject obj, String objId, String prefix) {
+		return featuresMap(obj, objId, obj.eClass().getEAllStructuralFeatures(), prefix);
 	}
 
-	public static String featuresMap(EObject obj, List<EStructuralFeature> features, String prefix) {
+	public static String featuresMap(EObject obj, String objId,
+			List<EStructuralFeature> features, String prefix) {
 		StringBuilder s = new StringBuilder();
 
 		EClass eclass = obj.eClass();
-		String objId = ((XMIResource) obj.eResource()).getID(obj);
 
 		s.append(eclass.getName()).append(" ").append(objId).append(" {\n\t" + prefix);
 		s.append(features.stream()

@@ -6,18 +6,15 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 public class IdOrNameMatcher extends IdMatcher {
 
 	@Override
-	public boolean matches(EObject element1, EObject element2) {
-		if (super.matches(element1, element2)) {
-			return true;
+	public String doGetIdentifier(EObject element) {
+		String id = super.doGetIdentifier(element);
+		if (id == null) {
+			EStructuralFeature fName = element.eClass().getEStructuralFeature("name");
+
+			if (fName != null) {
+				id = (String) element.eGet(fName);
+			}
 		}
-		EStructuralFeature fName = element1.eClass().getEStructuralFeature("name");
-		
-		if (fName != null) {
-			Object name1 = element1.eGet(fName);
-			Object name2 = element2.eGet(fName);
-			
-			return name1 != null && name2 != null ? name1.equals(name2) : false;
-		}
-		return false;
+		return id;
 	}
 }

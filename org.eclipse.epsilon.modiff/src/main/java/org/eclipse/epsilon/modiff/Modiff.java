@@ -229,8 +229,10 @@ public class Modiff {
 					List<EStructuralFeature> changedFeatures =
 							finder.compare(removedElement, addedElement).getChangedFeatures();
 					System.out.println("*************************************");
-					System.out.printf("- %s\n", PrettyPrint.featuresMap(removedElement, changedFeatures, "- "));
-					System.out.printf("+ %s\n", PrettyPrint.featuresMap(addedElement, changedFeatures, "+ "));
+					System.out.printf("- %s\n", PrettyPrint.featuresMap(
+							removedElement, matcher.getIdentifier(removedElement), changedFeatures, "- "));
+					System.out.printf("+ %s\n", PrettyPrint.featuresMap(
+							addedElement, matcher.getIdentifier(addedElement), changedFeatures, "+ "));
 
 					matched = true;
 					removedElements.remove(removedElement);
@@ -239,12 +241,14 @@ public class Modiff {
 			}
 			if (!matched) {
 				System.out.println("*************************************");
-				System.out.printf("+ %s\n", PrettyPrint.featuresMap(addedElement, "+ "));
+				System.out.printf("+ %s\n", PrettyPrint.featuresMap(
+						addedElement, matcher.getIdentifier(addedElement), "+ "));
 			}
 		}
 		for (EObject removedElement : removedElements) {
 			System.out.println("*************************************");
-			System.out.printf("- %s\n", PrettyPrint.featuresMap(removedElement, "- "));
+			System.out.printf("- %s\n", PrettyPrint.featuresMap(
+					removedElement, matcher.getIdentifier(removedElement), "- "));
 		}
 	}
 }
