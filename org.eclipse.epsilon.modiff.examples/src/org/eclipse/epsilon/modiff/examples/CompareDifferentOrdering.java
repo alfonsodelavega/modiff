@@ -7,7 +7,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.Modiff;
-import org.eclipse.epsilon.modiff.matcher.IdOrNameMatcher;
+import org.eclipse.epsilon.modiff.matcher.UmlMatcher;
 import org.eclipse.uml2.uml.UMLPackage;
 
 public class CompareDifferentOrdering {
@@ -19,10 +19,17 @@ public class CompareDifferentOrdering {
 		ResourceSet resSet = new ResourceSetImpl();
 		resSet.getPackageRegistry().put("http://www.eclipse.org/uml2/5.0.0/UML", UMLPackage.eINSTANCE);
 
-		Modiff modiff = new Modiff(
-				"models/uml-differentOrdering/m1-mini.uml",
-				"models/uml-differentOrdering/m2-mini.uml");
-		modiff.setMatcher(new IdOrNameMatcher());
+		String[][] examples = {
+				{"models/uml-differentOrdering/m1-mini.uml",
+				 "models/uml-differentOrdering/m2-mini.uml"},
+				
+				{"models/uml-differentOrdering/m1.uml",
+				 "models/uml-differentOrdering/m2.uml"},
+		};
+		int example = 1;
+		
+		Modiff modiff = new Modiff(examples[example][0], examples[example][1]);
+		modiff.setMatcher(new UmlMatcher());
 		modiff.compare();
 
 		System.out.println("Done");
