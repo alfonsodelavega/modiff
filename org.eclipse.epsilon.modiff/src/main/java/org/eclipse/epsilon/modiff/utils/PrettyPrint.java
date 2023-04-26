@@ -7,7 +7,6 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.xmi.XMIResource;
 
 public class PrettyPrint {
 
@@ -37,7 +36,7 @@ public class PrettyPrint {
 		for (EStructuralFeature feat : features) {
 			if (obj.eIsSet(feat)) {
 				s.append("\t");
-				appendFeature(s, prefix, feat, obj);
+				appendFeature(s, prefix, feat, obj, objId);
 				s.append("\n");
 			}
 		}
@@ -56,12 +55,13 @@ public class PrettyPrint {
 
 		s.append(modifiedPrefix)
 				.append(eclass.getName()).append(" ").append(addedObjId)
-				.append(" {\n\t");
+				.append(" {");
 
 		for (EStructuralFeature feat : changedFeatures) {
-			appendFeature(s, addedPrefix, feat, addedObj);
 			s.append("\n\t");
-			appendFeature(s, removedPrefix, feat, removedObj);
+			appendFeature(s, addedPrefix, feat, addedObj, addedObjId);
+			s.append("\n\t");
+			appendFeature(s, removedPrefix, feat, removedObj, removedObjId);
 		}
 
 		s.append("\n").append(modifiedPrefix).append("}");
@@ -69,20 +69,23 @@ public class PrettyPrint {
 		return s.toString();
 	}
 
-	private static void appendFeature(StringBuilder s, String addedPrefix, EStructuralFeature feat, EObject obj) {
+	private static void appendFeature(StringBuilder s, String addedPrefix,
+			EStructuralFeature feat, EObject obj, String objId) {
 		if (feat instanceof EAttribute) {
 			appendAttribute(s, addedPrefix, feat, obj);
 		}
 		else {
-			appendReference(s, addedPrefix, feat, obj);
+			appendReference(s, addedPrefix, feat, obj, objId);
 		}
 	}
 
-	private static void appendAttribute(StringBuilder s, String prefix, EStructuralFeature feat, EObject obj) {
+	private static void appendAttribute(StringBuilder s, String prefix,
+			EStructuralFeature feat, EObject obj) {
 		s.append(prefix).append(feat.getName()).append(": ").append(obj.eGet(feat));
 	}
 
-	private static void appendReference(StringBuilder s, String prefix, EStructuralFeature feat, EObject obj) {
+	private static void appendReference(StringBuilder s, String prefix,
+			EStructuralFeature feat, EObject obj, String objId) {
 		s.append(prefix).append(feat.getName()).append(" -> ");
 
 		if (!feat.isMany()) {
@@ -93,14 +96,14 @@ public class PrettyPrint {
 			List<EObject> values = (List<EObject>) obj.eGet(feat);
 			s.append("[")
 					.append(values.stream()
-							.map(value -> typeAndId(value))
+							.map(value -> typeAndId(value, objId))
 							.collect(Collectors.joining(", ")))
 					.append("]");
 		}
 	}
 
-	public static String typeAndId(EObject obj) {
-		return obj.eClass().getName() + " " + ((XMIResource) obj.eResource()).getID(obj);
+	public static String typeAndId(EObject obj, String objId) {
+		return String.format("%s \"%s\"", obj.eClass().getName(), objId);
 	}
 
 	/**
