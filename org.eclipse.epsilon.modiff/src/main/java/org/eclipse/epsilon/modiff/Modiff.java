@@ -6,11 +6,14 @@ import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -223,6 +226,9 @@ public class Modiff {
 	}
 
 	protected void identifyDifferences() {
+
+		checkForDuplicates();
+
 		DifferencesFinder finder = new DifferencesFinder();
 
 		for (EObject addedElement : addedElements) {
@@ -254,5 +260,44 @@ public class Modiff {
 			System.out.println(PrettyPrint.featuresMap(
 					removedElement, matcher.getIdentifier(removedElement), "- "));
 		}
+	}
+
+	protected void checkForDuplicates() {
+		List<String> duplicatesInToModel = findDuplicates(addedElements);
+		List<String> duplicatesInFromModel = findDuplicates(removedElements);
+		if (!duplicatesInToModel.isEmpty() || !duplicatesInFromModel.isEmpty()) {
+			StringBuilder errorMessage = new StringBuilder();
+
+			errorMessage.append("\n\nID duplicates found in one or both models:\n");
+			errorMessage.append(toModelFile)
+					.append(": [")
+					.append(String.join(", ", duplicatesInToModel))
+					.append("]\n");
+
+			errorMessage.append(fromModelFile)
+					.append(": [")
+					.append(String.join(", ", duplicatesInFromModel))
+					.append("]\n");
+
+			throw new RuntimeException(errorMessage.toString());
+		}
+	}
+
+	public List<String> findDuplicates(Set<EObject> elements) {
+		List<String> duplicates = new ArrayList<>();
+
+		List<String> ids = elements.stream()
+				.map(e -> matcher.getIdentifier(e))
+				.collect(Collectors.toList());
+
+		Set<String> uniqueIds = new HashSet<>();
+
+		for (String str : ids) {
+			if (!uniqueIds.add(str)) {
+				duplicates.add(str);
+			}
+		}
+
+		return duplicates;
 	}
 }
