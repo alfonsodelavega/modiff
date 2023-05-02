@@ -46,22 +46,23 @@ public class PrettyPrint {
 	}
 
 	public static String featureDiferences(
-			EObject addedObj, String addedObjId, String addedPrefix,
-			EObject removedObj, String removedObjId, String removedPrefix,
+			String identifier,
+			EObject addedObj, String addedPrefix,
+			EObject removedObj, String removedPrefix,
 			List<EStructuralFeature> changedFeatures, String modifiedPrefix) {
 
 		StringBuilder s = new StringBuilder();
 		EClass eclass = addedObj.eClass();
 
 		s.append(modifiedPrefix)
-				.append(eclass.getName()).append(" ").append(addedObjId)
+				.append(eclass.getName()).append(" ").append(identifier)
 				.append(" {");
 
 		for (EStructuralFeature feat : changedFeatures) {
 			s.append("\n\t");
-			appendFeature(s, addedPrefix, feat, addedObj, addedObjId);
+			appendFeature(s, addedPrefix, feat, addedObj, identifier);
 			s.append("\n\t");
-			appendFeature(s, removedPrefix, feat, removedObj, removedObjId);
+			appendFeature(s, removedPrefix, feat, removedObj, identifier);
 		}
 
 		s.append("\n").append(modifiedPrefix).append("}");

@@ -18,16 +18,17 @@ import java.util.stream.Collectors;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.epsilon.modiff.differences.AddedElement;
+import org.eclipse.epsilon.modiff.differences.ChangedElement;
+import org.eclipse.epsilon.modiff.differences.ModelDifference;
+import org.eclipse.epsilon.modiff.differences.RemovedElement;
 import org.eclipse.epsilon.modiff.matcher.IdMatcher;
 import org.eclipse.epsilon.modiff.matcher.Matcher;
-import org.eclipse.epsilon.modiff.utils.DifferencesFinder;
-import org.eclipse.epsilon.modiff.utils.PrettyPrint;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.EditList;
 import org.eclipse.jgit.diff.HistogramDiff;
@@ -59,9 +60,6 @@ import io.reflectoring.diffparser.api.model.Line;
  */
 public class Modiff {
 
-	private static final String DIFFERENCE_SEPARATOR =
-			"************************************************************";
-
 	public static void main(String[] args) throws IOException {
 
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
@@ -83,6 +81,12 @@ public class Modiff {
 		Modiff modiff = new Modiff("models/comics/base.model", "models/comics/left.model");
 		modiff.setMatcher(new IdMatcher());
 		modiff.compare();
+		
+		for (ModelDifference difference : modiff.getDifferences()) {
+			System.out.println(difference);
+			System.out.println(
+					"************************************************************");
+		}
 
 		System.out.println("Done");
 	}
@@ -100,6 +104,7 @@ public class Modiff {
 	protected Resource toModel;
 
 	protected Matcher matcher;
+	protected List<ModelDifference> differences;
 
 	public Modiff(String fromModelFile, String toModelFile) {
 		this.fromModelFile = fromModelFile;
@@ -142,7 +147,6 @@ public class Modiff {
 		toModel = loadToModel();
 
 		// match diff elements and identify actual differences
-		// report
 		identifyDifferences();
 
 	}
@@ -225,40 +229,35 @@ public class Modiff {
 		this.matcher = matcher;
 	}
 
+	public List<ModelDifference> getDifferences() {
+		return differences;
+	}
+
 	protected void identifyDifferences() {
 
 		checkForDuplicates();
 
-		DifferencesFinder finder = new DifferencesFinder();
+		differences = new ArrayList<>();
 
 		for (EObject addedElement : addedElements) {
-			boolean matched = false;
 			for (EObject removedElement : removedElements) {
 				if (matcher.matches(addedElement, removedElement)) {
-					List<EStructuralFeature> changedFeatures =
-							finder.compare(removedElement, addedElement).getChangedFeatures();
-					System.out.println(DIFFERENCE_SEPARATOR);
-					System.out.println(PrettyPrint.featureDiferences(
-							addedElement, matcher.getIdentifier(addedElement), "+ ",
-							removedElement, matcher.getIdentifier(removedElement), "- ",
-							changedFeatures, "~ "));
-
-					
-					matched = true;
+					differences.add(new ChangedElement(
+							matcher.getIdentifier(addedElement),
+							removedElement,
+							addedElement));
 					removedElements.remove(removedElement);
 					break;
 				}
 			}
-			if (!matched) {
-				System.out.println(DIFFERENCE_SEPARATOR);
-				System.out.println(PrettyPrint.featuresMap(
-						addedElement, matcher.getIdentifier(addedElement), "+ "));
-			}
+			// if this point is reached, it is a new/added element
+			differences.add(new AddedElement(
+					matcher.getIdentifier(addedElement), addedElement));
 		}
+		// any element that remains is a removed one
 		for (EObject removedElement : removedElements) {
-			System.out.println(DIFFERENCE_SEPARATOR);
-			System.out.println(PrettyPrint.featuresMap(
-					removedElement, matcher.getIdentifier(removedElement), "- "));
+			differences.add(new RemovedElement(
+					matcher.getIdentifier(removedElement), removedElement));
 		}
 	}
 

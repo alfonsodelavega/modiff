@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.Modiff;
+import org.eclipse.epsilon.modiff.differences.ModelDifference;
 import org.eclipse.epsilon.modiff.matcher.UmlMatcher;
 import org.eclipse.uml2.uml.UMLPackage;
 
@@ -31,6 +32,12 @@ public class CompareDifferentOrdering {
 		Modiff modiff = new Modiff(examples[example][0], examples[example][1]);
 		modiff.setMatcher(new UmlMatcher());
 		modiff.compare();
+
+		for (ModelDifference difference : modiff.getDifferences()) {
+			System.out.println(difference);
+			System.out.println(
+					"************************************************************");
+		}
 
 		System.out.println("Done");
 	}
