@@ -234,19 +234,28 @@ public class Modiff {
 		differences = new ArrayList<>();
 
 		for (EObject addedElement : addedElements) {
+			boolean matched = false;
 			for (EObject removedElement : removedElements) {
 				if (matcher.matches(addedElement, removedElement)) {
-					differences.add(new ChangedElement(
+					ChangedElement changedElement = new ChangedElement(
 							matcher.getIdentifier(addedElement),
 							removedElement,
-							addedElement));
+							addedElement);
+
+					// it could be a false positive due to line format changes
+					if (changedElement.hasDifferences()) {
+						differences.add(changedElement);
+					}
+
 					removedElements.remove(removedElement);
+					matched = true;
 					break;
 				}
 			}
-			// if this point is reached, it is a new/added element
-			differences.add(new AddedElement(
-					matcher.getIdentifier(addedElement), addedElement));
+			if (!matched) {
+				differences.add(new AddedElement(
+						matcher.getIdentifier(addedElement), addedElement));
+			}
 		}
 		// any element that remains is a removed one
 		for (EObject removedElement : removedElements) {

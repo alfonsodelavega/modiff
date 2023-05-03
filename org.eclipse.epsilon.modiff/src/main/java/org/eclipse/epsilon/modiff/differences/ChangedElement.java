@@ -11,6 +11,7 @@ public class ChangedElement extends ModelDifference {
 
 	protected EObject fromElement;
 	protected EObject toElement;
+	protected List<EStructuralFeature> changedFeatures;
 
 	public ChangedElement(String identifier, EObject fromElement, EObject toElement) {
 		super(identifier);
@@ -27,7 +28,14 @@ public class ChangedElement extends ModelDifference {
 	}
 
 	public List<EStructuralFeature> getChangedFeatures() {
-		return new DifferencesFinder().compare(fromElement, toElement).getChangedFeatures();
+		if (changedFeatures == null) {
+			changedFeatures = new DifferencesFinder().compare(fromElement, toElement).getChangedFeatures();
+		}
+		return changedFeatures;
+	}
+
+	public boolean hasDifferences() {
+		return !getChangedFeatures().isEmpty();
 	}
 
 	public String toString() {
@@ -35,6 +43,6 @@ public class ChangedElement extends ModelDifference {
 				identifier,
 				toElement, "+ ",
 				fromElement, "- ",
-				getChangedFeatures(), "~ ");
+				getChangedFeatures(), "  ");
 	}
 }
