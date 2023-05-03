@@ -82,13 +82,7 @@ public class Modiff {
 		modiff.setMatcher(new IdMatcher());
 		modiff.compare();
 		
-		for (ModelDifference difference : modiff.getDifferences()) {
-			System.out.println(difference);
-			System.out.println(
-					"************************************************************");
-		}
-
-		System.out.println("Done");
+		System.out.println(modiff.reportDifferences());
 	}
 
 	protected String fromModelFile;
@@ -298,5 +292,19 @@ public class Modiff {
 		}
 
 		return duplicates;
+	}
+
+	public String reportDifferences() {
+		StringBuilder s = new StringBuilder();
+
+		s.append("--- ").append(fromModelFile).append("\n");
+		s.append("+++ ").append(toModelFile).append("\n");
+
+		for (ModelDifference d : differences) {
+			s.append("@@").append("\n");
+			s.append(d).append("\n");
+		}
+
+		return s.toString();
 	}
 }
