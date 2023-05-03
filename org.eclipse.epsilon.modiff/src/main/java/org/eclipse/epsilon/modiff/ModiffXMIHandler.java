@@ -1,12 +1,9 @@
 package org.eclipse.epsilon.modiff;
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.emf.ecore.xmi.XMLHelper;
@@ -60,42 +57,12 @@ public class ModiffXMIHandler extends SAXXMIHandler {
 		currentLine = end + 1;
 	}
 
-	protected EObject getHiddenPeekObject() {
-		EObject peekObject = objects.peekEObject();
-		if (peekObject == null && objects.size() > 1) {
-			objects.popEObject(); // remove the "null" at the top
-			peekObject = objects.peekEObject();
-			objects.push(null); // put it back
-		}
-		return peekObject;
-	}
-
-	protected boolean isMultiValuedAttribute(Object feature) {
-		return feature instanceof EAttribute &&
-				helper.getFeatureKind((EAttribute) feature) == XMLHelper.DATATYPE_IS_MANY;
-	}
-
 	@Override
 	public void endElement(String uri, String localName, String name) {
 
 		currentLine = locator.getLineNumber() + 1;
 		super.endElement(uri, localName, name);
 	}
-
-	protected boolean hasDuplicatedValues(EObject peekObject, EAttribute mvAttr) {
-		@SuppressWarnings("unchecked")
-		List<Object> values = (List<Object>) peekObject.eGet(mvAttr);
-
-		Set<Object> uniqueValues = new HashSet<>();
-		for (Object value : values) {
-			if (!uniqueValues.add(value)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	@Override
 	public void endDocument() {
 		super.endDocument();
