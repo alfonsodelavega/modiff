@@ -111,38 +111,41 @@ public class Modiff {
 	 * @param fromModelFile Old version of the model
 	 * @param toModelFile   New Version of the model
 	 * @throws IOException
+	 * @throws InterruptedException
 	 */
 	public void compare() throws IOException {
 
-		// get line diff of models
-		List<Diff> diffs = null;
-		try (PipedInputStream in = new PipedInputStream()) {
-			// file diff (piped streams allow sharing memory)
-			// they usually require threading but here writting finishes before reading
-			// https://stackoverflow.com/a/1226031
-			new Thread(() -> {
-				try (PipedOutputStream out = new PipedOutputStream(in)) {
-					getLineDiff(out);
-				}
-				catch (IOException iox) {
-					iox.printStackTrace();
-				}
-			}).start();
+		List<Diff> diffs = getLineDiffs();
 
-			// parse the diffs to a workable format
-			diffs = new UnifiedDiffParser().parse(in);
-		}
-
-		// get added and removed lines (TO and FROM lines respectively) 
 		parseLineDiff(diffs);
 
-		// load models and capture diff elements
 		fromModel = loadFromModel();
 		toModel = loadToModel();
 
-		// match diff elements and identify actual differences
 		identifyDifferences();
+	}
 
+	protected List<Diff> getLineDiffs() throws IOException {
+		List<Diff> diffs = null;
+
+		final PipedOutputStream out = new PipedOutputStream();
+		PipedInputStream in = new PipedInputStream(out);
+		new Thread(() -> {
+			try {
+				getLineDiff(out);
+				out.close();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}).start();
+		
+
+		// parse the diffs to a workable format
+		diffs = new UnifiedDiffParser().parse(in);
+		in.close();
+
+		return diffs;
 	}
 
 	protected void getLineDiff(OutputStream out) throws IOException {

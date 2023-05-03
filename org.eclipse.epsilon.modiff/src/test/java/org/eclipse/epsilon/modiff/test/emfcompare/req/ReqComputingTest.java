@@ -50,6 +50,18 @@ public class ReqComputingTest {
 		assert (differences.get(1).getIdentifier().equals("B"));
 	}
 
+	@Test
+	public void testA2UseCase() throws IOException {
+		Modiff modiff = compare(input.getA2From(), input.getA2To());
+
+		List<ModelDifference> differences = modiff.getDifferences();
+		assert (differences.size() == 2);
+		assert (differences.get(0) instanceof RemovedElement);
+		assert (differences.get(0).getIdentifier().equals("A"));
+		assert (differences.get(1) instanceof RemovedElement);
+		assert (differences.get(1).getIdentifier().equals("B"));
+	}
+
 
 	protected Modiff compare(String fromModel, String toModel) throws IOException {
 		Modiff modiff = new Modiff(fromModel, toModel);
