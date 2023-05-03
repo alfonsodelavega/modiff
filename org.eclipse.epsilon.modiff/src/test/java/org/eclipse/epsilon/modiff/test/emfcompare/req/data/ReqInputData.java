@@ -32,11 +32,11 @@ public class ReqInputData extends AbstractInputData {
 		return getAbsolutePath("a2/right.nodes");
 	}
 
-	public String getA3Left() throws IOException {
+	public String getA3To() throws IOException {
 		return getAbsolutePath("a3/left.nodes");
 	}
 
-	public String getA3Right() throws IOException {
+	public String getA3From() throws IOException {
 		return getAbsolutePath("a3/right.nodes");
 	}
 

@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.Modiff;
+import org.eclipse.epsilon.modiff.differences.ChangedElement;
 import org.eclipse.epsilon.modiff.differences.ModelDifference;
 import org.eclipse.epsilon.modiff.differences.RemovedElement;
 import org.eclipse.epsilon.modiff.matcher.IdMatcher;
@@ -36,7 +37,6 @@ public class ReqComputingTest {
 	}
 
 	private ReqInputData input = new ReqInputData();
-
 
 	@Test
 	public void testA1UseCase() throws IOException {
@@ -57,6 +57,18 @@ public class ReqComputingTest {
 		List<ModelDifference> differences = modiff.getDifferences();
 		assert (differences.size() == 2);
 		assert (differences.get(0) instanceof RemovedElement);
+		assert (differences.get(0).getIdentifier().equals("A"));
+		assert (differences.get(1) instanceof RemovedElement);
+		assert (differences.get(1).getIdentifier().equals("B"));
+	}
+
+	@Test
+	public void testA3UseCase() throws IOException {
+		Modiff modiff = compare(input.getA3From(), input.getA3To());
+
+		List<ModelDifference> differences = modiff.getDifferences();
+		assert (differences.size() == 2);
+		assert (differences.get(0) instanceof ChangedElement);
 		assert (differences.get(0).getIdentifier().equals("A"));
 		assert (differences.get(1) instanceof RemovedElement);
 		assert (differences.get(1).getIdentifier().equals("B"));
