@@ -1,4 +1,4 @@
-package org.eclipse.epsilon.modiff.utils;
+package org.eclipse.epsilon.modiff.differences;
 
 import java.util.ArrayList;
 import java.util.List;

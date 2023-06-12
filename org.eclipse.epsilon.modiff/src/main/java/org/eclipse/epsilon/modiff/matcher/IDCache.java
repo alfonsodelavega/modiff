@@ -1,4 +1,4 @@
-package org.eclipse.epsilon.modiff.utils;
+package org.eclipse.epsilon.modiff.matcher;
 
 import java.util.HashMap;
 import java.util.Map;

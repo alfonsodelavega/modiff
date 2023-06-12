@@ -1,7 +1,7 @@
 package org.eclipse.epsilon.modiff.differences;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.epsilon.modiff.utils.PrettyPrint;
+import org.eclipse.epsilon.modiff.output.UnifiedFormatter;
 
 public class AddedElement extends ModelDifference {
 
@@ -17,7 +17,7 @@ public class AddedElement extends ModelDifference {
 	}
 
 	@Override
-	public String toString() {
-		return PrettyPrint.featuresMap(element, identifier, "+ ");
+	public String format(UnifiedFormatter formatter) {
+		return formatter.format(this);
 	}
 }

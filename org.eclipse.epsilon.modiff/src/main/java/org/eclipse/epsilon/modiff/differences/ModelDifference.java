@@ -1,5 +1,6 @@
 package org.eclipse.epsilon.modiff.differences;
 
+import org.eclipse.epsilon.modiff.output.UnifiedFormatter;
 
 public abstract class ModelDifference {
 	protected String identifier;
@@ -11,4 +12,6 @@ public abstract class ModelDifference {
 	public String getIdentifier() {
 		return identifier;
 	}
+
+	public abstract String format(UnifiedFormatter formatter);
 }

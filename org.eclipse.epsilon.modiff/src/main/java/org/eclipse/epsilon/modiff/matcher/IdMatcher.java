@@ -3,7 +3,6 @@ package org.eclipse.epsilon.modiff.matcher;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMLResource;
-import org.eclipse.epsilon.modiff.utils.IDCache;
 
 public class IdMatcher implements Matcher {
 

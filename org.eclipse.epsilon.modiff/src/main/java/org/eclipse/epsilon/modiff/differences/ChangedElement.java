@@ -4,8 +4,7 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.epsilon.modiff.utils.DifferencesFinder;
-import org.eclipse.epsilon.modiff.utils.PrettyPrint;
+import org.eclipse.epsilon.modiff.output.UnifiedFormatter;
 
 public class ChangedElement extends ModelDifference {
 
@@ -38,11 +37,8 @@ public class ChangedElement extends ModelDifference {
 		return !getChangedFeatures().isEmpty();
 	}
 
-	public String toString() {
-		return PrettyPrint.featureDiferences(
-				identifier,
-				toElement, "+ ",
-				fromElement, "- ",
-				getChangedFeatures(), "  ");
+	@Override
+	public String format(UnifiedFormatter formatter) {
+		return formatter.format(this);
 	}
 }
