@@ -13,6 +13,10 @@ import org.eclipse.epsilon.modiff.differences.ChangedElement;
 import org.eclipse.epsilon.modiff.differences.ModelDifference;
 import org.eclipse.epsilon.modiff.differences.RemovedElement;
 
+import com.github.difflib.DiffUtils;
+import com.github.difflib.patch.AbstractDelta;
+import com.github.difflib.patch.Patch;
+
 /**
  * Model differences formatter that mimicks GNU's Unified Format
  */
@@ -63,7 +67,8 @@ public class UnifiedFormatter {
 
 		for (EStructuralFeature feat : changedElement.getChangedFeatures()) {
 			if (feat.isMany()) {
-				appendMultiFeature(s, feat, changedElement);
+				s.append("\n\t");
+				appendMultiFeatureDifferences(s, feat, changedElement);
 			}
 			else {
 				s.append("\n\t");
@@ -78,11 +83,6 @@ public class UnifiedFormatter {
 		s.append("\n").append(commonPrefix).append("}");
 
 		return s.toString();
-	}
-
-	protected void appendMultiFeature(StringBuilder s, EStructuralFeature feat, ChangedElement changedElement) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public String featuresMap(EObject obj, String objId) {
@@ -121,13 +121,82 @@ public class UnifiedFormatter {
 	}
 
 
-	protected void appendFeature(StringBuilder s, String prefix, EStructuralFeature feat, EObject obj, String objId) {
+	protected void appendFeature(StringBuilder s, String prefix,
+			EStructuralFeature feat, EObject obj, String objId) {
 		if (feat.isMany()) {
-
+			appendMultiFeature(s, prefix, feat, obj, objId);
 		}
 		else {
 			appendSingleFeature(s, prefix, feat, obj, objId);
 		}
+	}
+
+	protected void appendMultiFeature(StringBuilder s, String prefix,
+			EStructuralFeature feat, EObject obj, String objId) {
+
+		List<String> values = getValues(obj, feat);
+
+		s.append(prefix).append(feat.getName()).append(getFeatureSeparator(feat))
+				.append("[")
+				.append(values.stream().collect(Collectors.joining(", ")))
+				.append("]");
+	}
+
+	protected String getFeatureSeparator(EStructuralFeature feat) {
+		if (feat instanceof EAttribute) {
+			return ": ";
+		}
+		else {
+			return " -> ";
+		}
+	}
+	protected List<String> getValues(EObject obj, EStructuralFeature feat) {
+		@SuppressWarnings("unchecked")
+		List<EObject> values = (List<EObject>) obj.eGet(feat);
+		
+		if (feat instanceof EAttribute) {
+			return values.stream()
+					.map(value -> String.valueOf(value))
+					.collect(Collectors.toList());
+		}
+		else {
+			return values.stream()
+					.map(value -> typeAndId(value, modiff.getMatcher().getIdentifier(value)))
+					.collect(Collectors.toList());
+		}
+	}
+
+	protected void appendMultiFeatureDifferences(StringBuilder s,
+			EStructuralFeature feat, ChangedElement changedElement) {
+
+		List<String> fromValues = getValues(changedElement.getFromElement(), feat);
+		List<String> toValues = getValues(changedElement.getToElement(), feat);
+
+		Patch<String> patch = DiffUtils.diff(fromValues, toValues);
+
+		s.append(feat.getName()).append(getFeatureSeparator(feat)).append("[\n");
+		
+		for (AbstractDelta<String> delta : patch.getDeltas()) {
+			switch(delta.getType()) {
+			case EQUAL:
+				s.append(delta.getTarget().getLines().stream().map(line -> "\t\t  " + line + ",").collect(Collectors.joining("\n")));
+				break;
+			case INSERT:
+				s.append(delta.getTarget().getLines().stream().map(line -> "\t\t+ " + line + ",").collect(Collectors.joining("\n")));
+				break;
+			case DELETE:
+				s.append(delta.getSource().getLines().stream().map(line -> "\t\t- " + line + ",").collect(Collectors.joining("\n")));
+				break;
+			case CHANGE:
+				s.append(delta.getTarget().getLines().stream().map(line -> "\t\t+ " + line + ",").collect(Collectors.joining("\n")));
+				s.append("\n");
+				s.append(delta.getSource().getLines().stream().map(line -> "\t\t- " + line + ",").collect(Collectors.joining("\n")));
+				break;
+			}
+		}
+
+		s.append("\n\t]");
+
 	}
 
 	protected void appendSingleFeature(StringBuilder s, String addedPrefix,
