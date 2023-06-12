@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -26,21 +27,24 @@ import org.eclipse.epsilon.modiff.differences.ChangedElement;
 import org.eclipse.epsilon.modiff.differences.ModelDifference;
 import org.eclipse.epsilon.modiff.differences.RemovedElement;
 import org.eclipse.epsilon.modiff.matcher.IdMatcher;
+import org.eclipse.epsilon.modiff.matcher.Matcher;
 import org.eclipse.epsilon.modiff.test.emfcompare.req.data.ReqInputData;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ReqComputingTest {
 
-	enum TestKind {
-		ADD, DELETE;
-	}
-
-	private ReqInputData input = new ReqInputData();
+	protected boolean debug = true;
+	protected Modiff modiff;
+	protected Matcher matcher;
+	
+	protected ReqInputData input = new ReqInputData();
+	
 
 	@Test
 	public void testA1UseCase() throws IOException {
-		Modiff modiff = compare(input.getA1From(), input.getA1To());
+		modiff = compare(input.getA1From(), input.getA1To());
 
 		List<ModelDifference> differences = modiff.getDifferences();
 		assert (differences.size() == 2);
@@ -52,7 +56,7 @@ public class ReqComputingTest {
 
 	@Test
 	public void testA2UseCase() throws IOException {
-		Modiff modiff = compare(input.getA2From(), input.getA2To());
+		modiff = compare(input.getA2From(), input.getA2To());
 
 		List<ModelDifference> differences = modiff.getDifferences();
 		assert (differences.size() == 2);
@@ -64,7 +68,7 @@ public class ReqComputingTest {
 
 	@Test
 	public void testA3UseCase() throws IOException {
-		Modiff modiff = compare(input.getA3From(), input.getA3To());
+		modiff = compare(input.getA3From(), input.getA3To());
 
 		List<ModelDifference> differences = modiff.getDifferences();
 		assert (differences.size() == 2);
@@ -74,10 +78,41 @@ public class ReqComputingTest {
 		assert (differences.get(1).getIdentifier().equals("B"));
 	}
 
+	@Test
+	public void testA4UseCase() throws IOException {
+		modiff = compare(input.getA4From(), input.getA4To());
+
+		List<ModelDifference> differences = modiff.getDifferences();
+		assert (differences.size() == 2);
+		assert (differences.get(0) instanceof ChangedElement);
+		assert (differences.get(0).getIdentifier().equals("A"));
+		
+		ChangedElement change = (ChangedElement) differences.get(0);
+		EStructuralFeature feature = 
+				change.getToElement().eClass().getEStructuralFeature("multiValuedReference");
+		
+		EObject newA = change.getToElement();
+		EObject oldA = change.getFromElement();
+
+		assert (matcher.getIdentifier(getFirstElementOfList(newA.eGet(feature))).equals("C"));
+		assert (matcher.getIdentifier(getFirstElementOfList(oldA.eGet(feature))).equals("B"));
+
+		assert (differences.get(1) instanceof RemovedElement);
+		assert (differences.get(1).getIdentifier().equals("B"));
+	}
+
+
+	protected EObject getFirstElementOfList(Object list) {
+		if (!(list instanceof List)) {
+			throw new IllegalStateException("Object is not a list");
+		}
+		return (EObject) ((List<?>) list).get(0);
+	}
 
 	protected Modiff compare(String fromModel, String toModel) throws IOException {
-		Modiff modiff = new Modiff(fromModel, toModel);
-		modiff.setMatcher(new IdMatcher());
+		modiff = new Modiff(fromModel, toModel);
+		matcher = new IdMatcher();
+		modiff.setMatcher(matcher);
 		modiff.compare();
 		return modiff;
 	}
@@ -101,6 +136,13 @@ public class ReqComputingTest {
 				EPackage ePackage = (EPackage) o;
 				EPackage.Registry.INSTANCE.put(ePackage.getNsURI(), ePackage);
 			}
+		}
+	}
+	
+	@After
+	public void reportDifferences() {
+		if (debug) {
+			System.out.println(modiff.reportDifferences());
 		}
 	}
 }
