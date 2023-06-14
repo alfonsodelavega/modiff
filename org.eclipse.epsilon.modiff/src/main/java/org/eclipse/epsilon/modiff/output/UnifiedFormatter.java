@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.epsilon.modiff.Modiff;
@@ -20,7 +19,72 @@ import com.github.difflib.patch.Patch;
 /**
  * Model differences formatter that mimicks GNU's Unified Format
  */
-public class UnifiedFormatter {
+public class UnifiedFormatter implements LabelProvider {
+
+	/* Unified diff constants, not to be customised */
+
+	public static final String HEADER_FROM_FILE = "--- ";
+	public static final String HEADER_TO_FILE = "+++ ";
+	public static final String HUNK_DELIMITER = "@@";
+
+	public static final String ADD = "+";
+	public static final String REMOVE = "-";
+	public static final String COMMON = " ";
+
+	public static final String NL = "\n";
+
+
+	/* Model textual format constants, used through overridable methods */
+
+	private static final String INDENT = "    ";
+
+	private static final String ELEMENT_START = " {";
+	private static final String ELEMENT_END = "}";
+
+	private static final String MULTIVALUE_START = " [";
+	private static final String MULTIVALUE_END = "]";
+	private static final String MULTIVALUE_DELIMITER = ",";
+
+	private static final String ATTRIBUTE_DELIMITER = ": ";
+	private static final String REFERENCE_DELIMITER = " -> ";
+
+
+	protected String getIndent() {
+		return INDENT;
+	}
+
+	protected String getElementStart() {
+		return ELEMENT_START;
+	}
+
+	protected String getElementEnd() {
+		return ELEMENT_END;
+	}
+
+	protected String getMultivalueStart() {
+		return MULTIVALUE_START;
+	}
+
+	protected String getMultivalueEnd() {
+		return MULTIVALUE_END;
+	}
+
+	protected String getMultivalueDelimiter() {
+		return MULTIVALUE_DELIMITER;
+	}
+
+	protected String getMultivalueDelimiterPlusSpace() {
+		return getMultivalueDelimiter() + " ";
+	}
+
+	protected String getAttributeDelimiter() {
+		return ATTRIBUTE_DELIMITER;
+	}
+
+	protected String getReferenceDelimiter() {
+		return REFERENCE_DELIMITER;
+	}
+
 
 	protected Modiff modiff;
 
@@ -31,62 +95,54 @@ public class UnifiedFormatter {
 	public String format() {
 		StringBuilder s = new StringBuilder();
 
-		s.append("--- ").append(modiff.getFromModelFile()).append("\n");
-		s.append("+++ ").append(modiff.getToModelFile()).append("\n");
+		s.append(HEADER_FROM_FILE).append(modiff.getFromModelFile()).append(NL);
+		s.append(HEADER_TO_FILE).append(modiff.getToModelFile()).append(NL);
 
 		for (ModelDifference d : modiff.getDifferences()) {
-			s.append("@@").append("\n");
-			s.append(d.format(this)).append("\n");
+			s.append(getHunkHeader()).append(NL);
+			s.append(d.format(this)).append(NL);
 		}
 
 		return s.toString();
 	}
 
+	protected String getHunkHeader() {
+		return HUNK_DELIMITER + " " + HUNK_DELIMITER;
+	}
+
 	public String format(AddedElement addedElement) {
-		return featuresMap(addedElement.getElement(), addedElement.getIdentifier(), "+ ");
+		return featuresMap(addedElement.getElement(), addedElement.getIdentifier(), ADD);
 	}
 
 	public String format(RemovedElement removedElement) {
-		return featuresMap(removedElement.getElement(), removedElement.getIdentifier(), "- ");
+		return featuresMap(removedElement.getElement(), removedElement.getIdentifier(), REMOVE);
 	}
 
 	public String format(ChangedElement changedElement) {
 
 		StringBuilder s = new StringBuilder();
-		EClass eclass = changedElement.getFromElement().eClass();
 		
-		String addedPrefix = "+ ";
-		String commonPrefix = "  ";
-		String removedPrefix = "- ";
-
-		s.append(commonPrefix)
-				.append(eclass.getName())
-				.append(" ")
-				.append(changedElement.getIdentifier())
-				.append(" {");
+		s.append(COMMON)
+				.append(getLabel(changedElement.getFromElement()))
+				.append(getElementStart());
 
 		for (EStructuralFeature feat : changedElement.getChangedFeatures()) {
+			s.append(NL);
 			if (feat.isMany()) {
-				s.append("\n\t");
 				appendMultiFeatureDifferences(s, feat, changedElement);
 			}
 			else {
-				s.append("\n\t");
-				appendSingleFeature(s, addedPrefix, feat,
+				appendSingleFeature(s, ADD, feat,
 						changedElement.getToElement(), changedElement.getIdentifier());
-				s.append("\n\t");
-				appendSingleFeature(s, removedPrefix, feat,
+				s.append(NL);
+				appendSingleFeature(s, REMOVE, feat,
 						changedElement.getFromElement(), changedElement.getIdentifier());
 			}
 		}
 
-		s.append("\n").append(commonPrefix).append("}");
+		s.append(NL).append(COMMON).append(getElementEnd());
 
 		return s.toString();
-	}
-
-	public String featuresMap(EObject obj, String objId) {
-		return featuresMap(obj, objId, "");
 	}
 
 	public String featuresMap(EObject obj, String objId, String prefix) {
@@ -102,27 +158,25 @@ public class UnifiedFormatter {
 			List<EStructuralFeature> features, String prefix) {
 		StringBuilder s = new StringBuilder();
 
-		EClass eclass = obj.eClass();
-
 		s.append(prefix)
-				.append(eclass.getName()).append(" ").append(objId)
-				.append(" {\n");
+				.append(getLabel(obj))
+				.append(getElementStart()).append(NL);
 
 		for (EStructuralFeature feat : features) {
 			if (obj.eIsSet(feat)) {
-				s.append("\t");
 				appendFeature(s, prefix, feat, obj, objId);
-				s.append("\n");
+				s.append(NL);
 			}
 		}
 
-		s.append(prefix + "}");
+		s.append(prefix).append(getElementEnd());
 		return s.toString();
 	}
 
 
 	protected void appendFeature(StringBuilder s, String prefix,
 			EStructuralFeature feat, EObject obj, String objId) {
+
 		if (feat.isMany()) {
 			appendMultiFeature(s, prefix, feat, obj, objId);
 		}
@@ -136,18 +190,19 @@ public class UnifiedFormatter {
 
 		List<String> values = getValues(obj, feat);
 
-		s.append(prefix).append(feat.getName()).append(getFeatureSeparator(feat))
-				.append("[")
-				.append(values.stream().collect(Collectors.joining(", ")))
-				.append("]");
+		s.append(prefix).append(getIndent())
+				.append(feat.getName()).append(getFeatureSeparator(feat))
+				.append(getMultivalueStart())
+				.append(values.stream().collect(Collectors.joining(getMultivalueDelimiterPlusSpace())))
+				.append(getMultivalueEnd());
 	}
 
 	protected String getFeatureSeparator(EStructuralFeature feat) {
 		if (feat instanceof EAttribute) {
-			return ": ";
+			return getAttributeDelimiter();
 		}
 		else {
-			return " -> ";
+			return getReferenceDelimiter();
 		}
 	}
 	protected List<String> getValues(EObject obj, EStructuralFeature feat) {
@@ -161,7 +216,7 @@ public class UnifiedFormatter {
 		}
 		else {
 			return values.stream()
-					.map(value -> typeAndId(value, modiff.getMatcher().getIdentifier(value)))
+					.map(value -> getLabel(value))
 					.collect(Collectors.toList());
 		}
 	}
@@ -174,58 +229,75 @@ public class UnifiedFormatter {
 
 		Patch<String> patch = DiffUtils.diff(fromValues, toValues);
 
-		s.append(feat.getName()).append(getFeatureSeparator(feat)).append("[\n");
+		s.append(COMMON).append(getIndent()).append(feat.getName()).append(getFeatureSeparator(feat))
+				.append(getMultivalueStart()).append(NL);
 		
-		for (AbstractDelta<String> delta : patch.getDeltas()) {
+		List<AbstractDelta<String>> deltas = patch.getDeltas();
+		for (int i = 0; i < deltas.size(); i++) {
+
+			AbstractDelta<String> delta = deltas.get(i);
 			switch(delta.getType()) {
 			case EQUAL:
-				s.append(delta.getTarget().getLines().stream().map(line -> "\t\t  " + line + ",").collect(Collectors.joining("\n")));
+				s.append(formatChunkLines(delta.getTarget().getLines(), COMMON));
 				break;
 			case INSERT:
-				s.append(delta.getTarget().getLines().stream().map(line -> "\t\t+ " + line + ",").collect(Collectors.joining("\n")));
+				s.append(formatChunkLines(delta.getTarget().getLines(), ADD));
 				break;
 			case DELETE:
-				s.append(delta.getSource().getLines().stream().map(line -> "\t\t- " + line + ",").collect(Collectors.joining("\n")));
+				s.append(formatChunkLines(delta.getSource().getLines(), REMOVE));
 				break;
 			case CHANGE:
-				s.append(delta.getTarget().getLines().stream().map(line -> "\t\t+ " + line + ",").collect(Collectors.joining("\n")));
-				s.append("\n");
-				s.append(delta.getSource().getLines().stream().map(line -> "\t\t- " + line + ",").collect(Collectors.joining("\n")));
-				break;
+				s.append(formatChunkLines(delta.getTarget().getLines(), ADD));
+				s.append(getMultivalueDelimiter()).append(NL);
+				s.append(formatChunkLines(delta.getSource().getLines(), REMOVE));
+			}
+			
+			// add extra comma and new line between chunks (if not the last one)
+			if (i < deltas.size() - 1) {
+				s.append(getMultivalueDelimiter()).append(NL);
 			}
 		}
 
-		s.append("\n\t]");
+		s.append(NL).append(COMMON).append(getIndent()).append(getMultivalueEnd());
 
 	}
 
-	protected void appendSingleFeature(StringBuilder s, String addedPrefix,
+	protected String formatChunkLines(List<String> lines, String prefix) {
+		return lines.stream()
+				.map(line -> prefix + getIndent() + getIndent() + line)
+				.collect(Collectors.joining(getMultivalueDelimiter() + NL));
+	}
+
+	protected void appendSingleFeature(StringBuilder s, String ADD,
 			EStructuralFeature feat, EObject obj, String objId) {
 
 		if (feat instanceof EAttribute) {
-			appendSingleAttribute(s, addedPrefix, feat, obj);
+			appendSingleAttribute(s, ADD, feat, obj);
 		}
 		else {
-			appendSingleReference(s, addedPrefix, feat, obj, objId);
+			appendSingleReference(s, ADD, feat, obj, objId);
 		}
 	}
 
 	protected void appendSingleAttribute(StringBuilder s, String prefix,
 			EStructuralFeature feat, EObject obj) {
-		s.append(prefix).append(feat.getName()).append(": ").append(obj.eGet(feat));
+
+		s.append(prefix).append(getIndent())
+				.append(feat.getName()).append(getAttributeDelimiter()).append(obj.eGet(feat));
 	}
 
 	protected void appendSingleReference(StringBuilder s, String prefix,
 			EStructuralFeature feat, EObject obj, String objId) {
 
-		s.append(prefix).append(feat.getName()).append(" -> ");
+		s.append(prefix).append(getIndent())
+				.append(feat.getName()).append(getReferenceDelimiter());
 
 		EObject value = (EObject) obj.eGet(feat);
 		if (value == null) {
 			s.append("null");
 		}
 		else {
-			s.append(typeAndId(value, modiff.getMatcher().getIdentifier(value)));
+			s.append(getLabel(value));
 		}
 	}
 
@@ -245,5 +317,10 @@ public class UnifiedFormatter {
 	 */
 	protected String preAndPostfix(String text, String prefix, String suffix) {
 		return "".equals(text) ? "" : prefix + text + suffix;
+	}
+
+	@Override
+	public String getLabel(EObject obj) {
+		return typeAndId(obj, modiff.getMatcher().getIdentifier(obj));
 	}
 }
