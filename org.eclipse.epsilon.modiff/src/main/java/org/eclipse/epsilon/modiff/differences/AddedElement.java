@@ -1,7 +1,7 @@
 package org.eclipse.epsilon.modiff.differences;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.epsilon.modiff.output.UnifiedFormatter;
+import org.eclipse.epsilon.modiff.output.UnifiedDiffFormatter;
 
 public class AddedElement extends ModelDifference {
 
@@ -17,7 +17,7 @@ public class AddedElement extends ModelDifference {
 	}
 
 	@Override
-	public String format(UnifiedFormatter formatter) {
+	public String format(UnifiedDiffFormatter formatter) {
 		return formatter.format(this);
 	}
 }

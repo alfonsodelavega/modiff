@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.epsilon.modiff.output.UnifiedFormatter;
+import org.eclipse.epsilon.modiff.output.UnifiedDiffFormatter;
 
 public class ChangedElement extends ModelDifference {
 
@@ -38,7 +38,7 @@ public class ChangedElement extends ModelDifference {
 	}
 
 	@Override
-	public String format(UnifiedFormatter formatter) {
+	public String format(UnifiedDiffFormatter formatter) {
 		return formatter.format(this);
 	}
 }

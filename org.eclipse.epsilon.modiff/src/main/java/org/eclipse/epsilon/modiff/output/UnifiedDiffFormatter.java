@@ -16,9 +16,9 @@ import com.github.difflib.patch.AbstractDelta;
 import com.github.difflib.patch.Patch;
 
 /**
- * Model differences formatter that mimicks Unified Diff Format
+ * Model differences formatter that mimicks Unified Format
  */
-public class UnifiedFormatter {
+public class UnifiedDiffFormatter {
 
 	/* Unified diff constants, not to be customised */
 
@@ -90,7 +90,7 @@ public class UnifiedFormatter {
 	protected String fromModelFile = "";
 	protected String toModelFile = "";
 
-	public UnifiedFormatter(List<ModelDifference> differences, LabelProvider labelProvider) {
+	public UnifiedDiffFormatter(List<ModelDifference> differences, LabelProvider labelProvider) {
 		this.differences = differences;
 		this.labelProvider = labelProvider;
 	}
