@@ -29,6 +29,7 @@ import org.eclipse.epsilon.modiff.differences.ModelDifference;
 import org.eclipse.epsilon.modiff.differences.RemovedElement;
 import org.eclipse.epsilon.modiff.matcher.IdMatcher;
 import org.eclipse.epsilon.modiff.matcher.Matcher;
+import org.eclipse.epsilon.modiff.output.MatcherBasedLabelProvider;
 import org.eclipse.epsilon.modiff.output.UnifiedFormatter;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.EditList;
@@ -320,6 +321,13 @@ public class Modiff {
 	}
 
 	public String reportDifferences() {
-		return new UnifiedFormatter(this).format();
+
+		UnifiedFormatter formatter =
+				new UnifiedFormatter(differences, new MatcherBasedLabelProvider(matcher));
+
+		formatter.setFromModelFile(fromModelFile);
+		formatter.setToModelFile(toModelFile);
+
+		return formatter.format();
 	}
 }

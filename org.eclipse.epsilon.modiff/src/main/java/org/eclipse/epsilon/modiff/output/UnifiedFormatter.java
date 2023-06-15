@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.epsilon.modiff.Modiff;
 import org.eclipse.epsilon.modiff.differences.AddedElement;
 import org.eclipse.epsilon.modiff.differences.ChangedElement;
 import org.eclipse.epsilon.modiff.differences.ModelDifference;
@@ -17,9 +16,9 @@ import com.github.difflib.patch.AbstractDelta;
 import com.github.difflib.patch.Patch;
 
 /**
- * Model differences formatter that mimicks GNU's Unified Format
+ * Model differences formatter that mimicks Unified Diff Format
  */
-public class UnifiedFormatter implements LabelProvider {
+public class UnifiedFormatter {
 
 	/* Unified diff constants, not to be customised */
 
@@ -85,20 +84,24 @@ public class UnifiedFormatter implements LabelProvider {
 		return REFERENCE_DELIMITER;
 	}
 
+	protected List<ModelDifference> differences;
+	protected LabelProvider labelProvider;
 
-	protected Modiff modiff;
+	protected String fromModelFile = "";
+	protected String toModelFile = "";
 
-	public UnifiedFormatter(Modiff modiff) {
-		this.modiff = modiff;
+	public UnifiedFormatter(List<ModelDifference> differences, LabelProvider labelProvider) {
+		this.differences = differences;
+		this.labelProvider = labelProvider;
 	}
 
 	public String format() {
 		StringBuilder s = new StringBuilder();
 
-		s.append(HEADER_FROM_FILE).append(modiff.getFromModelFile()).append(NL);
-		s.append(HEADER_TO_FILE).append(modiff.getToModelFile()).append(NL);
+		s.append(HEADER_FROM_FILE).append(fromModelFile).append(NL);
+		s.append(HEADER_TO_FILE).append(toModelFile).append(NL);
 
-		for (ModelDifference d : modiff.getDifferences()) {
+		for (ModelDifference d : differences) {
 			s.append(getHunkHeader()).append(NL);
 			s.append(d.format(this)).append(NL);
 		}
@@ -106,8 +109,20 @@ public class UnifiedFormatter implements LabelProvider {
 		return s.toString();
 	}
 
+	public void setFromModelFile(String fromModelFile) {
+		this.fromModelFile = fromModelFile;
+	}
+
+	public void setToModelFile(String toModelFile) {
+		this.toModelFile = toModelFile;
+	}
+
 	protected String getHunkHeader() {
 		return HUNK_DELIMITER + " " + HUNK_DELIMITER;
+	}
+
+	protected String getLabel(EObject obj) {
+		return labelProvider.getLabel(obj);
 	}
 
 	public String format(AddedElement addedElement) {
@@ -299,28 +314,5 @@ public class UnifiedFormatter implements LabelProvider {
 		else {
 			s.append(getLabel(value));
 		}
-	}
-
-	protected String typeAndId(EObject obj, String objId) {
-		return String.format("%s \"%s\"", obj.eClass().getName(), objId);
-	}
-
-	/**
-	 * Adds the prefix to non-empty strings
-	 */
-	protected String prefix(String text, String prefix) {
-		return preAndPostfix(text, prefix, "");
-	}
-
-	/**
-	 * Adds prefix and suffix to non-empty strings
-	 */
-	protected String preAndPostfix(String text, String prefix, String suffix) {
-		return "".equals(text) ? "" : prefix + text + suffix;
-	}
-
-	@Override
-	public String getLabel(EObject obj) {
-		return typeAndId(obj, modiff.getMatcher().getIdentifier(obj));
 	}
 }
