@@ -190,10 +190,15 @@ public class ReqComputingTest {
 		modiff = compare(input.getA6From(), input.getA6To());
 
 		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() == 5);
+		assert (differences.size() == 6);
 
 		for (ModelDifference d : differences) {
-			assert (d instanceof RemovedElement);
+			if (d.getIdentifier().equals("_yWc_0JUeEeGiestbncRZoQ")) {
+				assert (d instanceof ChangedElement);
+			}
+			else {
+				assert (d instanceof RemovedElement);
+			}
 		}
 	}
 }
