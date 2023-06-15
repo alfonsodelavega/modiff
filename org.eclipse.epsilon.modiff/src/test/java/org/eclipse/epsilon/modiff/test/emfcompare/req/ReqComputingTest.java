@@ -184,4 +184,16 @@ public class ReqComputingTest {
 		assert (differences.get(3) instanceof RemovedElement);
 		assert (differences.get(3).getIdentifier().equals("_PkwdQJX0EeG8KoYbFpzr2g"));
 	}
+
+	@Test
+	public void testA6() throws IOException {
+		modiff = compare(input.getA6From(), input.getA6To());
+
+		List<ModelDifference> differences = modiff.getDifferences();
+		assert (differences.size() == 5);
+
+		for (ModelDifference d : differences) {
+			assert (d instanceof RemovedElement);
+		}
+	}
 }
