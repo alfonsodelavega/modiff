@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.Modiff;
+import org.eclipse.epsilon.modiff.differences.AddedElement;
 import org.eclipse.epsilon.modiff.differences.ChangedElement;
 import org.eclipse.epsilon.modiff.differences.ModelDifference;
 import org.eclipse.epsilon.modiff.differences.RemovedElement;
@@ -36,77 +37,22 @@ import org.junit.Test;
 public class ReqComputingTest {
 
 	protected boolean debug = true;
+
 	protected Modiff modiff;
 	protected Matcher matcher;
 	
 	protected ReqInputData input = new ReqInputData();
 	
-
-	@Test
-	public void testA1UseCase() throws IOException {
-		modiff = compare(input.getA1From(), input.getA1To());
-
-		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() == 2);
-		assert (differences.get(0) instanceof RemovedElement);
-		assert (differences.get(0).getIdentifier().equals("A"));
-		assert (differences.get(1) instanceof RemovedElement);
-		assert (differences.get(1).getIdentifier().equals("B"));
-	}
-
-	@Test
-	public void testA2UseCase() throws IOException {
-		modiff = compare(input.getA2From(), input.getA2To());
-
-		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() == 2);
-		assert (differences.get(0) instanceof RemovedElement);
-		assert (differences.get(0).getIdentifier().equals("A"));
-		assert (differences.get(1) instanceof RemovedElement);
-		assert (differences.get(1).getIdentifier().equals("B"));
-	}
-
-	@Test
-	public void testA3UseCase() throws IOException {
-		modiff = compare(input.getA3From(), input.getA3To());
-
-		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() == 2);
-		assert (differences.get(0) instanceof ChangedElement);
-		assert (differences.get(0).getIdentifier().equals("A"));
-		assert (differences.get(1) instanceof RemovedElement);
-		assert (differences.get(1).getIdentifier().equals("B"));
-	}
-
-	@Test
-	public void testA4UseCase() throws IOException {
-		modiff = compare(input.getA4From(), input.getA4To());
-
-		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() == 2);
-		assert (differences.get(0) instanceof ChangedElement);
-		assert (differences.get(0).getIdentifier().equals("A"));
-		
-		ChangedElement change = (ChangedElement) differences.get(0);
-		EStructuralFeature feature = 
-				change.getToElement().eClass().getEStructuralFeature("multiValuedReference");
-		
-		EObject newA = change.getToElement();
-		EObject oldA = change.getFromElement();
-
-		assert (matcher.getIdentifier(getFirstElementOfList(newA.eGet(feature))).equals("C"));
-		assert (matcher.getIdentifier(getFirstElementOfList(oldA.eGet(feature))).equals("B"));
-
-		assert (differences.get(1) instanceof RemovedElement);
-		assert (differences.get(1).getIdentifier().equals("B"));
-	}
-
-
-	protected EObject getFirstElementOfList(Object list) {
+	@SuppressWarnings("unchecked")
+	protected List<EObject> getList(Object list) {
 		if (!(list instanceof List)) {
 			throw new IllegalStateException("Object is not a list");
 		}
-		return (EObject) ((List<?>) list).get(0);
+		return (List<EObject>) list;
+	}
+
+	protected EObject getElement(Object list, int index) {
+		return getList(list).get(index);
 	}
 
 	protected Modiff compare(String fromModel, String toModel) throws IOException {
@@ -138,11 +84,104 @@ public class ReqComputingTest {
 			}
 		}
 	}
-	
+
 	@After
 	public void reportDifferences() {
 		if (debug) {
 			System.out.println(modiff.reportDifferences());
 		}
+	}
+
+	@Test
+	public void testA1() throws IOException {
+		modiff = compare(input.getA1From(), input.getA1To());
+
+		List<ModelDifference> differences = modiff.getDifferences();
+		assert (differences.size() == 2);
+		assert (differences.get(0) instanceof RemovedElement);
+		assert (differences.get(0).getIdentifier().equals("A"));
+		assert (differences.get(1) instanceof RemovedElement);
+		assert (differences.get(1).getIdentifier().equals("B"));
+	}
+
+	@Test
+	public void testA2() throws IOException {
+		modiff = compare(input.getA2From(), input.getA2To());
+
+		List<ModelDifference> differences = modiff.getDifferences();
+		assert (differences.size() == 2);
+		assert (differences.get(0) instanceof RemovedElement);
+		assert (differences.get(0).getIdentifier().equals("A"));
+		assert (differences.get(1) instanceof RemovedElement);
+		assert (differences.get(1).getIdentifier().equals("B"));
+	}
+
+	@Test
+	public void testA3() throws IOException {
+		modiff = compare(input.getA3From(), input.getA3To());
+
+		List<ModelDifference> differences = modiff.getDifferences();
+		assert (differences.size() == 2);
+		assert (differences.get(0) instanceof ChangedElement);
+		assert (differences.get(0).getIdentifier().equals("A"));
+		assert (differences.get(1) instanceof RemovedElement);
+		assert (differences.get(1).getIdentifier().equals("B"));
+	}
+
+	@Test
+	public void testA4() throws IOException {
+		modiff = compare(input.getA4From(), input.getA4To());
+
+		List<ModelDifference> differences = modiff.getDifferences();
+		assert (differences.size() == 2);
+		assert (differences.get(0) instanceof ChangedElement);
+		assert (differences.get(0).getIdentifier().equals("A"));
+		
+		ChangedElement change = (ChangedElement) differences.get(0);
+		EStructuralFeature feature = 
+				change.getToElement().eClass().getEStructuralFeature("multiValuedReference");
+		
+		EObject newA = change.getToElement();
+		EObject oldA = change.getFromElement();
+
+		assert (matcher.getIdentifier(getElement(newA.eGet(feature), 0)).equals("C"));
+		assert (matcher.getIdentifier(getElement(oldA.eGet(feature), 0)).equals("B"));
+
+		assert (differences.get(1) instanceof RemovedElement);
+		assert (differences.get(1).getIdentifier().equals("B"));
+	}
+
+	@Test
+	public void testA5() throws IOException {
+		modiff = compare(input.getA5From(), input.getA5To());
+
+		List<ModelDifference> differences = modiff.getDifferences();
+		assert (differences.size() == 4);
+
+		assert (differences.get(0) instanceof ChangedElement);
+		assert (differences.get(0).getIdentifier().equals("_6oMn8JXsEeG8KoYbFpzr2g"));
+
+		ChangedElement change = (ChangedElement) differences.get(0);
+
+		assert (change.getChangedFeatures().size() == 1);
+		assert (change.getChangedFeatures().get(0).getName().equals("multiValuedReference"));
+
+		EStructuralFeature feature =
+				change.getToElement().eClass().getEStructuralFeature("multiValuedReference");
+
+		EObject newA = change.getToElement();
+		EObject oldA = change.getFromElement();
+
+		assert (getList(newA.eGet(feature)).size() == 2);
+		assert (getList(oldA.eGet(feature)).size() == 3);
+
+		assert (differences.get(1) instanceof AddedElement);
+		assert (differences.get(1).getIdentifier().equals("_coQIwJX0EeG8KoYbFpzr2g"));
+
+		assert (differences.get(2) instanceof RemovedElement);
+		assert (differences.get(2).getIdentifier().equals("_IclIYJXuEeG8KoYbFpzr2g"));
+
+		assert (differences.get(3) instanceof RemovedElement);
+		assert (differences.get(3).getIdentifier().equals("_PkwdQJX0EeG8KoYbFpzr2g"));
 	}
 }

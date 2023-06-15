@@ -48,11 +48,11 @@ public class ReqInputData extends AbstractInputData {
 		return getAbsolutePath("a4/right.nodes");
 	}
 
-	public String getA5Left() throws IOException {
+	public String getA5To() throws IOException {
 		return getAbsolutePath("a5/left.nodes");
 	}
 
-	public String getA5Right() throws IOException {
+	public String getA5From() throws IOException {
 		return getAbsolutePath("a5/right.nodes");
 	}
 
