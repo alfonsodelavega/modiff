@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.epsilon.modiff.differences.AddedElement;
 import org.eclipse.epsilon.modiff.differences.ChangedElement;
@@ -45,7 +46,10 @@ public class UnifiedDiffFormatter {
 	private static final String MULTIVALUE_DELIMITER = ",";
 
 	private static final String ATTRIBUTE_DELIMITER = ": ";
-	private static final String REFERENCE_DELIMITER = " -> ";
+
+	// reference delimiters come from PlantUML class diagram syntax
+	private static final String NON_CONTAINMENT_REFERENCE_DELIMITER = " --> ";
+	private static final String CONTAINMENT_REFERENCE_DELIMITER = " *--> ";
 
 
 	protected String getIndent() {
@@ -80,8 +84,12 @@ public class UnifiedDiffFormatter {
 		return ATTRIBUTE_DELIMITER;
 	}
 
-	protected String getReferenceDelimiter() {
-		return REFERENCE_DELIMITER;
+	protected String getNonContainmentReferenceDelimiter() {
+		return NON_CONTAINMENT_REFERENCE_DELIMITER;
+	}
+
+	protected String getContainmentReferenceDelimiter() {
+		return CONTAINMENT_REFERENCE_DELIMITER;
 	}
 
 	protected List<ModelDifference> differences;
@@ -217,7 +225,7 @@ public class UnifiedDiffFormatter {
 			return getAttributeDelimiter();
 		}
 		else {
-			return getReferenceDelimiter();
+			return getReferenceDelimiter((EReference) feat);
 		}
 	}
 	protected List<String> getValues(EObject obj, EStructuralFeature feat) {
@@ -290,7 +298,7 @@ public class UnifiedDiffFormatter {
 			appendSingleAttribute(s, ADD, feat, obj);
 		}
 		else {
-			appendSingleReference(s, ADD, feat, obj, objId);
+			appendSingleReference(s, ADD, (EReference) feat, obj, objId);
 		}
 	}
 
@@ -302,17 +310,30 @@ public class UnifiedDiffFormatter {
 	}
 
 	protected void appendSingleReference(StringBuilder s, String prefix,
-			EStructuralFeature feat, EObject obj, String objId) {
+			EReference ref, EObject obj, String objId) {
 
 		s.append(prefix).append(getIndent())
-				.append(feat.getName()).append(getReferenceDelimiter());
+				.append(ref.getName()).append(getReferenceDelimiter(ref));
 
-		EObject value = (EObject) obj.eGet(feat);
+		EObject value = (EObject) obj.eGet(ref);
 		if (value == null) {
 			s.append("null");
 		}
 		else {
 			s.append(getLabel(value));
 		}
+	}
+
+	protected String getReferenceDelimiter(EReference ref) {
+		if (ref.isContainment()) {
+			return getContainmentReferenceDelimiter();
+		}
+		else {
+			return getNonContainmentReferenceDelimiter();
+		}
+	}
+
+	protected String typeAndId(EObject obj, String objId) {
+		return String.format("%s \"%s\"", obj.eClass().getName(), objId);
 	}
 }
