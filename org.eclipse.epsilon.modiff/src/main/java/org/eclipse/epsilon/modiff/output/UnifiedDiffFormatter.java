@@ -271,13 +271,13 @@ public class UnifiedDiffFormatter {
 				break;
 			case CHANGE:
 				s.append(formatChunkLines(delta.getTarget().getLines(), ADD));
-				s.append(getMultivalueDelimiter()).append(NL);
+				s.append(NL);
 				s.append(formatChunkLines(delta.getSource().getLines(), REMOVE));
 			}
 			
-			// add extra comma and new line between chunks (if not the last one)
+			// add extra new line between chunks (if not the last one)
 			if (i < deltas.size() - 1) {
-				s.append(getMultivalueDelimiter()).append(NL);
+				s.append(NL);
 			}
 		}
 
@@ -288,7 +288,7 @@ public class UnifiedDiffFormatter {
 	protected String formatChunkLines(List<String> lines, String prefix) {
 		return lines.stream()
 				.map(line -> prefix + getIndent() + getIndent() + line)
-				.collect(Collectors.joining(getMultivalueDelimiter() + NL));
+				.collect(Collectors.joining(NL));
 	}
 
 	protected void appendSingleFeature(StringBuilder s, String ADD,

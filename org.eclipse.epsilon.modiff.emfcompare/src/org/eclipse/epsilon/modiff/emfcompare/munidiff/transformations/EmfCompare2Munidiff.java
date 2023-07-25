@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.compare.Comparison;
-import org.eclipse.emf.compare.Diff;
 import org.eclipse.emf.compare.Match;
 import org.eclipse.epsilon.modiff.differences.AddedElement;
 import org.eclipse.epsilon.modiff.differences.ChangedElement;
@@ -45,7 +44,7 @@ public class EmfCompare2Munidiff {
 				differences.add(new RemovedElement(matcher.getIdentifier(m.getRight()), m.getRight()));
 			}
 			else if (m.getRight() == null) {
-				differences.add(new AddedElement(matcher.getIdentifier(m.getRight()), m.getRight()));
+				differences.add(new AddedElement(matcher.getIdentifier(m.getLeft()), m.getLeft()));
 			}
 			else {
 				// changedElement
