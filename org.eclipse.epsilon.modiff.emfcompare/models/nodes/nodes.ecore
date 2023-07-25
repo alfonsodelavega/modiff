@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="nodes" nsURI="http://www.eclipse.org/emf/compare/tests/nodes"
+    nsPrefix="nodes">
+  <eClassifiers xsi:type="ecore:EClass" name="Node">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="containmentRef1" upperBound="-1"
+        eType="#//Node" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeMultipleContainment" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="containmentRef2" upperBound="-1"
+        eType="#//Node" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="containmentRef3" upperBound="-1"
+        eType="#//Node" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeSingleValueContainment" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="singleValueContainment"
+        eType="#//Node" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeSingleValueAttribute" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="singleValuedAttribute"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeMultiValuedAttribute" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiValuedAttribute" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeMultiValuedNonUniqueAttribute" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiValuedAttribute" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeSingleValueReference" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="singleValuedReference"
+        eType="#//Node"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeMultiValueReference" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="multiValuedReference" upperBound="-1"
+        eType="#//Node"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeOppositeRefOneToOne" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" eType="#//NodeOppositeRefOneToOne"
+        eOpposite="#//NodeOppositeRefOneToOne/destination"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="destination" eType="#//NodeOppositeRefOneToOne"
+        eOpposite="#//NodeOppositeRefOneToOne/source"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeOppositeRefOneToMany" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" eType="#//NodeOppositeRefOneToMany"
+        eOpposite="#//NodeOppositeRefOneToMany/destination"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="destination" upperBound="-1"
+        eType="#//NodeOppositeRefOneToMany" eOpposite="#//NodeOppositeRefOneToMany/source"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeOppositeRefManyToMany" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" upperBound="-1"
+        eType="#//NodeOppositeRefManyToMany" eOpposite="#//NodeOppositeRefManyToMany/destination"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="destination" upperBound="-1"
+        eType="#//NodeOppositeRefManyToMany" eOpposite="#//NodeOppositeRefManyToMany/source"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeFeatureMapContainment" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="map" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="group"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="firstKey" upperBound="-1"
+        eType="#//Node" volatile="true" transient="true" derived="true" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="group" value="#map"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="secondKey" upperBound="-1"
+        eType="#//Node" volatile="true" transient="true" derived="true" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="group" value="#map"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeFeatureMapNonContainment" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mapNC" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="group"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="firstKeyNC" upperBound="-1"
+        eType="#//Node" volatile="true" transient="true" derived="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="group" value="#mapNC"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="secondKeyNC" upperBound="-1"
+        eType="#//Node" volatile="true" transient="true" derived="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="group" value="#mapNC"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeFeatureMapContainment2" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="map2" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="group"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="multiple" upperBound="-1"
+        eType="#//NodeMultipleContainment" volatile="true" transient="true" derived="true"
+        containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="group" value="#map2"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="single" upperBound="-1"
+        eType="#//NodeSingleValueContainment" volatile="true" transient="true" derived="true"
+        containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="group" value="#map2"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeSingleValueEEnumAttribute" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="singlevalueEEnumAttribute"
+        eType="#//NodeEnum"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="NodeEnum">
+    <eLiterals name="A"/>
+    <eLiterals name="B" value="1"/>
+    <eLiterals name="C" value="2" literal="C"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NodeMultiValueEEnumAttribute" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiValueEEnumAttribute"
+        upperBound="-1" eType="#//NodeEnum"/>
+  </eClassifiers>
+</ecore:EPackage>
