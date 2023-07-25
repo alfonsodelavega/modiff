@@ -255,7 +255,7 @@ public class Modiff {
 			for (EObject removedElement : removedElements) {
 				if (matcher.matches(addedElement, removedElement)) {
 					ChangedElement changedElement = new ChangedElement(
-							matcher.getIdentifier(addedElement),
+							matcher,
 							removedElement,
 							addedElement);
 

@@ -7,8 +7,8 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.util.EcoreUtil.EqualityHelper;
+import org.eclipse.epsilon.modiff.matcher.Matcher;
 
 /**
  * Equality helper that compares the EObject features that are serialised into
@@ -17,106 +17,33 @@ import org.eclipse.emf.ecore.util.EcoreUtil.EqualityHelper;
 public class DifferencesFinder extends EqualityHelper {
 
 	private static final long serialVersionUID = 2L;
+	protected Matcher matcher;
 
-	public class TwoWayComparison {
-
-		protected EObject fromObject;
-		protected EObject toObject;
-
-		protected List<EStructuralFeature> changedFeatures = new ArrayList<>();
-
-		public TwoWayComparison(EObject fromObject, EObject toObject) {
-			this.fromObject = fromObject;
-			this.toObject = toObject;
-
-			compare();
-		}
-
-		protected void compare() {
-			EClass eClass = fromObject.eClass();
-
-			for (int i = 0, size = eClass.getFeatureCount(); i < size; ++i) {
-				EStructuralFeature feature = eClass.getEStructuralFeature(i);
-				// Ignore derived features and containment references
-				// TODO: decide what to do with cont. features ordering
-				if (!feature.isDerived() &&
-						!(feature instanceof EReference && ((EReference) feature).isContainment())) {
-
-					if (!haveEqualFeature(fromObject, toObject, feature)) {
-						changedFeatures.add(feature);
-					}
-				}
-			}
-		}
-
-		public List<EStructuralFeature> getChangedFeatures() {
-			return changedFeatures;
-		}
+	public DifferencesFinder(Matcher matcher) {
+		super();
+		this.matcher = matcher;
 	}
 
-	public TwoWayComparison compare(EObject fromObject, EObject toObject) {
-		return new TwoWayComparison(fromObject, toObject);
-	}
+	public List<EStructuralFeature> getChangedFeatures(EObject fromElement, EObject toElement) {
+		EClass eClass = fromElement.eClass();
+		List<EStructuralFeature> changedFeatures = new ArrayList<>();
 
-
-	public boolean equals(EObject eObject1, EObject eObject2) {
-
-		// If the first object is null, the second object must be null.
-		if (eObject1 == null) {
-			return eObject2 == null;
-		}
-
-		// We know the first object isn't null, so if the second one is, it can't be equal.
-		if (eObject2 == null) {
-			return false;
-		}
-
-		// If eObject1 and eObject2 are the same instance...
-		if (eObject1 == eObject2) {
-			return true;
-		}
-
-		// If eObject1 is a proxy...
-		if (eObject1.eIsProxy()) {
-			// Then the other object must be a proxy with the same URI.
-			if (((InternalEObject) eObject1).eProxyURI().equals(((InternalEObject) eObject2).eProxyURI())) {
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		// If eObject1 isn't a proxy but eObject2 is, they can't be equal.
-		else if (eObject2.eIsProxy()) {
-			return false;
-		}
-
-		// If they don't have the same class, they can't be equal.
-		EClass eClass = eObject1.eClass();
-		if (eClass != eObject2.eClass()) {
-			return false;
-		}
-
-		// Check attributes and non-containment references
 		for (int i = 0, size = eClass.getFeatureCount(); i < size; ++i) {
 			EStructuralFeature feature = eClass.getEStructuralFeature(i);
-			// Ignore derived features and containment references
-			if (!feature.isDerived() &&
-					!(feature instanceof EReference && ((EReference) feature).isContainment())) {
-
-				if (!haveEqualFeature(eObject1, eObject2, feature)) {
-					return false;
+			// Ignore derived features
+			if (!feature.isDerived()) {
+				if (!haveEqualFeature(fromElement, toElement, feature)) {
+					changedFeatures.add(feature);
 				}
 			}
 		}
 
-		// There's no reason they aren't equal, so they are.
-		return true;
+		return changedFeatures;
 	}
 
 	/**
-	 * Returns whether the two objects have equal values for the
-	 * reference (does not check referenced objects)
+	 * Returns whether the two objects have equal matcher values for each position
+	 * (does not check referenced objects)
 	 */
 	@SuppressWarnings("unchecked")
 	protected boolean haveEqualReference(EObject eObject1, EObject eObject2, EReference reference) {
@@ -131,13 +58,13 @@ public class DifferencesFinder extends EqualityHelper {
 				return false;
 			}
 			for (int i = 0; i < values1.size(); i++) {
-				if (values1.get(i) != values2.get(i)) {
+				if (!matcher.matches(values1.get(i), values2.get(i))) {
 					return false;
 				}
 			}
 		}
 		else {
-			return value1 == value2;
+			return matcher.matches((EObject) value1, (EObject) value2);
 		}
 
 		return true;

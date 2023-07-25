@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.epsilon.modiff.matcher.Matcher;
 import org.eclipse.epsilon.modiff.output.UnifiedDiffFormatter;
 
 public class ChangedElement extends ModelDifference {
@@ -11,11 +12,13 @@ public class ChangedElement extends ModelDifference {
 	protected EObject fromElement;
 	protected EObject toElement;
 	protected List<EStructuralFeature> changedFeatures;
+	protected Matcher matcher;
 
-	public ChangedElement(String identifier, EObject fromElement, EObject toElement) {
-		super(identifier);
+	public ChangedElement(Matcher matcher, EObject fromElement, EObject toElement) {
+		super(matcher.getIdentifier(fromElement));
 		this.fromElement = fromElement;
 		this.toElement = toElement;
+		this.matcher = matcher;
 	}
 
 	public EObject getFromElement() {
@@ -28,7 +31,7 @@ public class ChangedElement extends ModelDifference {
 
 	public List<EStructuralFeature> getChangedFeatures() {
 		if (changedFeatures == null) {
-			changedFeatures = new DifferencesFinder().compare(fromElement, toElement).getChangedFeatures();
+			changedFeatures = new DifferencesFinder(matcher).getChangedFeatures(fromElement, toElement);
 		}
 		return changedFeatures;
 	}
