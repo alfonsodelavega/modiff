@@ -97,11 +97,11 @@ public class ReqComputingTest {
 		modiff = compare(input.getA1From(), input.getA1To());
 
 		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() == 2);
-		assert (differences.get(0) instanceof RemovedElement);
-		assert (differences.get(0).getIdentifier().equals("A"));
-		assert (differences.get(1) instanceof RemovedElement);
-		assert (differences.get(1).getIdentifier().equals("B"));
+		assert (differences.size() == 4);
+		assert (differences.get(2) instanceof RemovedElement);
+		assert (differences.get(2).getIdentifier().equals("A"));
+		assert (differences.get(3) instanceof RemovedElement);
+		assert (differences.get(3).getIdentifier().equals("B"));
 	}
 
 	@Test
@@ -109,11 +109,11 @@ public class ReqComputingTest {
 		modiff = compare(input.getA2From(), input.getA2To());
 
 		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() == 2);
-		assert (differences.get(0) instanceof RemovedElement);
-		assert (differences.get(0).getIdentifier().equals("A"));
-		assert (differences.get(1) instanceof RemovedElement);
-		assert (differences.get(1).getIdentifier().equals("B"));
+		assert (differences.size() == 4);
+		assert (differences.get(2) instanceof RemovedElement);
+		assert (differences.get(2).getIdentifier().equals("A"));
+		assert (differences.get(3) instanceof RemovedElement);
+		assert (differences.get(3).getIdentifier().equals("B"));
 	}
 
 	@Test
@@ -121,11 +121,11 @@ public class ReqComputingTest {
 		modiff = compare(input.getA3From(), input.getA3To());
 
 		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() == 2);
+		assert (differences.size() == 3);
 		assert (differences.get(0) instanceof ChangedElement);
 		assert (differences.get(0).getIdentifier().equals("A"));
-		assert (differences.get(1) instanceof RemovedElement);
-		assert (differences.get(1).getIdentifier().equals("B"));
+		assert (differences.get(2) instanceof RemovedElement);
+		assert (differences.get(2).getIdentifier().equals("B"));
 	}
 
 	@Test
@@ -133,7 +133,7 @@ public class ReqComputingTest {
 		modiff = compare(input.getA4From(), input.getA4To());
 
 		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() == 2);
+		assert (differences.size() == 3);
 		assert (differences.get(0) instanceof ChangedElement);
 		assert (differences.get(0).getIdentifier().equals("A"));
 		
@@ -147,8 +147,8 @@ public class ReqComputingTest {
 		assert (matcher.getIdentifier(getElement(newA.eGet(feature), 0)).equals("C"));
 		assert (matcher.getIdentifier(getElement(oldA.eGet(feature), 0)).equals("B"));
 
-		assert (differences.get(1) instanceof RemovedElement);
-		assert (differences.get(1).getIdentifier().equals("B"));
+		assert (differences.get(2) instanceof RemovedElement);
+		assert (differences.get(2).getIdentifier().equals("B"));
 	}
 
 	@Test
@@ -156,7 +156,7 @@ public class ReqComputingTest {
 		modiff = compare(input.getA5From(), input.getA5To());
 
 		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() == 4);
+		assert (differences.size() == 5);
 
 		assert (differences.get(0) instanceof ChangedElement);
 		assert (differences.get(0).getIdentifier().equals("_6oMn8JXsEeG8KoYbFpzr2g"));
@@ -175,14 +175,14 @@ public class ReqComputingTest {
 		assert (getList(newA.eGet(feature)).size() == 2);
 		assert (getList(oldA.eGet(feature)).size() == 3);
 
-		assert (differences.get(1) instanceof AddedElement);
-		assert (differences.get(1).getIdentifier().equals("_coQIwJX0EeG8KoYbFpzr2g"));
-
-		assert (differences.get(2) instanceof RemovedElement);
-		assert (differences.get(2).getIdentifier().equals("_IclIYJXuEeG8KoYbFpzr2g"));
+		assert (differences.get(2) instanceof AddedElement);
+		assert (differences.get(2).getIdentifier().equals("_coQIwJX0EeG8KoYbFpzr2g"));
 
 		assert (differences.get(3) instanceof RemovedElement);
-		assert (differences.get(3).getIdentifier().equals("_PkwdQJX0EeG8KoYbFpzr2g"));
+		assert (differences.get(3).getIdentifier().equals("_IclIYJXuEeG8KoYbFpzr2g"));
+
+		assert (differences.get(4) instanceof RemovedElement);
+		assert (differences.get(4).getIdentifier().equals("_PkwdQJX0EeG8KoYbFpzr2g"));
 	}
 
 	@Test
