@@ -43,7 +43,6 @@ public class UnifiedDiffFormatter {
 
 	private static final String MULTIVALUE_START = " [";
 	private static final String MULTIVALUE_END = "]";
-	private static final String MULTIVALUE_DELIMITER = ",";
 
 	private static final String ATTRIBUTE_DELIMITER = ": ";
 
@@ -54,6 +53,10 @@ public class UnifiedDiffFormatter {
 
 	protected String getIndent() {
 		return INDENT;
+	}
+
+	protected String getIndent(int levels) {
+		return getIndent().repeat(levels);
 	}
 
 	protected String getElementStart() {
@@ -70,14 +73,6 @@ public class UnifiedDiffFormatter {
 
 	protected String getMultivalueEnd() {
 		return MULTIVALUE_END;
-	}
-
-	protected String getMultivalueDelimiter() {
-		return MULTIVALUE_DELIMITER;
-	}
-
-	protected String getMultivalueDelimiterPlusSpace() {
-		return getMultivalueDelimiter() + " ";
 	}
 
 	protected String getAttributeDelimiter() {
@@ -216,8 +211,17 @@ public class UnifiedDiffFormatter {
 		s.append(prefix).append(getIndent())
 				.append(feat.getName()).append(getFeatureSeparator(feat))
 				.append(getMultivalueStart())
-				.append(values.stream().collect(Collectors.joining(getMultivalueDelimiterPlusSpace())))
-				.append(getMultivalueEnd());
+				.append(NL);
+		
+		for (String value : values) {
+			s.append(prefix).append(getIndent(2)).append(value).append(NL);
+		}
+		
+		if (values.isEmpty()) {
+			s.append(NL);
+		}
+		
+		s.append(prefix).append(getIndent()).append(getMultivalueEnd());
 	}
 
 	protected String getFeatureSeparator(EStructuralFeature feat) {
@@ -229,15 +233,19 @@ public class UnifiedDiffFormatter {
 		}
 	}
 	protected List<String> getValues(EObject obj, EStructuralFeature feat) {
-		@SuppressWarnings("unchecked")
-		List<EObject> values = (List<EObject>) obj.eGet(feat);
-		
+
 		if (feat instanceof EAttribute) {
+			@SuppressWarnings("unchecked")
+			List<Object> values = (List<Object>) obj.eGet(feat);
+
 			return values.stream()
 					.map(value -> String.valueOf(value))
 					.collect(Collectors.toList());
 		}
 		else {
+			@SuppressWarnings("unchecked")
+			List<EObject> values = (List<EObject>) obj.eGet(feat);
+
 			return values.stream()
 					.map(value -> getLabel(value))
 					.collect(Collectors.toList());
@@ -250,11 +258,11 @@ public class UnifiedDiffFormatter {
 		List<String> fromValues = getValues(changedElement.getFromElement(), feat);
 		List<String> toValues = getValues(changedElement.getToElement(), feat);
 
-		Patch<String> patch = DiffUtils.diff(fromValues, toValues);
+		Patch<String> patch = DiffUtils.diff(fromValues, toValues, true);
 
 		s.append(COMMON).append(getIndent()).append(feat.getName()).append(getFeatureSeparator(feat))
 				.append(getMultivalueStart()).append(NL);
-		
+
 		List<AbstractDelta<String>> deltas = patch.getDeltas();
 		for (int i = 0; i < deltas.size(); i++) {
 
@@ -287,7 +295,7 @@ public class UnifiedDiffFormatter {
 
 	protected String formatChunkLines(List<String> lines, String prefix) {
 		return lines.stream()
-				.map(line -> prefix + getIndent() + getIndent() + line)
+				.map(line -> prefix + getIndent(2) + line)
 				.collect(Collectors.joining(NL));
 	}
 

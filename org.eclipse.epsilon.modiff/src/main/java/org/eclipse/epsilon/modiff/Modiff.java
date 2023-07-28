@@ -62,6 +62,10 @@ import io.reflectoring.diffparser.api.model.Line;
  */
 public class Modiff {
 
+	enum DiffSide {
+		FROM, TO
+	}
+
 	public static void main(String[] args) throws IOException {
 
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
@@ -101,6 +105,8 @@ public class Modiff {
 
 	protected Matcher matcher;
 	protected List<ModelDifference> differences;
+
+	protected Set<String> markedIdentifiers = new HashSet<>();
 
 	public Modiff(String fromModelFile, String toModelFile) {
 		this.fromModelFile = fromModelFile;
@@ -202,15 +208,14 @@ public class Modiff {
 	}
 
 	protected Resource loadFromModel() throws IOException {
-		return loadModel(fromModelFile, removedLines, removedElements);
+		return loadModel(fromModelFile, DiffSide.FROM);
 	}
 
 	protected Resource loadToModel() throws IOException {
-		return loadModel(toModelFile, addedLines, addedElements);
+		return loadModel(toModelFile, DiffSide.TO);
 	}
 
-	protected Resource loadModel(String modelFile, Set<Integer> modifiedLines,
-			Set<EObject> modifiedElements) throws IOException {
+	protected Resource loadModel(String modelFile, DiffSide diffSide) throws IOException {
 
 		ResourceSet resourceSet = new ResourceSetImpl();
 		Resource resource = resourceSet.createResource(URI.createFileURI(modelFile));
@@ -218,7 +223,7 @@ public class Modiff {
 		// the pool allows decorating the xml handler to get element lines
 		Map<Object, Object> loadOptions = new HashMap<>();
 		loadOptions.put(XMLResource.OPTION_USE_PARSER_POOL,
-				new ModiffXMLParserPoolImpl(modifiedLines, modifiedElements));
+				new ModiffXMLParserPoolImpl(this, diffSide));
 		resource.load(loadOptions);
 
 		return resource;
@@ -329,5 +334,24 @@ public class Modiff {
 		formatter.setToModelFile(toModelFile);
 
 		return formatter.format();
+	}
+
+	public Set<Integer> getModifiedLines(DiffSide diffSide) {
+		return diffSide == DiffSide.FROM ? removedLines : addedLines;
+	}
+
+	public Set<EObject> getModifiedElements(DiffSide diffSide) {
+		return diffSide == DiffSide.FROM ? removedElements : addedElements;
+	}
+
+	public void markForReview(EObject element) {
+		markedIdentifiers.add(matcher.getIdentifier(element));
+	}
+
+	public boolean isMarkedForReview(EObject element) {
+		if (element != null && markedIdentifiers.contains(matcher.getIdentifier(element))) {
+			return true;
+		}
+		return false;
 	}
 }

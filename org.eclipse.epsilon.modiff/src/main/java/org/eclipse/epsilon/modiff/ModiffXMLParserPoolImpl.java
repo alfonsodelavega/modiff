@@ -1,34 +1,32 @@
 package org.eclipse.epsilon.modiff;
 
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.xmi.XMLDefaultHandler;
 import org.eclipse.emf.ecore.xmi.XMLHelper;
 import org.eclipse.emf.ecore.xmi.XMLLoad;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMLParserPoolImpl;
+import org.eclipse.epsilon.modiff.Modiff.DiffSide;
 import org.xml.sax.SAXException;
 
 public class ModiffXMLParserPoolImpl extends XMLParserPoolImpl {
 
+	protected Modiff modiff;
+	protected DiffSide diffSide;
 
-	protected Set<Integer> modifiedLines;
-	protected Set<EObject> modifiedElements;
-
-	public ModiffXMLParserPoolImpl(Set<Integer> modifiedLines, Set<EObject> modifiedElements) {
-		this.modifiedLines = modifiedLines;
-		this.modifiedElements = modifiedElements;
+	public ModiffXMLParserPoolImpl(Modiff modiff, DiffSide diffSide) {
+		this.modiff = modiff;
+		this.diffSide = diffSide;
 	}
 
 	@Override
 	public synchronized XMLDefaultHandler getDefaultHandler(XMLResource resource, XMLLoad xmlLoad, XMLHelper helper, Map<?, ?> options) {
-		return new ModiffXMIHandler(resource, helper, options, modifiedLines, modifiedElements);
+		return new ModiffXMIHandler(resource, helper, options, modiff, diffSide);
 	}
 
 	protected SAXParser makeParser(Map<String, Boolean> features, Map<String, ?> properties) throws ParserConfigurationException, SAXException {
