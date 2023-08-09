@@ -59,13 +59,6 @@ public class MunidiffReqTest {
 		}
 	}
 
-	@After
-	public void reportDifferences() {
-		if (debug) {
-
-		}
-	}
-
 	protected void getReport(String testCase, Resource left, Resource right) {
 		final IComparisonScope scope = new DefaultComparisonScope(left, right, null);
 		final Comparison comparison = EMFCompare.builder().build().compare(scope);
