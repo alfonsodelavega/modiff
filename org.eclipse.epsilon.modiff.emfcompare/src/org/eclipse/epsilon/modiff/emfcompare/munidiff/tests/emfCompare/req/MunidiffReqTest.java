@@ -28,7 +28,6 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.differences.Munidiff;
 import org.eclipse.epsilon.modiff.emfcompare.munidiff.tests.emfCompare.req.data.ReqInputData;
 import org.eclipse.epsilon.modiff.emfcompare.munidiff.transformations.EmfCompare2Munidiff;
-import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
