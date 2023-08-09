@@ -29,8 +29,6 @@ public class RepairShopTest {
 
 	protected Munidiff getReport(String leftModel) throws IOException {
 
-
-
 		Resource left = getResource(getModelPath(leftModel));
 		Resource right = getResource(getModelPath("00-from"));
 

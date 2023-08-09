@@ -17,7 +17,7 @@
     <queue jobId="job2"
         description="broken phone screen">
       <status
-          statusId="st1"
+          statusId="st2"
           status="in progress"
           lastModified="2023/07/24"/>
     </queue>
