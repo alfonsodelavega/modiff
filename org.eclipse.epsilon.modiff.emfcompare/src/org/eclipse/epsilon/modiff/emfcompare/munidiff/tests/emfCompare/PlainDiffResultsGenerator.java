@@ -50,7 +50,7 @@ public class PlainDiffResultsGenerator {
 	}
 
 	public static void store(String testCase, String report) {
-		File outputFolder = new File("output");
+		File outputFolder = new File("output/req");
 		if (!outputFolder.exists()) {
 			outputFolder.mkdirs();
 		}
