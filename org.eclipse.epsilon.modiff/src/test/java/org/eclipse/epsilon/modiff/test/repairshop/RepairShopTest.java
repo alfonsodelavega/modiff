@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.Modiff;
+import org.eclipse.epsilon.modiff.differences.AddedElement;
 import org.eclipse.epsilon.modiff.differences.ChangedElement;
 import org.eclipse.epsilon.modiff.differences.ModelDifference;
 import org.eclipse.epsilon.modiff.matcher.IdMatcher;
@@ -48,6 +49,15 @@ public class RepairShopTest {
 		modiff.setMatcher(matcher);
 		modiff.compare();
 		return modiff;
+	}
+
+	private ModelDifference getDifferenceForId(List<ModelDifference> differences, String id) {
+		for (ModelDifference d : differences) {
+			if (d.getIdentifier().equals(id)) {
+				return d;
+			}
+		}
+		return null;
 	}
 
 	@BeforeClass
@@ -88,7 +98,12 @@ public class RepairShopTest {
 		modiff = compare("00-from", "11-modifyJobDescription");
 
 		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() > 0);
+		assert (differences.size() == 1);
+
+		ModelDifference diff = differences.get(0);
+		assert (diff instanceof ChangedElement);
+		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("description"));
 	}
 
 	@Test
@@ -96,7 +111,12 @@ public class RepairShopTest {
 		modiff = compare("00-from", "21-changeMainSkill");
 
 		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() > 0);
+		assert (differences.size() == 1);
+
+		ModelDifference diff = differences.get(0);
+		assert (diff instanceof ChangedElement);
+		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("mainSkill"));
 	}
 
 	@Test
@@ -104,16 +124,29 @@ public class RepairShopTest {
 		modiff = compare("00-from", "31-addStatus");
 
 		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() > 0);
-		assert (differences.get(0) instanceof ChangedElement);
+		assert (differences.size() == 2);
+
+		ModelDifference added = getDifferenceForId(differences, "st1");
+		assert (added != null && added instanceof AddedElement);
+
+		ModelDifference changed = getDifferenceForId(differences, "job2");
+		assert (changed != null && changed instanceof ChangedElement);
+		assert (((ChangedElement) changed).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) changed).getChangedFeatures().get(0).getName().equals("status"));
 	}
+
 
 	@Test
 	public void test41() throws IOException {
 		modiff = compare("00-from", "41-addTag");
 
 		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() > 0);
+		assert (differences.size() == 1);
+
+		ModelDifference diff = differences.get(0);
+		assert (diff instanceof ChangedElement);
+		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("tags"));
 	}
 
 	@Test
@@ -121,7 +154,12 @@ public class RepairShopTest {
 		modiff = compare("00-from", "42-removeTag");
 
 		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() > 0);
+		assert (differences.size() == 1);
+
+		ModelDifference diff = differences.get(0);
+		assert (diff instanceof ChangedElement);
+		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("tags"));
 	}
 
 	@Test
@@ -129,7 +167,12 @@ public class RepairShopTest {
 		modiff = compare("00-from", "51-addSecondarySkill");
 
 		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() > 0);
+		assert (differences.size() == 1);
+
+		ModelDifference diff = differences.get(0);
+		assert (diff instanceof ChangedElement);
+		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("secondarySkills"));
 	}
 
 	@Test
