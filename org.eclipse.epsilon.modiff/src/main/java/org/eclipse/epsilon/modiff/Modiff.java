@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -267,6 +269,15 @@ public class Modiff {
 					// it could be a false positive due to line format changes
 					if (changedElement.hasDifferences()) {
 						differences.add(changedElement);
+
+						// when an element is moved to a different container,
+						//   that new container might not appear in the diff
+						for (EReference ref : getContainmentReferences(changedElement.getChangedFeatures())) {
+							List<EObject> fromValues = getContainmentReferenceValues(changedElement.getFromElement(), ref);
+							List<EObject> toValues = getContainmentReferenceValues(changedElement.getToElement(), ref);
+
+
+						}
 					}
 
 					removedElements.remove(removedElement);
@@ -284,6 +295,18 @@ public class Modiff {
 			differences.add(new RemovedElement(
 					matcher.getIdentifier(removedElement), removedElement));
 		}
+	}
+
+	protected List<EReference> getContainmentReferences(List<EStructuralFeature> changedFeatures) {
+		return changedFeatures.stream()
+				.filter(f -> (f instanceof EReference) && (((EReference) f).isContainment()))
+				.map(f -> (EReference) f)
+				.collect(Collectors.toList());
+	}
+
+	protected List<EObject> getContainmentReferenceValues(EObject elem, EReference ref) {
+		List<EObject> elements = new ArrayList<>();
+		return elements;
 	}
 
 	protected void checkForDuplicates() {

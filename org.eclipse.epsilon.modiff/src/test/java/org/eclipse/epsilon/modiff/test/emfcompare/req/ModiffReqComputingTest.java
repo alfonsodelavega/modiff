@@ -34,7 +34,7 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ReqComputingTest {
+public class ModiffReqComputingTest {
 
 	protected boolean debug = true;
 

@@ -1,6 +1,7 @@
 package org.eclipse.epsilon.modiff.differences;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.epsilon.modiff.output.LabelProvider;
 import org.eclipse.epsilon.modiff.output.UnifiedDiffFormatter;
@@ -14,8 +15,8 @@ public class Munidiff {
 	private String toModelFile = "";
 
 	public Munidiff(List<ModelDifference> differences, LabelProvider labelProvider) {
-		this.differences = differences;
-		this.labelProvider = labelProvider;
+		this.differences = Objects.requireNonNull(differences);
+		this.labelProvider = Objects.requireNonNull(labelProvider);
 	}
 
 	public String report() {
@@ -39,5 +40,9 @@ public class Munidiff {
 
 	public void setToModelFile(String toModelFile) {
 		this.toModelFile = toModelFile;
+	}
+
+	public List<ModelDifference> getDifferences() {
+		return differences;
 	}
 }

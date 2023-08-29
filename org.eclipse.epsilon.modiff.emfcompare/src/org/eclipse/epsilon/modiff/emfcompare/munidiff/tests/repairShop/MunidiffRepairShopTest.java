@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.Comparison;
@@ -18,12 +19,14 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.epsilon.modiff.differences.ChangedElement;
+import org.eclipse.epsilon.modiff.differences.ModelDifference;
 import org.eclipse.epsilon.modiff.differences.Munidiff;
 import org.eclipse.epsilon.modiff.emfcompare.munidiff.transformations.EmfCompare2Munidiff;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class RepairShopTest {
+public class MunidiffRepairShopTest {
 
 	protected boolean debug = true;
 
@@ -108,6 +111,15 @@ public class RepairShopTest {
 		}
 	}
 
+	protected ModelDifference getDifferenceForId(List<ModelDifference> differences, String id) {
+		for (ModelDifference d : differences) {
+			if (d.getIdentifier().equals(id)) {
+				return d;
+			}
+		}
+		return null;
+	}
+
 	@Test
 	public void test11() throws IOException {
 		getReport("11-modifyJobDescription");
@@ -140,6 +152,19 @@ public class RepairShopTest {
 
 	@Test
 	public void test61() throws IOException {
-		getReport("61-moveJob");
+		Munidiff munidiff = getReport("61-moveJob");
+
+		List<ModelDifference> differences = munidiff.getDifferences();
+		assert (differences.size() == 2);
+
+		ModelDifference changed = getDifferenceForId(differences, "Alice");
+		assert (changed != null && changed instanceof ChangedElement);
+		assert (((ChangedElement) changed).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) changed).getChangedFeatures().get(0).getName().equals("queue"));
+
+		changed = getDifferenceForId(differences, "Bob");
+		assert (changed != null && changed instanceof ChangedElement);
+		assert (((ChangedElement) changed).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) changed).getChangedFeatures().get(0).getName().equals("queue"));
 	}
 }

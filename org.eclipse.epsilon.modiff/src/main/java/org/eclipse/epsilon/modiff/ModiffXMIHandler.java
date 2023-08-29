@@ -43,7 +43,7 @@ public class ModiffXMIHandler extends SAXXMIHandler {
 		super.startElement(uri, localName, name, attributes);
 
 		if (isMarkedForReview(getActualPeekObject())) {
-			modifiedElements.add(getActualPeekObject());
+			addModifiedElement(getActualPeekObject());
 			return;
 		}
 
@@ -59,7 +59,8 @@ public class ModiffXMIHandler extends SAXXMIHandler {
 		if (peekObject != null) {
 			while (lineNumber <= end) {
 				if (modifiedLines.contains(lineNumber)) {
-					modifiedElements.add(peekObject);
+					addModifiedElement(peekObject);
+					break;
 				}
 				lineNumber++;
 			}
@@ -70,7 +71,7 @@ public class ModiffXMIHandler extends SAXXMIHandler {
 
 			while (lineNumber <= end) {
 				if (modifiedLines.contains(lineNumber)) {
-					modifiedElements.add(peekObject);
+					addModifiedElement(peekObject);
 					break;
 				}
 				lineNumber++;
@@ -85,6 +86,10 @@ public class ModiffXMIHandler extends SAXXMIHandler {
 			//   first model version we are checking (and changes are in the other).
 			markForReview(peekObject);
 		}
+	}
+
+	protected void addModifiedElement(EObject peekObject) {
+		modifiedElements.add(peekObject);
 	}
 
 	protected void markForReview(EObject peekObject) {

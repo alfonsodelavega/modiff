@@ -22,7 +22,7 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class RepairShopTest {
+public class ModiffRepairShopTest {
 
 	protected boolean debug = true;
 
@@ -51,7 +51,7 @@ public class RepairShopTest {
 		return modiff;
 	}
 
-	private ModelDifference getDifferenceForId(List<ModelDifference> differences, String id) {
+	protected ModelDifference getDifferenceForId(List<ModelDifference> differences, String id) {
 		for (ModelDifference d : differences) {
 			if (d.getIdentifier().equals(id)) {
 				return d;
@@ -180,6 +180,34 @@ public class RepairShopTest {
 		modiff = compare("00-from", "61-moveJob");
 
 		List<ModelDifference> differences = modiff.getDifferences();
-		assert (differences.size() > 0);
+		assert (differences.size() == 2);
+
+		ModelDifference changed = getDifferenceForId(differences, "Alice");
+		assert (changed != null && changed instanceof ChangedElement);
+		assert (((ChangedElement) changed).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) changed).getChangedFeatures().get(0).getName().equals("queue"));
+
+		changed = getDifferenceForId(differences, "Bob");
+		assert (changed != null && changed instanceof ChangedElement);
+		assert (((ChangedElement) changed).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) changed).getChangedFeatures().get(0).getName().equals("queue"));
+	}
+
+	@Test
+	public void test62() throws IOException {
+		modiff = compare("00-from-noMultiValuedAttributes", "62-moveJob-noMultiValuedAttributes");
+
+		List<ModelDifference> differences = modiff.getDifferences();
+		assert (differences.size() == 2);
+
+		ModelDifference changed = getDifferenceForId(differences, "Alice");
+		assert (changed != null && changed instanceof ChangedElement);
+		assert (((ChangedElement) changed).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) changed).getChangedFeatures().get(0).getName().equals("queue"));
+
+		changed = getDifferenceForId(differences, "Bob");
+		assert (changed != null && changed instanceof ChangedElement);
+		assert (((ChangedElement) changed).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) changed).getChangedFeatures().get(0).getName().equals("queue"));
 	}
 }
