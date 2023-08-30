@@ -7,8 +7,10 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -276,7 +278,49 @@ public class Modiff {
 							List<EObject> fromValues = getContainmentReferenceValues(changedElement.getFromElement(), ref);
 							List<EObject> toValues = getContainmentReferenceValues(changedElement.getToElement(), ref);
 
+							for (EObject fromValue : fromValues) {
+								EObject toValue = findMatch(fromValue, toValues);
+								if (toValue == null) {
+									EObject removedValue = findMatch(fromValue, removedElements);
+									if (removedValue == null) {
+										// we have an element container swap, and this is the original place of such element
+										// we need to loop the toModel to find its new container to check for differences
+										EObject toContainer = findElement(matcher.getIdentifier(fromValue), toModel).eContainer();
+										EObject fromContainer = findElement(matcher.getIdentifier(toContainer), fromModel);
 
+										ChangedElement changedContainer = new ChangedElement(
+												matcher,
+												fromContainer,
+												toContainer);
+
+										if (changedContainer.hasDifferences()) {
+											differences.add(changedContainer);
+										}
+									}
+								}
+							}
+
+							for (EObject toValue : toValues) {
+								EObject fromValue = findMatch(toValue, fromValues);
+								if (fromValue == null) {
+									EObject addedValue = findMatch(toValue, addedElements);
+									if (addedValue == null) {
+										// we have an element container swap, and this is the destination of such element
+										// we need to loop the fromModel to find its old container to check for differences
+										EObject fromContainer = findElement(matcher.getIdentifier(toValue), fromModel).eContainer();
+										EObject toContainer = findElement(matcher.getIdentifier(fromContainer), toModel);
+
+										ChangedElement changedContainer = new ChangedElement(
+												matcher,
+												fromContainer,
+												toContainer);
+
+										if (changedContainer.hasDifferences()) {
+											differences.add(changedContainer);
+										}
+									}
+								}
+							}
 						}
 					}
 
@@ -297,6 +341,26 @@ public class Modiff {
 		}
 	}
 
+	protected EObject findElement(String identifier, Resource model) {
+		Iterator<EObject> it = model.getAllContents();
+		while (it.hasNext()) {
+			EObject candidate = it.next();
+			if (identifier.equals(matcher.getIdentifier(candidate))) {
+				return candidate;
+			}
+		}
+		return null;
+	}
+
+	protected EObject findMatch(EObject value, Collection<EObject> values) {
+		for (EObject candidate : values) {
+			if (matcher.matches(value, candidate)) {
+				return candidate;
+			}
+		}
+		return null;
+	}
+
 	protected List<EReference> getContainmentReferences(List<EStructuralFeature> changedFeatures) {
 		return changedFeatures.stream()
 				.filter(f -> (f instanceof EReference) && (((EReference) f).isContainment()))
@@ -304,8 +368,19 @@ public class Modiff {
 				.collect(Collectors.toList());
 	}
 
+	@SuppressWarnings("unchecked")
 	protected List<EObject> getContainmentReferenceValues(EObject elem, EReference ref) {
 		List<EObject> elements = new ArrayList<>();
+
+		Object value = elem.eGet(ref);
+
+		if (ref.isMany()) {
+			elements.addAll((List<EObject>) value);
+		}
+		else if (value != null) {
+			elements.add((EObject) value);
+		}
+
 		return elements;
 	}
 
