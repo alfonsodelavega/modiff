@@ -110,6 +110,10 @@ public class Modiff {
 	protected Matcher matcher;
 	protected List<ModelDifference> differences;
 
+	/**
+	 * Used for proper detection of changes in multi-valued attributes and
+	 * element container swaps
+	 */
 	protected Set<String> markedIdentifiers = new HashSet<>();
 
 	public Modiff(String fromModelFile, String toModelFile) {
@@ -263,66 +267,8 @@ public class Modiff {
 			boolean matched = false;
 			for (EObject removedElement : removedElements) {
 				if (matcher.matches(addedElement, removedElement)) {
-					ChangedElement changedElement = new ChangedElement(
-							matcher,
-							removedElement,
-							addedElement);
 
-					// it could be a false positive due to line format changes
-					if (changedElement.hasDifferences()) {
-						differences.add(changedElement);
-
-						// when an element is moved to a different container,
-						//   that new container might not appear in the diff
-						for (EReference ref : getContainmentReferences(changedElement.getChangedFeatures())) {
-							List<EObject> fromValues = getContainmentReferenceValues(changedElement.getFromElement(), ref);
-							List<EObject> toValues = getContainmentReferenceValues(changedElement.getToElement(), ref);
-
-							for (EObject fromValue : fromValues) {
-								EObject toValue = findMatch(fromValue, toValues);
-								if (toValue == null) {
-									EObject removedValue = findMatch(fromValue, removedElements);
-									if (removedValue == null) {
-										// we have an element container swap, and this is the original place of such element
-										// we need to loop the toModel to find its new container to check for differences
-										EObject toContainer = findElement(matcher.getIdentifier(fromValue), toModel).eContainer();
-										EObject fromContainer = findElement(matcher.getIdentifier(toContainer), fromModel);
-
-										ChangedElement changedContainer = new ChangedElement(
-												matcher,
-												fromContainer,
-												toContainer);
-
-										if (changedContainer.hasDifferences()) {
-											differences.add(changedContainer);
-										}
-									}
-								}
-							}
-
-							for (EObject toValue : toValues) {
-								EObject fromValue = findMatch(toValue, fromValues);
-								if (fromValue == null) {
-									EObject addedValue = findMatch(toValue, addedElements);
-									if (addedValue == null) {
-										// we have an element container swap, and this is the destination of such element
-										// we need to loop the fromModel to find its old container to check for differences
-										EObject fromContainer = findElement(matcher.getIdentifier(toValue), fromModel).eContainer();
-										EObject toContainer = findElement(matcher.getIdentifier(fromContainer), toModel);
-
-										ChangedElement changedContainer = new ChangedElement(
-												matcher,
-												fromContainer,
-												toContainer);
-
-										if (changedContainer.hasDifferences()) {
-											differences.add(changedContainer);
-										}
-									}
-								}
-							}
-						}
-					}
+					registerChangedElement(removedElement, addedElement);
 
 					removedElements.remove(removedElement);
 					matched = true;
@@ -334,10 +280,75 @@ public class Modiff {
 						matcher.getIdentifier(addedElement), addedElement));
 			}
 		}
+
 		// any element that remains is a removed one
 		for (EObject removedElement : removedElements) {
 			differences.add(new RemovedElement(
 					matcher.getIdentifier(removedElement), removedElement));
+		}
+	}
+
+	protected void registerChangedElement(EObject removedElement, EObject addedElement) {
+
+		ChangedElement changedElement = new ChangedElement(
+				matcher,
+				removedElement,
+				addedElement);
+
+		// it could be a false positive due to line format changes
+		if (changedElement.hasDifferences()) {
+			differences.add(changedElement);
+
+			// when an element is moved to a different container,
+			//   that new container might not appear in the diff
+			for (EReference ref : getContainmentReferences(changedElement.getChangedFeatures())) {
+				List<EObject> fromValues = getContainmentReferenceValues(changedElement.getFromElement(), ref);
+				List<EObject> toValues = getContainmentReferenceValues(changedElement.getToElement(), ref);
+
+				for (EObject fromValue : fromValues) {
+					EObject toValue = findMatch(fromValue, toValues);
+					if (toValue == null) {
+						EObject removedValue = findMatch(fromValue, removedElements);
+						if (removedValue == null || isMarkedForReview(removedValue)) {
+							// we have an element container swap, and this is the original place of such element
+							// we need to loop the toModel to find its new container to check for differences
+							EObject toContainer = findElement(matcher.getIdentifier(fromValue), toModel).eContainer();
+							EObject fromContainer = findElement(matcher.getIdentifier(toContainer), fromModel);
+
+							ChangedElement changedContainer = new ChangedElement(
+									matcher,
+									fromContainer,
+									toContainer);
+
+							if (changedContainer.hasDifferences()) {
+								differences.add(changedContainer);
+							}
+						}
+					}
+				}
+
+				for (EObject toValue : toValues) {
+					EObject fromValue = findMatch(toValue, fromValues);
+					if (fromValue == null) {
+						EObject addedValue = findMatch(toValue, addedElements);
+						if (addedValue == null || isMarkedForReview(addedValue)) {
+							// we have an element container swap, and this is the destination of such element
+							// we need to loop the fromModel to find its old container to check for differences
+							EObject fromContainer = findElement(matcher.getIdentifier(toValue), fromModel).eContainer();
+							EObject toContainer = findElement(matcher.getIdentifier(fromContainer), toModel);
+
+							ChangedElement changedContainer = new ChangedElement(
+									matcher,
+									fromContainer,
+									toContainer);
+
+							if (changedContainer.hasDifferences()) {
+								differences.add(changedContainer);
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
