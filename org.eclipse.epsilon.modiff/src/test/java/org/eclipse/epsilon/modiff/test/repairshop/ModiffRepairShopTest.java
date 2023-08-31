@@ -126,7 +126,7 @@ public class ModiffRepairShopTest {
 		List<ModelDifference> differences = modiff.getDifferences();
 		assert (differences.size() == 2);
 
-		ModelDifference added = getDifferenceForId(differences, "st1");
+		ModelDifference added = getDifferenceForId(differences, "st2");
 		assert (added != null && added instanceof AddedElement);
 
 		ModelDifference changed = getDifferenceForId(differences, "job2");

@@ -17,6 +17,7 @@ import org.xml.sax.SAXException;
 public class ModiffXMIHandler extends SAXXMIHandler {
 
 	protected Modiff modiff;
+	protected DiffSide diffSide;
 
 	protected Set<Integer> modifiedLines;
 	protected Set<EObject> modifiedElements;
@@ -30,6 +31,7 @@ public class ModiffXMIHandler extends SAXXMIHandler {
 		super(xmlResource, helper, options);
 
 		this.modiff = modiff;
+		this.diffSide = diffSide;
 
 		modifiedLines = modiff.getModifiedLines(diffSide);
 		modifiedElements = modiff.getModifiedElements(diffSide);
@@ -57,6 +59,7 @@ public class ModiffXMIHandler extends SAXXMIHandler {
 		EObject peekObject = objects.peekEObject();
 
 		if (peekObject != null) {
+			modiff.registerIfDuplicate(peekObject, diffSide);
 			while (lineNumber <= end) {
 				if (modifiedLines.contains(lineNumber)) {
 					addModifiedElement(peekObject);

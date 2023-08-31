@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.epsilon.modiff.differences.AddedElement;
 import org.eclipse.epsilon.modiff.differences.ChangedElement;
 import org.eclipse.epsilon.modiff.differences.ModelDifference;
 import org.eclipse.epsilon.modiff.differences.Munidiff;
@@ -122,32 +123,83 @@ public class MunidiffRepairShopTest {
 
 	@Test
 	public void test11() throws IOException {
-		getReport("11-modifyJobDescription");
+		Munidiff munidiff = getReport("11-modifyJobDescription");
+
+		List<ModelDifference> differences = munidiff.getDifferences();
+		assert (differences.size() == 1);
+
+		ModelDifference diff = differences.get(0);
+		assert (diff instanceof ChangedElement);
+		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("description"));
 	}
 
 	@Test
 	public void test21() throws IOException {
-		getReport("21-changeMainSkill");
+		Munidiff munidiff = getReport("21-changeMainSkill");
+
+		List<ModelDifference> differences = munidiff.getDifferences();
+		assert (differences.size() == 1);
+
+		ModelDifference diff = differences.get(0);
+		assert (diff instanceof ChangedElement);
+		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("mainSkill"));
 	}
 
 	@Test
 	public void test31() throws IOException {
-		getReport("31-addStatus");
+		Munidiff munidiff = getReport("31-addStatus");
+
+		List<ModelDifference> differences = munidiff.getDifferences();
+		assert (differences.size() == 2);
+
+		ModelDifference added = getDifferenceForId(differences, "st1");
+		assert (added != null && added instanceof AddedElement);
+
+		ModelDifference changed = getDifferenceForId(differences, "job2");
+		assert (changed != null && changed instanceof ChangedElement);
+		assert (((ChangedElement) changed).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) changed).getChangedFeatures().get(0).getName().equals("status"));
 	}
 
 	@Test
 	public void test41() throws IOException {
-		getReport("41-addTag");
+		Munidiff munidiff = getReport("41-addTag");
+
+		List<ModelDifference> differences = munidiff.getDifferences();
+		assert (differences.size() == 1);
+
+		ModelDifference diff = differences.get(0);
+		assert (diff instanceof ChangedElement);
+		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("tags"));
 	}
 
 	@Test
 	public void test42() throws IOException {
-		getReport("42-removeTag");
+		Munidiff munidiff = getReport("42-removeTag");
+
+		List<ModelDifference> differences = munidiff.getDifferences();
+		assert (differences.size() == 1);
+
+		ModelDifference diff = differences.get(0);
+		assert (diff instanceof ChangedElement);
+		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("tags"));
 	}
 
 	@Test
 	public void test51() throws IOException {
-		getReport("51-addSecondarySkill");
+		Munidiff munidiff = getReport("51-addSecondarySkill");
+
+		List<ModelDifference> differences = munidiff.getDifferences();
+		assert (differences.size() == 1);
+
+		ModelDifference diff = differences.get(0);
+		assert (diff instanceof ChangedElement);
+		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("secondarySkills"));
 	}
 
 	@Test

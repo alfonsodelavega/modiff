@@ -107,6 +107,12 @@ public class Modiff {
 	protected Resource fromModel;
 	protected Resource toModel;
 
+	protected Set<String> fromModelIdentifiers = new HashSet<>();
+	protected Set<String> toModelIdentifiers = new HashSet<>();
+
+	protected List<String> fromModelDuplicates = new ArrayList<>();
+	protected List<String> toModelDuplicates = new ArrayList<>();
+
 	protected Matcher matcher;
 	protected List<ModelDifference> differences;
 
@@ -395,21 +401,54 @@ public class Modiff {
 		return elements;
 	}
 
+	public void registerIfDuplicate(EObject element, DiffSide diffSide) {
+		String identifier = matcher.getIdentifier(element);
+		if (seenBefore(identifier, diffSide)) {
+			switch (diffSide) {
+			case FROM:
+				fromModelDuplicates.add(identifier);
+				break;
+			case TO:
+				toModelDuplicates.add(identifier);
+				break;
+			}
+		}
+	}
+
+	protected boolean seenBefore(String identifier, DiffSide diffSide) {
+		boolean seenBefore = false;
+
+		switch (diffSide) {
+		case FROM:
+			seenBefore = fromModelIdentifiers.contains(identifier);
+			if (!seenBefore) {
+				fromModelIdentifiers.add(identifier);
+			}
+			break;
+		case TO:
+			seenBefore = toModelIdentifiers.contains(identifier);
+			if (!seenBefore) {
+				toModelIdentifiers.add(identifier);
+			}
+			break;
+		}
+
+		return seenBefore;
+	}
+
 	protected void checkForDuplicates() {
-		List<String> duplicatesInToModel = findDuplicates(addedElements);
-		List<String> duplicatesInFromModel = findDuplicates(removedElements);
-		if (!duplicatesInToModel.isEmpty() || !duplicatesInFromModel.isEmpty()) {
+		if (!fromModelDuplicates.isEmpty() || !toModelDuplicates.isEmpty()) {
 			StringBuilder errorMessage = new StringBuilder();
 
 			errorMessage.append("\n\nID duplicates found in one or both models:\n");
 			errorMessage.append(toModelFile)
 					.append(": [")
-					.append(String.join(", ", duplicatesInToModel))
+					.append(String.join(", ", fromModelDuplicates))
 					.append("]\n");
 
 			errorMessage.append(fromModelFile)
 					.append(": [")
-					.append(String.join(", ", duplicatesInFromModel))
+					.append(String.join(", ", toModelDuplicates))
 					.append("]\n");
 
 			throw new RuntimeException(errorMessage.toString());
