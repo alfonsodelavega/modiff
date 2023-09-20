@@ -1,0 +1,16 @@
+--- /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s00/s00-from.model	2023-09-20 18:08:12.515199211 +0200
++++ /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s00/s00-to.model	2023-09-20 18:08:12.515199211 +0200
+@@ -15,7 +15,12 @@
+           status="pending"/>
+     </queue>
+     <queue jobId="job2"
+-        description="broken phone screen"/>
++        description="broken phone screen">
++      <status
++          statusId="st2"
++          status="in progress"
++          lastModified="2023/07/24"/>
++    </queue>
+   </workers>
+   <workers name="Bob"
+       mainSkill="Microsoldering"/>

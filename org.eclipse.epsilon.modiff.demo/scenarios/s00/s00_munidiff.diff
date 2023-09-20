@@ -1,0 +1,13 @@
+--- /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s00/s00-from.model
++++ /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s00/s00-to.model
+@@ @@
+ Job "job2" {
++    status *--> Status "st2"
+-    status *--> null
+ }
+@@ @@
++Status "st2" {
++    statusId: st2
++    status: in progress
++    lastModified: 2023/07/24
++}

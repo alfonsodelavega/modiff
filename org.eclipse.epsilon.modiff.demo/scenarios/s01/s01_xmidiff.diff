@@ -1,0 +1,11 @@
+--- /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s01/s01-from.model	2023-09-20 18:08:12.515000000 +0200
++++ /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s01/s01-to.model	2023-08-14 17:37:33.368000000 +0200
+@@ -7,7 +7,7 @@
+       mainSkill="Disassembly"
+       secondarySkills="Microsoldering DataRecovery">
+     <queue jobId="job1"
+-        description="laptop does not charge">
++        description="battery connector broken">
+       <tags>battery</tags>
+       <tags>charger</tags>
+       <status
