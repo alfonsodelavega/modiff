@@ -106,9 +106,13 @@ public class UnifiedDiffFormatter {
 			s.append(HEADER_TO_FILE).append(toModelFile).append(NL);
 		}
 
-		for (ModelDifference d : differences) {
+		for (int i = 0; i < differences.size(); i++) {
+			ModelDifference d = differences.get(i);
 			s.append(getHunkHeader()).append(NL);
-			s.append(d.format(this)).append(NL);
+			s.append(d.format(this));
+			if (i < differences.size() - 1) {
+				s.append(NL);
+			}
 		}
 
 		return s.toString();

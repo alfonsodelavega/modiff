@@ -62,7 +62,7 @@ public class ModiffCli implements Runnable {
 			e.printStackTrace();
 		}
 
-		System.out.println("Done");
+		System.out.println(modiff.reportDifferences());
 	}
 
 	public static void main(String[] args) {
