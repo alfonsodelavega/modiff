@@ -94,6 +94,15 @@ public class ModiffRepairShopTest {
 	}
 
 	@Test
+	public void test01() throws IOException {
+		modiff = compare("00-from", "00-from");
+
+		List<ModelDifference> differences = modiff.getDifferences();
+		assert (differences.size() == 0);
+		assert (modiff.reportDifferences().length() == 0);
+	}
+
+	@Test
 	public void test11() throws IOException {
 		modiff = compare("00-from", "11-modifyJobDescription");
 

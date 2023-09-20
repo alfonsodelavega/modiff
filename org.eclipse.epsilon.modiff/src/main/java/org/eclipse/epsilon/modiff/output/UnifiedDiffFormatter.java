@@ -101,8 +101,10 @@ public class UnifiedDiffFormatter {
 	public String format() {
 		StringBuilder s = new StringBuilder();
 
-		s.append(HEADER_FROM_FILE).append(fromModelFile).append(NL);
-		s.append(HEADER_TO_FILE).append(toModelFile).append(NL);
+		if (!differences.isEmpty()) {
+			s.append(HEADER_FROM_FILE).append(fromModelFile).append(NL);
+			s.append(HEADER_TO_FILE).append(toModelFile).append(NL);
+		}
 
 		for (ModelDifference d : differences) {
 			s.append(getHunkHeader()).append(NL);

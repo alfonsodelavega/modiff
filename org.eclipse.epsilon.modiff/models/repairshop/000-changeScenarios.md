@@ -1,6 +1,7 @@
 # Electronic shop scenarios
 
 - X0-from.model: base model for each comparison category
+- 0X cases: no changes
 - 1X cases: single attribute
 - 2X cases: single, non-containment reference
 - 3X cases: single, containment reference
