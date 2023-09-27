@@ -57,7 +57,7 @@ Universidad de Cantabria
 
 1. Comparison
 2. Differences Representation
-3. Differences **Reporting**
+3. <span class="good">Differences Reporting</span>
 
 <!-- _footer: Kolovos et al. Different models for model matching: An analysis of approaches to support model differencing -->
 
@@ -75,7 +75,7 @@ Universidad de Cantabria
 
 ---
 
-# to.model
+# to.model (with changes)
 
 ![](fig/repairshop-to.svg)
 
@@ -83,7 +83,7 @@ Universidad de Cantabria
 
 # Graphical diff
 
-The *job1* job moves from Alice's queue to Bob's
+The *job1* job has moved from Alice's queue to Bob's
 
 ![](fig/repairshop-diff.svg)
 
@@ -97,11 +97,11 @@ The *job1* job moves from Alice's queue to Bob's
 
 # What about plain textual diff?
 
-There is a custom concrete textual syntax (e.g. Xtext-based) -> <span class="good">Probably great!</span>
+If there is a custom concrete textual syntax (e.g. Xtext-based) -> <span class="good">Probably great!</span>
 
 <br>
 
-**No** concrete textual syntax - <span class="alert">diff the persistence format?</span>
+**If no** concrete textual syntax -> <span class="alert">diff the persistence format?</span>
 
 ---
 
@@ -174,7 +174,7 @@ $ diff -u from.model to.model
 
 ---
 
-# Support example: GitHub
+# Support Example: GitHub
 
 ![](fig/github.png)
 
@@ -193,7 +193,6 @@ $ diff -u from.model to.model
 # <!-- fit --> How to Use Munidiff: From Model Differences to Text Report
 
 For EMF Compare:
-
 1. Perform the two-way comparison
 2. Translate the differences from EMF Compare representation to Munidiff's:
 ![width:800px](fig/munidiffClasses.svg)
@@ -207,3 +206,10 @@ For EMF Compare:
 ---
 
 # Future Work
+
+- Test different Munidiff flavours
+- Exploit the Unified Format (hunk headers? ``@@  @@``)
+- Graphical diff visualisations
+    - Previous experience: Picto [1]
+
+<!-- footer: "[1] D. Kolovos, A. de la Vega. Efficient generation of graphical model views via lazy model-to-text transformation (MODELS 2020)" -->

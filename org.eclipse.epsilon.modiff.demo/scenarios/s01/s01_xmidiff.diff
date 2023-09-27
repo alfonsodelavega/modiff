@@ -1,5 +1,5 @@
---- /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s01/s01-from.model	2023-09-26 10:29:01.385364896 +0200
-+++ /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s01/s01-to.model	2023-09-26 10:29:01.385364896 +0200
+--- /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s01/s01-from.model	2023-09-27 18:34:37.169628909 +0200
++++ /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s01/s01-to.model	2023-09-27 18:34:37.169628909 +0200
 @@ -7,7 +7,7 @@
        mainSkill="Disassembly"
        secondarySkills="Microsoldering DataRecovery">

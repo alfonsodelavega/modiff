@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="repairshop" nsURI="repairshop" nsPrefix="repairshop">
+  <eClassifiers xsi:type="ecore:EClass" name="RepairShop">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="backlog" upperBound="-1"
+        eType="#//Job" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="workers" upperBound="-1"
+        eType="#//Worker" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="skills" upperBound="-1"
+        eType="#//Skill" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Status">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="statusId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="completed" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBooleanObject"
+        defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="status" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastModified" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Job">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="jobId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tags" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="status" eType="#//Status"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Skill">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Worker">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="queue" upperBound="-1"
+        eType="#//Job" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mainSkill" eType="#//Skill"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="secondarySkills" upperBound="-1"
+        eType="#//Skill"/>
+  </eClassifiers>
+</ecore:EPackage>

@@ -4,7 +4,7 @@ modiff_jar=$(realpath ../org.eclipse.epsilon.modiff/target/org.eclipse.epsilon.m
 
 repairshop_metamodel=$(realpath metamodel/repairshop.ecore)
 
-declare -a scenarios=("s00" "s01" "swapjob")
+declare -a scenarios=("s00" "s01" "s02" "swapjob")
 
 from=$(realpath scenarios/s00/s00-from.model)
 to=$(realpath scenarios/s00/s00-to.model)
