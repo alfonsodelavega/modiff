@@ -12,6 +12,14 @@ style: |
         margin:auto;
         width: 100%;
     }
+    .good {
+        color: green;
+        font-weight: bold;
+    }
+    .alert {
+        color: chocolate;
+        font-weight: bold;
+    }
 
 
 # header: test
@@ -38,10 +46,6 @@ Universidad de Cantabria
 ---
 
 # Two-Way Model Comparison
-
-<style scoped>
-
-</style>
 
 <br>
 
@@ -85,11 +89,23 @@ The *job1* job moves from Alice's queue to Bob's
 
 ---
 
-# Why textual diff is not as popular?
+# Tree-based graphical diff: EMF Compare
+
+![w:1000px](fig/emfcompare.png)
 
 ---
 
-# Why textual diff is not as popular? XMI example
+# What about plain textual diff?
+
+There is a custom concrete textual syntax (e.g. Xtext-based) -> <span class="good">Probably great!</span>
+
+<br>
+
+**No** concrete textual syntax - <span class="alert">diff the persistence format?</span>
+
+---
+
+# What about plain textual diff? XMI example
 
 Remember: the only change is *job1* moving from Alice's to Bob's queue
 
@@ -147,4 +163,47 @@ $ diff -u from.model to.model
 
 ---
 
-# Why bother? Unified Format Support in VCSs
+
+# <!-- fit --> Why bother? Existing support for the Unified Format
+
+- Editors (e.g. Eclipse, Jetbrains, Visual Studio Code)
+- Command-Line Interfaces
+- Markdown code blocks (these slides)
+- Version Control Systems: GitHub, GitLab, Bitbucket
+    - Commits, pull requests, issues, user comments
+
+---
+
+# Support example: GitHub
+
+![](fig/github.png)
+
+---
+
+# Munidiff: Unified Diff Format for Models
+
+- Follows the Unified Format
+- Can be integrated with any two-way EMF comparison tool
+- Currently:
+    - EMF Compare (used for the article)
+    - *Modiff* (used in this demo, work in progress)
+
+---
+
+# <!-- fit --> How to Use Munidiff: From Model Differences to Text Report
+
+For EMF Compare:
+
+1. Perform the two-way comparison
+2. Translate the differences from EMF Compare representation to Munidiff's:
+![width:800px](fig/munidiffClasses.svg)
+
+3. Generate a text report from the Munidiff representation
+
+---
+
+# Demo: Find the Differences!
+
+---
+
+# Future Work
