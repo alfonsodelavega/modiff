@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ASCII"?>
+<repairshop:RepairShop
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:repairshop="repairshop">
+  <workers name="Alice"
+      mainSkill="Disassembly"
+      secondarySkills="Microsoldering DataRecovery">
+    <queue jobId="job1"
+        description="laptop does not charge">
+      <status
+          statusId="st1"
+          status="pending"/>
+    </queue>
+    <queue jobId="job2"
+        description="broken phone screen"/>
+  </workers>
+  <workers name="Bob"
+      mainSkill="Microsoldering"/>
+  <skills name="Microsoldering"/>
+  <skills name="Disassembly"/>
+  <skills name="DataRecovery"/>
+</repairshop:RepairShop>

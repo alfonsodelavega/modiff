@@ -1,0 +1,15 @@
+--- /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/swapjob/swapjob-from.model
++++ /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/swapjob/swapjob-to.model
+@@ @@
+ Worker "Bob" {
+     queue *-->  [
++        Job "job1"
+     ]
+ }
+@@ @@
+ Worker "Alice" {
+     queue *-->  [
+-        Job "job1"
+         Job "job2"
+     ]
+ }

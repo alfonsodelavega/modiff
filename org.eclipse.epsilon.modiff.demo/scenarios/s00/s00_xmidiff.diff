@@ -1,5 +1,5 @@
---- /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s00/s00-from.model	2023-09-20 18:08:12.515199211 +0200
-+++ /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s00/s00-to.model	2023-09-20 18:08:12.515199211 +0200
+--- /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s00/s00-from.model	2023-09-26 10:29:01.385364896 +0200
++++ /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s00/s00-to.model	2023-09-26 10:29:01.385364896 +0200
 @@ -15,7 +15,12 @@
            status="pending"/>
      </queue>
