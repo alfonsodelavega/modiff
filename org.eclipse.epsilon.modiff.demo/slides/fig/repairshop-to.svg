@@ -92,10 +92,12 @@
     <g text-rendering="geometricPrecision" stroke-miterlimit="1.45" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,417,-300)" stroke-linecap="butt">
       <rect fill="none" x="-18.8896" width="112.8032" height="23.4806" y="403.6262" clip-path="url(#clipPath2)"/>
       <text x="-13.0534" font-size="13px" y="420.3948" clip-path="url(#clipPath10)" font-family="sans-serif" stroke="none" xml:space="preserve">Disassembly:Skill</text>
-      <path fill="none" d="M-250.3045 339.302 L-203.376 404.7748" clip-path="url(#clipPath2)"/>
+      <path fill="none" d="M-246.2265 344.9915 L-203.376 404.7748" clip-path="url(#clipPath2)"/>
+      <path d="M-250.3045 339.302 L-242.1626 342.0786 L-242.1485 350.6809 L-250.2904 347.9044 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <path d="M-198.7155 411.277 L-201.6424 398.6108 L-203.9586 403.962 L-209.7702 404.4366 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <text x="-219.8728" xml:space="preserve" y="379.4646" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">queue</text>
-      <path fill="none" d="M-104.8599 339.2665 L-100.3774 403.3235" clip-path="url(#clipPath2)"/>
+      <path fill="none" d="M-104.3712 346.2494 L-100.3774 403.3235" clip-path="url(#clipPath2)"/>
+      <path d="M-104.8599 339.2665 L-99.3834 345.9004 L-103.8826 353.2324 L-109.359 346.5984 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <path d="M-99.819 411.304 L-95.6688 398.9842 L-100.4472 402.3259 L-105.6444 399.6823 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <text x="-99.2378" xml:space="preserve" y="397.2249" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">queue</text>
       <path fill="none" d="M-111.5413 434.7693 L-137.8266 459.3387" clip-path="url(#clipPath2)"/>

@@ -97,7 +97,8 @@
       <path d="M139.0709 141.5966 L146.0709 136.5966 L153.0709 141.5966 L146.0709 146.5966 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <path d="M225.1994 141.5966 L213.1994 136.5966 L216.1994 141.5966 L213.1994 146.5966 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <text x="157.8609" xml:space="preserve" y="130.8777" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">queue [0..*]</text>
-      <path fill="none" d="M239.0089 173.8558 L239.0089 215.7831" clip-path="url(#clipPath2)"/>
+      <path fill="none" d="M239.0089 180.8558 L239.0089 215.7831" clip-path="url(#clipPath2)"/>
+      <path d="M239.0089 173.8558 L244.0089 180.8558 L239.0089 187.8558 L234.0089 180.8558 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <path d="M239.0089 223.7831 L244.0089 211.7831 L239.0089 214.7831 L234.0089 211.7831 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <text x="244.6083" xml:space="preserve" y="209.1203" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">status [0..1]</text>
     </g>

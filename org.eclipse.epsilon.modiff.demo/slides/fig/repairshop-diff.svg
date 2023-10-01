@@ -92,14 +92,16 @@
     <g text-rendering="geometricPrecision" stroke-miterlimit="1.45" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,417,-300)" stroke-linecap="butt">
       <rect fill="none" x="-18.8896" width="112.8032" height="23.4806" y="403.6262" clip-path="url(#clipPath2)"/>
       <text x="-13.0534" font-size="13px" y="420.3948" clip-path="url(#clipPath10)" font-family="sans-serif" stroke="none" xml:space="preserve">Disassembly:Skill</text>
-      <path fill="none" d="M-250.3045 339.302 L-205.1237 402.3365" stroke-width="4" clip-path="url(#clipPath2)" stroke="rgb(51,153,102)"/>
+      <path fill="none" d="M-244.6973 347.125 L-205.1237 402.3365" stroke-width="4" clip-path="url(#clipPath2)" stroke="rgb(51,153,102)"/>
+      <path fill="rgb(51,153,102)" d="M-250.3045 339.302 L-239.1094 343.1198 L-239.09 354.948 L-250.2851 351.1302 Z" stroke-width="4" clip-path="url(#clipPath2)" stroke="none"/>
       <path fill="rgb(51,153,102)" d="M-198.7155 411.277 L-202.74 393.861 L-205.9248 401.2189 L-213.9158 401.8713 Z" stroke-width="4" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,417,-300)" fill="rgb(51,153,102)" text-rendering="geometricPrecision" font-family="sans-serif" shape-rendering="geometricPrecision" stroke="rgb(51,153,102)" font-weight="bold" stroke-miterlimit="1.45">
       <text x="-219.8331" xml:space="preserve" y="371.7846" clip-path="url(#clipPath2)" stroke="none">queue</text>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,417,-300)" fill="red" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" stroke="red" stroke-width="4" stroke-miterlimit="1.45">
-      <path fill="none" d="M-116.8158 339.2898 L-177.6262 403.3112" clip-path="url(#clipPath2)"/>
+      <path fill="none" d="M-123.4445 346.2685 L-177.6262 403.3112" clip-path="url(#clipPath2)"/>
+      <path d="M-116.8158 339.2898 L-118.4597 351.0032 L-130.0731 353.2471 L-128.4292 341.5337 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <path d="M-185.2018 411.2868 L-168.8536 404.0581 L-176.6792 402.3142 L-178.8231 394.5886 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <text x="-154.9427" y="389.4326" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none" font-weight="bold" stroke-width="1" xml:space="preserve">queue</text>
       <path fill="none" d="M-104.8599 339.2665 L-100.3774 403.3235" stroke-width="1" clip-path="url(#clipPath2)" stroke="black"/>

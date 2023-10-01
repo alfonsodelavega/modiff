@@ -53,13 +53,13 @@ Universidad de Cantabria
 
 ---
 
-# Two-Way Model Comparison: Stages
+# Two-Way Model Comparison: Stages [1]
 
 1. Comparison
 2. Differences Representation
 3. <span class="good">Differences Reporting</span>
 
-<!-- _footer: Kolovos et al. Different models for model matching: An analysis of approaches to support model differencing -->
+<!-- _footer: "[1] Kolovos et al. Different models for model matching: An analysis of approaches to support model differencing" -->
 
 ---
 
@@ -166,9 +166,8 @@ $ diff -u from.model to.model
 
 # <!-- fit --> Why bother? Existing support for the Unified Format
 
-- Editors (e.g. Eclipse, Jetbrains, Visual Studio Code)
-- Command-Line Interfaces
 - Markdown code blocks (these slides)
+- Editors (e.g. Eclipse, Jetbrains, Visual Studio Code)
 - Version Control Systems: GitHub, GitLab, Bitbucket
     - Commits, pull requests, issues, user comments
 
@@ -180,13 +179,66 @@ $ diff -u from.model to.model
 
 ---
 
-# Munidiff: Unified Diff Format for Models
+# Munidiff: Textual Reporting of Model Differences
 
-- Follows the Unified Format
+- Follows the Unified Format [1]
 - Can be integrated with any two-way EMF comparison tool
 - Currently:
     - EMF Compare (used for the article)
     - *Modiff* (used in this demo, work in progress)
+
+<!-- _footer: https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html -->
+
+---
+
+# Munidiff Syntax
+
+<style scoped>
+div.twocols {
+  margin-top: -10px;
+  column-count: 2;
+}
+div.twocols p:first-child,
+div.twocols h1:first-child,
+div.twocols h2:first-child,
+div.twocols ul:first-child,
+div.twocols ul li:first-child,
+div.twocols ul li p:first-child {
+  margin-top: 0 !important;
+}
+div.twocols p.break {
+  break-before: column;
+  margin-top: 0;
+}
+</style>
+
+<div class="twocols">
+
+```diff
+--- from.model
++++ to.model
+@@ @@
+ Worker "Bob" {
+     queue *-->  [
++        Job "job1"
+     ]
+ }
+@@ @@
+ Worker "Alice" {
+     queue *-->  [
+-        Job "job1"
+         Job "job2"
+     ]
+ }
+```
+
+<p class="break"></p>
+
+- Element-level chunk granularity
+- Elements identified by their type and a custom label
+- Features occupy their own lines
+    - Facilitates/Respects diff format
+</div>
 
 ---
 
@@ -208,8 +260,24 @@ For EMF Compare:
 # Future Work
 
 - Test different Munidiff flavours
-- Exploit the Unified Format (hunk headers? ``@@  @@``)
-- Graphical diff visualisations
+- Exploit more parts of the Unified Format (hunk headers? ``@@  @@``)
+    - Summary of the changes in natural language?
+- Automatic generation of graphical diffs
+    - E.g. Munidiff -> PlantUML's Object Diagram diff
     - Previous experience: Picto [1]
 
-<!-- footer: "[1] D. Kolovos, A. de la Vega. Efficient generation of graphical model views via lazy model-to-text transformation (MODELS 2020)" -->
+<!-- _footer: "[1] https://eclipse.dev/epsilon/doc/picto/" -->
+
+---
+
+# Towards an Interoperable and Customisable Textual Format for Model Differences Reporting
+
+Alfonso de la Vega (alfonso.delavega@unican.es)
+
+<br>
+
+Tools, demo and slides:
+
+![w:300px](fig/qr.svg)
+
+<!-- _footer: https://github.com/alfonsodelavega/modiff/tree/main/org.eclipse.epsilon.modiff.demo -->
