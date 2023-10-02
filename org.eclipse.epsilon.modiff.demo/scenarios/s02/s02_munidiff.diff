@@ -1,0 +1,12 @@
+--- /home/fonso/repos/york/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s02/s02-from.model
++++ /home/fonso/repos/york/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s02/s02-to.model
+@@ @@
+ Worker "Alice" {
+     secondarySkills -->  [
+         Skill "Microsoldering"
+         Skill "DataRecovery"
+         Skill "MacbookRepairs"
++        Skill "Motherboards"
+         Skill "IphoneRepairs"
+     ]
+ }

@@ -16,7 +16,7 @@
 - A new secondary skill is added to `Alice`
 - Unbounded uncontained reference: if many elements referenced, not that easy to spot the changes
 - A combination of s03 and s04 can happen (less readable reports)
-- On diffs over XMI models with line breaks after every feature, we might lose the context of the modified lines (e.g. if the element starting tag does not appear as a common line). By default, diff uses 3 common lines before and after changes. Classes with 10 features are not that uncommon!
+- On diffs over XMI models with line breaks after every feature, we might lose the context of the modified lines (e.g. if the element starting tag does not appear as a common line). By default, diff uses 3 common lines before and after changes. Classes with 5-10 features are not that uncommon!
 
 ## swapjob
 

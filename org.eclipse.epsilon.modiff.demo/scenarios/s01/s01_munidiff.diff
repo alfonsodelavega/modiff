@@ -1,5 +1,5 @@
---- /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s01/s01-from.model
-+++ /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s01/s01-to.model
+--- /home/fonso/repos/york/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s01/s01-from.model
++++ /home/fonso/repos/york/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s01/s01-to.model
 @@ @@
  Job "job1" {
 +    description: battery connector broken

@@ -1,5 +1,5 @@
---- /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/swapjob/swapjob-from.model
-+++ /home/fonso/repos/modiff/org.eclipse.epsilon.modiff.demo/scenarios/swapjob/swapjob-to.model
+--- /home/fonso/repos/york/modiff/org.eclipse.epsilon.modiff.demo/scenarios/swapjob/swapjob-from.model
++++ /home/fonso/repos/york/modiff/org.eclipse.epsilon.modiff.demo/scenarios/swapjob/swapjob-to.model
 @@ @@
  Worker "Bob" {
      queue *-->  [

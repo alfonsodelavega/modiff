@@ -1,0 +1,11 @@
+--- /home/fonso/repos/york/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s02/s02-from.model	2023-09-29 21:32:51.915998378 +0200
++++ /home/fonso/repos/york/modiff/org.eclipse.epsilon.modiff.demo/scenarios/s02/s02-to.model	2023-09-29 21:32:51.915998378 +0200
+@@ -5,7 +5,7 @@
+     xmlns:repairshop="repairshop">
+   <workers name="Alice"
+       mainSkill="Disassembly"
+-      secondarySkills="Microsoldering DataRecovery MacbookRepairs IphoneRepairs">
++      secondarySkills="Microsoldering DataRecovery MacbookRepairs Motherboards IphoneRepairs">
+     <queue jobId="job1"
+         description="laptop does not charge">
+       <tags>battery</tags>
