@@ -33,6 +33,11 @@ style: |
 p {
     font-size: 28pt;
 }
+img[alt~="bottom-right"] {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+}
 </style>
 
 # Towards an Interoperable and Customisable Textual Format for Model Differences Reporting
@@ -42,6 +47,8 @@ p {
 Alfonso de la Vega (alfonso.delavega@unican.es)
 Software Engineering and Real-Time Group
 Universidad de Cantabria
+
+<!-- ![bottom-right w:200px](fig/qr.svg) -->
 
 ---
 

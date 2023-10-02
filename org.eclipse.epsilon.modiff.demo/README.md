@@ -5,6 +5,7 @@ This demonstration project showcases Munidiff reports in different scenarios.
 ## Demo contents
 
 - `slides`: materials used to generate the [slides](slides/munidiff.pdf)
+- `metamodel`: Ecore metamodel to which models of the scenarios conform to (also in [Emfatic](https://www.eclipse.org/emfatic/) notation)
 - `scenarios`: each subfolder contains a concrete comparison scenario with several files:
     - `from.model`: the original model version
     - `to.model`: the new version with changes applied
