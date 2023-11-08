@@ -1,0 +1,62 @@
+This will try and list all possible "conflict" cases that can happen in a model comparison. For each use case, we will consider
+two models, "left" and "right", with their common ancestor "origin".
+
+All of the following 4 categories apply to both "attribute" and "reference" changes
+
+a - Left : Changing value of single-valued feature. Right : Deleting the containing element.
+	a1 - Changing value "origin" to "left".
+	a2 - Setting value to "left".
+	a3 - Unsetting value.
+
+b - Left : Changing value of single-valued feature. Right : Changing to another value the same single-valued feature.
+	b1 - Left : Changing value "origin" to "left". Right : Changing value "origin" to "right".
+	b2 - Left : Changing value "origin" to "left". Right : Unsetting value.
+	b3 - Left : Setting value to "left". Right : Setting value to "right".
+	b4 - Left : Unsetting value. Right : changing value "origin" to "right".
+	b5 - Setting value to "leftAndRight" on both sides
+	b6 - Unsetting value on both sides
+
+c - Left : Changing value of multi-valued feature. Right : Deleting the containing element.
+	c1 - Adding value "left1" to feature.
+	c2 - Removing value "origin1" from feature.
+	c3 - Setting value "left1" into empty feature.
+	c4 - Clearing all values from feature.
+	c5 - Moving value "origin1".
+
+d - Left : Changing value of multi-valued feature. Right : Changing the same value in an incompatible way.
+	d1 - Left : Removing value "origin1" from feature. Right : Moving value "origin1".
+	d2 - Left : Moving value "origin1". Right : Removing value "origin1".
+	d3 - Left : Moving value "origin1". Right : Moving value "origin1" to a different index.
+	d4 - Clearing all values of this feature on both sides
+	d5 - Removing value "origin1" from both sides
+	d6 - Moving value "origin1" to the same index on both sides
+
+These only apply to reference changes
+
+e - Adding reference towards deleted Notifier.
+	e1 - Within single-valued reference.
+	e2 - Within multi-valued reference.
+	e3 - Add a single-valued reference on the right side to a node that has been deleted on the left side.
+
+f - Changing containment feature of Notifier to two distinct features in left and right.
+g - Changing container of Notifier to two distinct Notifiers in left and right.
+
+h - Changing container of Notifier to a deleted Notifier.
+	h1 - Within single-valued containment reference (refinement of case 1).
+	h2 - Within multi-valued containment reference (refinement of case 3).
+
+both i and j cases could be simply merged as there are no real conflicts at model level, but git detects conflicts at line level
+
+i - delete all contained elements on left, only one leaf in right
+j - delete some objects in left, and those plus one extra in right
+
+k1 - Real Add Conflict, containing pseudo conflict (must be detected as real conflict).
+k2 - Real Add Conflict, containing pseudo conflicts (must be detected as real conflicts).
+k3 - Real Add Conflict, containing pseudo conflict, containing pseudo conflict (must be detected as real conflict).
+k4 - Real Conflict (not add), containing pseudo conflict (must not be detected as real conflict).
+	(see https://bugs.eclipse.org/bugs/show_bug.cgi?id=442897)
+
+Ecore specific?
+
+- Setting two different attributes as "idAttribute" in left and right.
+- Setting two distinct enum literals to the same "value" in left and right.
