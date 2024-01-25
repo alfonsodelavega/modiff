@@ -125,6 +125,8 @@ public class Modiff {
 	public Modiff(String fromModelFile, String toModelFile) {
 		this.fromModelFile = fromModelFile;
 		this.toModelFile = toModelFile;
+
+		matcher = new IdMatcher();
 	}
 
 	/**
