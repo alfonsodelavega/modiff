@@ -114,7 +114,7 @@ public class Modiff {
 	protected List<String> toModelDuplicates = new ArrayList<>();
 
 	protected Matcher matcher;
-	protected List<ModelDifference> differences;
+	protected List<ModelDifference> differences = new ArrayList<>();
 
 	/**
 	 * Used for proper detection of changes in multi-valued attributes and

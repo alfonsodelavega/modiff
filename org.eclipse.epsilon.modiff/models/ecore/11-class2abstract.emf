@@ -1,0 +1,49 @@
+@namespace(uri="repairtests", prefix="repairtests")
+package repairtests;
+
+class RepairShop {
+	id attr String name;
+	val Job[*] backlog;
+	val Worker[*] workers;
+	val Skill[*] skills;
+}
+
+class Status {
+	id attr String statusId;
+	attr Boolean completed = false;
+	attr String status;
+	attr String lastModified;
+}
+
+@ecore(constraints="constraintA constraintB")
+@myLabel(key="value")
+class Job {
+	id attr String jobId;
+	attr String description;
+	attr String[*] tags;
+	val Status status;
+}
+
+abstract class Skill {
+	id attr String name;
+	attr TestEnum enumValue;
+	attr D1 d1;
+	op int add(int a, int b);
+}
+
+@genmodel(documentation="model documentation")
+class Worker {
+	id attr String name;
+	val Job[*] queue;
+	ref Skill mainSkill;
+	ref Skill[*] secondarySkills;
+}
+
+enum TestEnum {
+	A=1;
+	B=2;
+	C=3;
+}
+
+datatype D1 : int;
+

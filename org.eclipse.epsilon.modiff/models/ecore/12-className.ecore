@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="repairtests" nsURI="repairtests" nsPrefix="repairtests">
+  <eClassifiers xsi:type="ecore:EClass" name="RepairShop">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="backlog" upperBound="-1"
+        eType="#//Job" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="workers" upperBound="-1"
+        eType="#//Employee" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="skills" upperBound="-1"
+        eType="#//Skill" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Status">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="statusId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="completed" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBooleanObject"
+        defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="status" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastModified" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Job">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="constraintA constraintB"/>
+    </eAnnotations>
+    <eAnnotations source="myLabel">
+      <details key="key" value="value"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="jobId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tags" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="status" eType="#//Status"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Skill">
+    <eOperations name="add" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+      <eParameters name="a" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="b" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="enumValue" eType="#//TestEnum"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="d1" eType="#//D1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Employee">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="model documentation"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="queue" upperBound="-1"
+        eType="#//Job" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mainSkill" eType="#//Skill"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="secondarySkills" upperBound="-1"
+        eType="#//Skill"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="TestEnum">
+    <eLiterals name="A" value="1"/>
+    <eLiterals name="B" value="2"/>
+    <eLiterals name="C" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="D1" instanceClassName="int"/>
+</ecore:EPackage>
