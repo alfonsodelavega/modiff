@@ -15,7 +15,7 @@ do
     to=$(realpath scenarios/${s}/${s}-to.model)
 
     # standard diff over xmi
-    diff -u $from $to > scenarios/${s}/${s}_xmidiff.diff
+    diff -u $from $to | sed -re '1,2 s/\t.*//' > scenarios/${s}/${s}_xmidiff.diff
 
     # modiff + munidiff (requires mvn clean verify on org.eclipse.epsilon.modiff)
     java -jar ${modiff_jar} -from=${from} -to=${to} -ecore=${repairshop_metamodel} > scenarios/${s}/${s}_munidiff.diff
