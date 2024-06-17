@@ -67,11 +67,8 @@ public class MunidiffReqTest {
 
 		Munidiff md = new EmfCompare2Munidiff(new IdMatcher()).transform(comparison);
 
-		UnifiedDiffFormatter formatter = new UnifiedDiffFormatter(md.getDifferences(),
+		UnifiedDiffFormatter formatter = new UnifiedDiffFormatter(md,
 				new MatcherBasedLabelProvider(new IdMatcher()));
-
-		formatter.setFromModelFile(md.getFromModelFile());
-		formatter.setToModelFile(md.getToModelFile());
 
 		String report = formatter.format();
 

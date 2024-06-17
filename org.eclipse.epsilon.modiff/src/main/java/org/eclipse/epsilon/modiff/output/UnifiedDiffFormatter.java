@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.epsilon.modiff.munidiff.AddedElement;
 import org.eclipse.epsilon.modiff.munidiff.ChangedElement;
 import org.eclipse.epsilon.modiff.munidiff.Difference;
+import org.eclipse.epsilon.modiff.munidiff.Munidiff;
 import org.eclipse.epsilon.modiff.munidiff.RemovedElement;
 
 import com.github.difflib.DiffUtils;
@@ -93,8 +94,11 @@ public class UnifiedDiffFormatter {
 	protected String fromModelFile = "";
 	protected String toModelFile = "";
 
-	public UnifiedDiffFormatter(List<Difference> differences, LabelProvider labelProvider) {
-		this.differences = differences;
+	public UnifiedDiffFormatter(Munidiff munidiff, LabelProvider labelProvider) {
+		this.differences = munidiff.getDifferences();
+		this.fromModelFile = munidiff.getFromModelFile();
+		this.toModelFile = munidiff.getToModelFile();
+
 		this.labelProvider = labelProvider;
 	}
 
@@ -116,14 +120,6 @@ public class UnifiedDiffFormatter {
 		}
 
 		return s.toString();
-	}
-
-	public void setFromModelFile(String fromModelFile) {
-		this.fromModelFile = fromModelFile;
-	}
-
-	public void setToModelFile(String toModelFile) {
-		this.toModelFile = toModelFile;
 	}
 
 	protected String getHunkHeader() {

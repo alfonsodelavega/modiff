@@ -32,6 +32,7 @@ import org.eclipse.epsilon.modiff.matcher.Matcher;
 import org.eclipse.epsilon.modiff.munidiff.AddedElement;
 import org.eclipse.epsilon.modiff.munidiff.ChangedElement;
 import org.eclipse.epsilon.modiff.munidiff.Difference;
+import org.eclipse.epsilon.modiff.munidiff.Munidiff;
 import org.eclipse.epsilon.modiff.munidiff.MunidiffFactory;
 import org.eclipse.epsilon.modiff.munidiff.RemovedElement;
 import org.eclipse.epsilon.modiff.output.MatcherBasedLabelProvider;
@@ -117,7 +118,8 @@ public class Modiff {
 	protected Matcher matcher;
 
 	protected MunidiffFactory munidiffFactory = MunidiffFactory.eINSTANCE;
-	protected List<Difference> differences = new ArrayList<>();
+	protected Munidiff munidiff;
+	protected List<Difference> differences;
 
 	/**
 	 * Used for proper detection of changes in multi-valued attributes and
@@ -148,6 +150,12 @@ public class Modiff {
 
 		fromModel = loadFromModel();
 		toModel = loadToModel();
+
+		munidiff = munidiffFactory.createMunidiff();
+		munidiff.setFromModelFile(fromModelFile);
+		munidiff.setToModelFile(toModelFile);
+
+		differences = munidiff.getDifferences();
 
 		identifyDifferences();
 	}
@@ -252,6 +260,10 @@ public class Modiff {
 		this.matcher = matcher;
 	}
 
+	public Munidiff getMunidiff() {
+		return munidiff;
+	}
+
 	public List<Difference> getDifferences() {
 		return differences;
 	}
@@ -271,8 +283,6 @@ public class Modiff {
 	protected void identifyDifferences() {
 
 		checkForDuplicates();
-
-		differences = new ArrayList<>();
 
 		for (EObject addedElement : addedElements) {
 			boolean matched = false;
@@ -485,13 +495,7 @@ public class Modiff {
 	}
 
 	public String reportDifferences() {
-		UnifiedDiffFormatter formatter =
-				new UnifiedDiffFormatter(differences, new MatcherBasedLabelProvider(matcher));
-
-		formatter.setFromModelFile(fromModelFile);
-		formatter.setToModelFile(toModelFile);
-
-		return formatter.format();
+		return new UnifiedDiffFormatter(munidiff, new MatcherBasedLabelProvider(matcher)).format();
 	}
 
 	public Set<Integer> getModifiedLines(DiffSide diffSide) {
