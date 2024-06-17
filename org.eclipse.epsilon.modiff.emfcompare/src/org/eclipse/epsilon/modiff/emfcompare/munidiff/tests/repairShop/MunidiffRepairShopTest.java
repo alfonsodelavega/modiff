@@ -19,11 +19,14 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.epsilon.modiff.differences.AddedElement;
-import org.eclipse.epsilon.modiff.differences.ChangedElement;
-import org.eclipse.epsilon.modiff.differences.ModelDifference;
-import org.eclipse.epsilon.modiff.differences.Munidiff;
 import org.eclipse.epsilon.modiff.emfcompare.munidiff.transformations.EmfCompare2Munidiff;
+import org.eclipse.epsilon.modiff.matcher.IdMatcher;
+import org.eclipse.epsilon.modiff.munidiff.AddedElement;
+import org.eclipse.epsilon.modiff.munidiff.ChangedElement;
+import org.eclipse.epsilon.modiff.munidiff.Difference;
+import org.eclipse.epsilon.modiff.munidiff.Munidiff;
+import org.eclipse.epsilon.modiff.output.MatcherBasedLabelProvider;
+import org.eclipse.epsilon.modiff.output.UnifiedDiffFormatter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -39,9 +42,15 @@ public class MunidiffRepairShopTest {
 		final IComparisonScope scope = new DefaultComparisonScope(left, right, null);
 		final Comparison comparison = EMFCompare.builder().build().compare(scope);
 
-		Munidiff md = new EmfCompare2Munidiff().transform(comparison);
+		Munidiff md = new EmfCompare2Munidiff(new IdMatcher()).transform(comparison);
 
-		String report = md.report();
+		UnifiedDiffFormatter formatter = new UnifiedDiffFormatter(md.getDifferences(),
+				new MatcherBasedLabelProvider(new IdMatcher()));
+
+		formatter.setFromModelFile(md.getFromModelFile());
+		formatter.setToModelFile(md.getToModelFile());
+		
+		String report = formatter.format();
 
 		if (debug) {
 			System.out.println(leftModel);
@@ -112,8 +121,8 @@ public class MunidiffRepairShopTest {
 		}
 	}
 
-	protected ModelDifference getDifferenceForId(List<ModelDifference> differences, String id) {
-		for (ModelDifference d : differences) {
+	protected Difference getDifferenceForId(List<Difference> differences, String id) {
+		for (Difference d : differences) {
 			if (d.getIdentifier().equals(id)) {
 				return d;
 			}
@@ -125,10 +134,10 @@ public class MunidiffRepairShopTest {
 	public void test11() throws IOException {
 		Munidiff munidiff = getReport("11-modifyJobDescription");
 
-		List<ModelDifference> differences = munidiff.getDifferences();
+		List<Difference> differences = munidiff.getDifferences();
 		assert (differences.size() == 1);
 
-		ModelDifference diff = differences.get(0);
+		Difference diff = differences.get(0);
 		assert (diff instanceof ChangedElement);
 		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("description"));
@@ -138,10 +147,10 @@ public class MunidiffRepairShopTest {
 	public void test21() throws IOException {
 		Munidiff munidiff = getReport("21-changeMainSkill");
 
-		List<ModelDifference> differences = munidiff.getDifferences();
+		List<Difference> differences = munidiff.getDifferences();
 		assert (differences.size() == 1);
 
-		ModelDifference diff = differences.get(0);
+		Difference diff = differences.get(0);
 		assert (diff instanceof ChangedElement);
 		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("mainSkill"));
@@ -151,13 +160,13 @@ public class MunidiffRepairShopTest {
 	public void test31() throws IOException {
 		Munidiff munidiff = getReport("31-addStatus");
 
-		List<ModelDifference> differences = munidiff.getDifferences();
+		List<Difference> differences = munidiff.getDifferences();
 		assert (differences.size() == 2);
 
-		ModelDifference added = getDifferenceForId(differences, "st2");
+		Difference added = getDifferenceForId(differences, "st2");
 		assert (added != null && added instanceof AddedElement);
 
-		ModelDifference changed = getDifferenceForId(differences, "job2");
+		Difference changed = getDifferenceForId(differences, "job2");
 		assert (changed != null && changed instanceof ChangedElement);
 		assert (((ChangedElement) changed).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) changed).getChangedFeatures().get(0).getName().equals("status"));
@@ -167,10 +176,10 @@ public class MunidiffRepairShopTest {
 	public void test41() throws IOException {
 		Munidiff munidiff = getReport("41-addTag");
 
-		List<ModelDifference> differences = munidiff.getDifferences();
+		List<Difference> differences = munidiff.getDifferences();
 		assert (differences.size() == 1);
 
-		ModelDifference diff = differences.get(0);
+		Difference diff = differences.get(0);
 		assert (diff instanceof ChangedElement);
 		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("tags"));
@@ -180,10 +189,10 @@ public class MunidiffRepairShopTest {
 	public void test42() throws IOException {
 		Munidiff munidiff = getReport("42-removeTag");
 
-		List<ModelDifference> differences = munidiff.getDifferences();
+		List<Difference> differences = munidiff.getDifferences();
 		assert (differences.size() == 1);
 
-		ModelDifference diff = differences.get(0);
+		Difference diff = differences.get(0);
 		assert (diff instanceof ChangedElement);
 		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("tags"));
@@ -193,10 +202,10 @@ public class MunidiffRepairShopTest {
 	public void test51() throws IOException {
 		Munidiff munidiff = getReport("51-addSecondarySkill");
 
-		List<ModelDifference> differences = munidiff.getDifferences();
+		List<Difference> differences = munidiff.getDifferences();
 		assert (differences.size() == 1);
 
-		ModelDifference diff = differences.get(0);
+		Difference diff = differences.get(0);
 		assert (diff instanceof ChangedElement);
 		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("secondarySkills"));
@@ -206,10 +215,10 @@ public class MunidiffRepairShopTest {
 	public void test61() throws IOException {
 		Munidiff munidiff = getReport("61-moveJob");
 
-		List<ModelDifference> differences = munidiff.getDifferences();
+		List<Difference> differences = munidiff.getDifferences();
 		assert (differences.size() == 2);
 
-		ModelDifference changed = getDifferenceForId(differences, "Alice");
+		Difference changed = getDifferenceForId(differences, "Alice");
 		assert (changed != null && changed instanceof ChangedElement);
 		assert (((ChangedElement) changed).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) changed).getChangedFeatures().get(0).getName().equals("queue"));

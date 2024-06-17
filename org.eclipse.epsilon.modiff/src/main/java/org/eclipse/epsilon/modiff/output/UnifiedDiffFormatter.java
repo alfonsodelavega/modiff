@@ -7,10 +7,10 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.epsilon.modiff.differences.AddedElement;
-import org.eclipse.epsilon.modiff.differences.ChangedElement;
-import org.eclipse.epsilon.modiff.differences.ModelDifference;
-import org.eclipse.epsilon.modiff.differences.RemovedElement;
+import org.eclipse.epsilon.modiff.munidiff.AddedElement;
+import org.eclipse.epsilon.modiff.munidiff.ChangedElement;
+import org.eclipse.epsilon.modiff.munidiff.Difference;
+import org.eclipse.epsilon.modiff.munidiff.RemovedElement;
 
 import com.github.difflib.DiffUtils;
 import com.github.difflib.patch.AbstractDelta;
@@ -87,13 +87,13 @@ public class UnifiedDiffFormatter {
 		return CONTAINMENT_REFERENCE_DELIMITER;
 	}
 
-	protected List<ModelDifference> differences;
+	protected List<Difference> differences;
 	protected LabelProvider labelProvider;
 
 	protected String fromModelFile = "";
 	protected String toModelFile = "";
 
-	public UnifiedDiffFormatter(List<ModelDifference> differences, LabelProvider labelProvider) {
+	public UnifiedDiffFormatter(List<Difference> differences, LabelProvider labelProvider) {
 		this.differences = differences;
 		this.labelProvider = labelProvider;
 	}
@@ -107,9 +107,9 @@ public class UnifiedDiffFormatter {
 		}
 
 		for (int i = 0; i < differences.size(); i++) {
-			ModelDifference d = differences.get(i);
+			Difference d = differences.get(i);
 			s.append(getHunkHeader()).append(NL);
-			s.append(d.format(this));
+			s.append(format(d));
 			if (i < differences.size() - 1) {
 				s.append(NL);
 			}
@@ -132,6 +132,18 @@ public class UnifiedDiffFormatter {
 
 	protected String getLabel(EObject obj) {
 		return labelProvider.getLabel(obj);
+	}
+
+	public String format(Difference d) {
+		if (d instanceof AddedElement) {
+			return format((AddedElement) d);
+		}
+		else if (d instanceof RemovedElement) {
+			return format((RemovedElement) d);
+		}
+		else {
+			return format((ChangedElement) d);
+		}
 	}
 
 	public String format(AddedElement addedElement) {

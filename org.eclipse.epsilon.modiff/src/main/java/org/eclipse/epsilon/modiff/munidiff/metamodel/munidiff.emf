@@ -1,0 +1,31 @@
+@namespace(uri="munidiff", prefix="munidiff")
+
+package munidiff;
+
+class Munidiff {
+	attr String[1] fromModelFile;
+	attr String[1] toModelFile;
+	val Difference[*] differences;
+}
+
+class Difference {
+	attr String identifier;
+}
+
+class AddedElement extends Difference {
+	ref EObject[1] element;
+}
+
+class RemovedElement extends Difference {
+	ref EObject[1] element;
+}
+
+class ChangedElement extends Difference {
+	ref EObject[1] fromElement;
+	ref EObject[1] toElement;
+	ref ecore.EStructuralFeature[*] changedFeatures;
+	
+	op boolean hasDifferences();
+}
+
+

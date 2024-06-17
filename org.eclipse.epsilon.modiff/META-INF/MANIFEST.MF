@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Modiff
-Bundle-SymbolicName: org.eclipse.epsilon.modiff
+Bundle-SymbolicName: org.eclipse.epsilon.modiff;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.eclipse.epsilon.modiff
@@ -10,6 +10,7 @@ Export-Package: org.eclipse.epsilon.modiff,
  org.eclipse.epsilon.modiff.differences,
  org.eclipse.epsilon.modiff.matcher,
  org.eclipse.epsilon.modiff.misc,
+ org.eclipse.epsilon.modiff.munidiff,
  org.eclipse.epsilon.modiff.output,
  org.eclipse.epsilon.modiff.test,
  org.eclipse.epsilon.modiff.test.emfcompare,

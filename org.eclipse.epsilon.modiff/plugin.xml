@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated munidiff -->
+      <package
+            uri="munidiff"
+            class="org.eclipse.epsilon.modiff.munidiff.MunidiffPackage"
+            genModel="src/main/java/org/eclipse/epsilon/modiff/munidiff/metamodel/munidiff.genmodel"/>
+   </extension>
+
+</plugin>

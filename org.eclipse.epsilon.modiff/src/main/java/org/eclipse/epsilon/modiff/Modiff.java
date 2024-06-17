@@ -27,12 +27,13 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.epsilon.modiff.differences.AddedElement;
-import org.eclipse.epsilon.modiff.differences.ChangedElement;
-import org.eclipse.epsilon.modiff.differences.ModelDifference;
-import org.eclipse.epsilon.modiff.differences.RemovedElement;
 import org.eclipse.epsilon.modiff.matcher.IdMatcher;
 import org.eclipse.epsilon.modiff.matcher.Matcher;
+import org.eclipse.epsilon.modiff.munidiff.AddedElement;
+import org.eclipse.epsilon.modiff.munidiff.ChangedElement;
+import org.eclipse.epsilon.modiff.munidiff.Difference;
+import org.eclipse.epsilon.modiff.munidiff.MunidiffFactory;
+import org.eclipse.epsilon.modiff.munidiff.RemovedElement;
 import org.eclipse.epsilon.modiff.output.MatcherBasedLabelProvider;
 import org.eclipse.epsilon.modiff.output.UnifiedDiffFormatter;
 import org.eclipse.jgit.diff.DiffFormatter;
@@ -114,7 +115,9 @@ public class Modiff {
 	protected List<String> toModelDuplicates = new ArrayList<>();
 
 	protected Matcher matcher;
-	protected List<ModelDifference> differences = new ArrayList<>();
+
+	protected MunidiffFactory munidiffFactory = MunidiffFactory.eINSTANCE;
+	protected List<Difference> differences = new ArrayList<>();
 
 	/**
 	 * Used for proper detection of changes in multi-valued attributes and
@@ -249,7 +252,7 @@ public class Modiff {
 		this.matcher = matcher;
 	}
 
-	public List<ModelDifference> getDifferences() {
+	public List<Difference> getDifferences() {
 		return differences;
 	}
 
@@ -284,24 +287,36 @@ public class Modiff {
 				}
 			}
 			if (!matched) {
-				differences.add(new AddedElement(
-						matcher.getIdentifier(addedElement), addedElement));
+				AddedElement added = munidiffFactory.createAddedElement();
+				added.setIdentifier(matcher.getIdentifier(addedElement));
+				added.setElement(addedElement);
+				differences.add(added);
 			}
 		}
 
 		// any element that remains is a removed one
 		for (EObject removedElement : removedElements) {
-			differences.add(new RemovedElement(
-					matcher.getIdentifier(removedElement), removedElement));
+			RemovedElement removed = munidiffFactory.createRemovedElement();
+			removed.setIdentifier(matcher.getIdentifier(removedElement));
+			removed.setElement(removedElement);
+			differences.add(removed);
 		}
+	}
+
+	protected ChangedElement createChangedElement(EObject removedElement, EObject addedElement, Matcher matcher) {
+		ChangedElement changed = munidiffFactory.createChangedElement();
+
+		changed.setIdentifier(matcher.getIdentifier(removedElement));
+		changed.setFromElement(removedElement);
+		changed.setToElement(addedElement);
+		changed.setMatcher(matcher);
+
+		return changed;
 	}
 
 	protected void registerChangedElement(EObject removedElement, EObject addedElement) {
 
-		ChangedElement changedElement = new ChangedElement(
-				matcher,
-				removedElement,
-				addedElement);
+		ChangedElement changedElement = createChangedElement(removedElement, addedElement, matcher);
 
 		// it could be a false positive due to line format changes
 		if (changedElement.hasDifferences()) {
@@ -323,10 +338,7 @@ public class Modiff {
 							EObject toContainer = findElement(matcher.getIdentifier(fromValue), toModel).eContainer();
 							EObject fromContainer = findElement(matcher.getIdentifier(toContainer), fromModel);
 
-							ChangedElement changedContainer = new ChangedElement(
-									matcher,
-									fromContainer,
-									toContainer);
+							ChangedElement changedContainer = createChangedElement(fromContainer, toContainer, matcher);
 
 							if (changedContainer.hasDifferences()) {
 								differences.add(changedContainer);
@@ -345,10 +357,7 @@ public class Modiff {
 							EObject fromContainer = findElement(matcher.getIdentifier(toValue), fromModel).eContainer();
 							EObject toContainer = findElement(matcher.getIdentifier(fromContainer), toModel);
 
-							ChangedElement changedContainer = new ChangedElement(
-									matcher,
-									fromContainer,
-									toContainer);
+							ChangedElement changedContainer = createChangedElement(fromContainer, toContainer, matcher);
 
 							if (changedContainer.hasDifferences()) {
 								differences.add(changedContainer);
@@ -476,7 +485,6 @@ public class Modiff {
 	}
 
 	public String reportDifferences() {
-
 		UnifiedDiffFormatter formatter =
 				new UnifiedDiffFormatter(differences, new MatcherBasedLabelProvider(matcher));
 

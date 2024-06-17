@@ -7,12 +7,12 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.Modiff;
-import org.eclipse.epsilon.modiff.differences.AddedElement;
-import org.eclipse.epsilon.modiff.differences.ChangedElement;
-import org.eclipse.epsilon.modiff.differences.ModelDifference;
-import org.eclipse.epsilon.modiff.differences.RemovedElement;
 import org.eclipse.epsilon.modiff.matcher.EcoreMatcher;
 import org.eclipse.epsilon.modiff.matcher.Matcher;
+import org.eclipse.epsilon.modiff.munidiff.AddedElement;
+import org.eclipse.epsilon.modiff.munidiff.ChangedElement;
+import org.eclipse.epsilon.modiff.munidiff.Difference;
+import org.eclipse.epsilon.modiff.munidiff.RemovedElement;
 import org.eclipse.epsilon.modiff.test.emfcompare.req.data.ReqInputData;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -47,9 +47,9 @@ public class ModiffEcoreTest {
 		return modiff;
 	}
 
-	protected ModelDifference getDifferenceForId(List<ModelDifference> differences, String id) {
-		for (ModelDifference d : differences) {
-			if (d.getIdentifier().equals(id)) {
+	protected Difference getDifferenceForId(List<Difference> differences, String id) {
+		for (Difference d : differences) {
+			if (id.equals(d.getIdentifier())) {
 				return d;
 			}
 		}
@@ -77,7 +77,7 @@ public class ModiffEcoreTest {
 	public void test01() throws IOException {
 		modiff = compare("00-from", "00-from");
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 0);
 		assert (modiff.reportDifferences().length() == 0);
 	}
@@ -86,10 +86,10 @@ public class ModiffEcoreTest {
 	public void test11() throws IOException {
 		modiff = compare("00-from", "11-class2abstract");
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 1);
 
-		ModelDifference diff = getDifferenceForId(differences, "repairtests.Skill");
+		Difference diff = getDifferenceForId(differences, "repairtests.Skill");
 		assert (diff != null && diff instanceof ChangedElement);
 		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("abstract"));
@@ -99,10 +99,10 @@ public class ModiffEcoreTest {
 	public void test12() throws IOException {
 		modiff = compare("00-from", "12-className");
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 3);
 
-		ModelDifference diff = getDifferenceForId(differences, "repairtests.RepairShop.workers");
+		Difference diff = getDifferenceForId(differences, "repairtests.RepairShop.workers");
 		assert (diff != null && diff instanceof ChangedElement);
 		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("eType"));

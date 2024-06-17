@@ -12,11 +12,11 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.Modiff;
-import org.eclipse.epsilon.modiff.differences.AddedElement;
-import org.eclipse.epsilon.modiff.differences.ChangedElement;
-import org.eclipse.epsilon.modiff.differences.ModelDifference;
 import org.eclipse.epsilon.modiff.matcher.IdMatcher;
 import org.eclipse.epsilon.modiff.matcher.Matcher;
+import org.eclipse.epsilon.modiff.munidiff.AddedElement;
+import org.eclipse.epsilon.modiff.munidiff.ChangedElement;
+import org.eclipse.epsilon.modiff.munidiff.Difference;
 import org.eclipse.epsilon.modiff.test.emfcompare.req.data.ReqInputData;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -51,8 +51,8 @@ public class ModiffRepairShopTest {
 		return modiff;
 	}
 
-	protected ModelDifference getDifferenceForId(List<ModelDifference> differences, String id) {
-		for (ModelDifference d : differences) {
+	protected Difference getDifferenceForId(List<Difference> differences, String id) {
+		for (Difference d : differences) {
 			if (d.getIdentifier().equals(id)) {
 				return d;
 			}
@@ -97,7 +97,7 @@ public class ModiffRepairShopTest {
 	public void test01() throws IOException {
 		modiff = compare("00-from", "00-from");
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 0);
 		assert (modiff.reportDifferences().length() == 0);
 	}
@@ -106,10 +106,10 @@ public class ModiffRepairShopTest {
 	public void test11() throws IOException {
 		modiff = compare("00-from", "11-modifyJobDescription");
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 1);
 
-		ModelDifference diff = differences.get(0);
+		Difference diff = differences.get(0);
 		assert (diff instanceof ChangedElement);
 		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("description"));
@@ -119,10 +119,10 @@ public class ModiffRepairShopTest {
 	public void test21() throws IOException {
 		modiff = compare("00-from", "21-changeMainSkill");
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 1);
 
-		ModelDifference diff = differences.get(0);
+		Difference diff = differences.get(0);
 		assert (diff instanceof ChangedElement);
 		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("mainSkill"));
@@ -132,13 +132,13 @@ public class ModiffRepairShopTest {
 	public void test31() throws IOException {
 		modiff = compare("00-from", "31-addStatus");
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 2);
 
-		ModelDifference added = getDifferenceForId(differences, "st2");
+		Difference added = getDifferenceForId(differences, "st2");
 		assert (added != null && added instanceof AddedElement);
 
-		ModelDifference changed = getDifferenceForId(differences, "job2");
+		Difference changed = getDifferenceForId(differences, "job2");
 		assert (changed != null && changed instanceof ChangedElement);
 		assert (((ChangedElement) changed).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) changed).getChangedFeatures().get(0).getName().equals("status"));
@@ -149,10 +149,10 @@ public class ModiffRepairShopTest {
 	public void test41() throws IOException {
 		modiff = compare("00-from", "41-addTag");
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 1);
 
-		ModelDifference diff = differences.get(0);
+		Difference diff = differences.get(0);
 		assert (diff instanceof ChangedElement);
 		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("tags"));
@@ -162,10 +162,10 @@ public class ModiffRepairShopTest {
 	public void test42() throws IOException {
 		modiff = compare("00-from", "42-removeTag");
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 1);
 
-		ModelDifference diff = differences.get(0);
+		Difference diff = differences.get(0);
 		assert (diff instanceof ChangedElement);
 		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("tags"));
@@ -175,10 +175,10 @@ public class ModiffRepairShopTest {
 	public void test51() throws IOException {
 		modiff = compare("00-from", "51-addSecondarySkill");
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 1);
 
-		ModelDifference diff = differences.get(0);
+		Difference diff = differences.get(0);
 		assert (diff instanceof ChangedElement);
 		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("secondarySkills"));
@@ -188,10 +188,10 @@ public class ModiffRepairShopTest {
 	public void test61() throws IOException {
 		modiff = compare("00-from", "61-moveJob");
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 2);
 
-		ModelDifference changed = getDifferenceForId(differences, "Alice");
+		Difference changed = getDifferenceForId(differences, "Alice");
 		assert (changed != null && changed instanceof ChangedElement);
 		assert (((ChangedElement) changed).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) changed).getChangedFeatures().get(0).getName().equals("queue"));
@@ -206,10 +206,10 @@ public class ModiffRepairShopTest {
 	public void test62() throws IOException {
 		modiff = compare("00-from-noMultiValuedAttributes", "62-moveJob-noMultiValuedAttributes");
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 2);
 
-		ModelDifference changed = getDifferenceForId(differences, "Alice");
+		Difference changed = getDifferenceForId(differences, "Alice");
 		assert (changed != null && changed instanceof ChangedElement);
 		assert (((ChangedElement) changed).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) changed).getChangedFeatures().get(0).getName().equals("queue"));

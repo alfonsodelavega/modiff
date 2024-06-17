@@ -25,9 +25,12 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.epsilon.modiff.differences.Munidiff;
 import org.eclipse.epsilon.modiff.emfcompare.munidiff.tests.emfCompare.req.data.ReqInputData;
 import org.eclipse.epsilon.modiff.emfcompare.munidiff.transformations.EmfCompare2Munidiff;
+import org.eclipse.epsilon.modiff.matcher.IdMatcher;
+import org.eclipse.epsilon.modiff.munidiff.Munidiff;
+import org.eclipse.epsilon.modiff.output.MatcherBasedLabelProvider;
+import org.eclipse.epsilon.modiff.output.UnifiedDiffFormatter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -62,9 +65,15 @@ public class MunidiffReqTest {
 		final IComparisonScope scope = new DefaultComparisonScope(left, right, null);
 		final Comparison comparison = EMFCompare.builder().build().compare(scope);
 
-		Munidiff md = new EmfCompare2Munidiff().transform(comparison);
+		Munidiff md = new EmfCompare2Munidiff(new IdMatcher()).transform(comparison);
 
-		String report = md.report();
+		UnifiedDiffFormatter formatter = new UnifiedDiffFormatter(md.getDifferences(),
+				new MatcherBasedLabelProvider(new IdMatcher()));
+
+		formatter.setFromModelFile(md.getFromModelFile());
+		formatter.setToModelFile(md.getToModelFile());
+
+		String report = formatter.format();
 
 		if (debug) {
 			System.out.println(report);

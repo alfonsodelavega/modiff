@@ -23,12 +23,12 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.Modiff;
-import org.eclipse.epsilon.modiff.differences.AddedElement;
-import org.eclipse.epsilon.modiff.differences.ChangedElement;
-import org.eclipse.epsilon.modiff.differences.ModelDifference;
-import org.eclipse.epsilon.modiff.differences.RemovedElement;
 import org.eclipse.epsilon.modiff.matcher.IdMatcher;
 import org.eclipse.epsilon.modiff.matcher.Matcher;
+import org.eclipse.epsilon.modiff.munidiff.AddedElement;
+import org.eclipse.epsilon.modiff.munidiff.ChangedElement;
+import org.eclipse.epsilon.modiff.munidiff.Difference;
+import org.eclipse.epsilon.modiff.munidiff.RemovedElement;
 import org.eclipse.epsilon.modiff.test.emfcompare.req.data.ReqInputData;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -96,7 +96,7 @@ public class ModiffReqComputingTest {
 	public void testA1() throws IOException {
 		modiff = compare(input.getA1From(), input.getA1To());
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 4);
 		assert (differences.get(2) instanceof RemovedElement);
 		assert (differences.get(2).getIdentifier().equals("A"));
@@ -108,7 +108,7 @@ public class ModiffReqComputingTest {
 	public void testA2() throws IOException {
 		modiff = compare(input.getA2From(), input.getA2To());
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 4);
 		assert (differences.get(2) instanceof RemovedElement);
 		assert (differences.get(2).getIdentifier().equals("A"));
@@ -120,7 +120,7 @@ public class ModiffReqComputingTest {
 	public void testA3() throws IOException {
 		modiff = compare(input.getA3From(), input.getA3To());
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 3);
 		assert (differences.get(0) instanceof ChangedElement);
 		assert (differences.get(0).getIdentifier().equals("A"));
@@ -132,7 +132,7 @@ public class ModiffReqComputingTest {
 	public void testA4() throws IOException {
 		modiff = compare(input.getA4From(), input.getA4To());
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 3);
 		assert (differences.get(0) instanceof ChangedElement);
 		assert (differences.get(0).getIdentifier().equals("A"));
@@ -155,7 +155,7 @@ public class ModiffReqComputingTest {
 	public void testA5() throws IOException {
 		modiff = compare(input.getA5From(), input.getA5To());
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 5);
 
 		assert (differences.get(0) instanceof ChangedElement);
@@ -189,10 +189,10 @@ public class ModiffReqComputingTest {
 	public void testA6() throws IOException {
 		modiff = compare(input.getA6From(), input.getA6To());
 
-		List<ModelDifference> differences = modiff.getDifferences();
+		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 6);
 
-		for (ModelDifference d : differences) {
+		for (Difference d : differences) {
 			if (d.getIdentifier().equals("_yWc_0JUeEeGiestbncRZoQ")) {
 				assert (d instanceof ChangedElement);
 			}
