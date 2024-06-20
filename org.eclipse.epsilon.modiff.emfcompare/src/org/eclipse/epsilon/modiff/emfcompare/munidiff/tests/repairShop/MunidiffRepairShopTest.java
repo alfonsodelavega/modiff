@@ -26,7 +26,7 @@ import org.eclipse.epsilon.modiff.munidiff.ChangedElement;
 import org.eclipse.epsilon.modiff.munidiff.Difference;
 import org.eclipse.epsilon.modiff.munidiff.Munidiff;
 import org.eclipse.epsilon.modiff.output.MatcherBasedLabelProvider;
-import org.eclipse.epsilon.modiff.output.UnifiedDiffFormatter;
+import org.eclipse.epsilon.modiff.output.textual.UnifiedDiffFormatter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

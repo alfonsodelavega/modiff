@@ -35,8 +35,10 @@ import org.eclipse.epsilon.modiff.munidiff.Difference;
 import org.eclipse.epsilon.modiff.munidiff.Munidiff;
 import org.eclipse.epsilon.modiff.munidiff.MunidiffFactory;
 import org.eclipse.epsilon.modiff.munidiff.RemovedElement;
+import org.eclipse.epsilon.modiff.output.LabelProvider;
 import org.eclipse.epsilon.modiff.output.MatcherBasedLabelProvider;
-import org.eclipse.epsilon.modiff.output.UnifiedDiffFormatter;
+import org.eclipse.epsilon.modiff.output.graphical.PlantumlFormatter;
+import org.eclipse.epsilon.modiff.output.textual.UnifiedDiffFormatter;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.EditList;
 import org.eclipse.jgit.diff.HistogramDiff;
@@ -90,11 +92,18 @@ public class Modiff {
 			}
 		}
 
+		Matcher matcher = new IdMatcher();
+		
 		Modiff modiff = new Modiff("models/comics/base.model", "models/comics/left.model");
-		modiff.setMatcher(new IdMatcher());
+		modiff.setMatcher(matcher);
 		modiff.compare();
 		
 		System.out.println(modiff.reportDifferences());
+		
+		System.out.println("**************************************************");
+
+		LabelProvider labelProvider = new MatcherBasedLabelProvider(matcher);
+		System.out.println(new PlantumlFormatter(modiff.getMunidiff(), labelProvider).format());
 	}
 
 	protected String fromModelFile;

@@ -1,4 +1,4 @@
-package org.eclipse.epsilon.modiff.output;
+package org.eclipse.epsilon.modiff.output.textual;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +12,8 @@ import org.eclipse.epsilon.modiff.munidiff.ChangedElement;
 import org.eclipse.epsilon.modiff.munidiff.Difference;
 import org.eclipse.epsilon.modiff.munidiff.Munidiff;
 import org.eclipse.epsilon.modiff.munidiff.RemovedElement;
+import org.eclipse.epsilon.modiff.output.LabelProvider;
+import org.eclipse.epsilon.modiff.output.MunidiffFormatter;
 
 import com.github.difflib.DiffUtils;
 import com.github.difflib.patch.AbstractDelta;
@@ -20,7 +22,7 @@ import com.github.difflib.patch.Patch;
 /**
  * Model differences formatter that mimicks Unified Format
  */
-public class UnifiedDiffFormatter {
+public class UnifiedDiffFormatter extends MunidiffFormatter {
 
 	/* Unified diff constants, not to be customised */
 
@@ -88,26 +90,18 @@ public class UnifiedDiffFormatter {
 		return CONTAINMENT_REFERENCE_DELIMITER;
 	}
 
-	protected List<Difference> differences;
-	protected LabelProvider labelProvider;
-
-	protected String fromModelFile = "";
-	protected String toModelFile = "";
-
 	public UnifiedDiffFormatter(Munidiff munidiff, LabelProvider labelProvider) {
-		this.differences = munidiff.getDifferences();
-		this.fromModelFile = munidiff.getFromModelFile();
-		this.toModelFile = munidiff.getToModelFile();
-
-		this.labelProvider = labelProvider;
+		super(munidiff, labelProvider);
 	}
 
 	public String format() {
 		StringBuilder s = new StringBuilder();
 
+		List<Difference> differences = munidiff.getDifferences();
+
 		if (!differences.isEmpty()) {
-			s.append(HEADER_FROM_FILE).append(fromModelFile).append(NL);
-			s.append(HEADER_TO_FILE).append(toModelFile).append(NL);
+			s.append(HEADER_FROM_FILE).append(munidiff.getFromModelFile()).append(NL);
+			s.append(HEADER_TO_FILE).append(munidiff.getToModelFile()).append(NL);
 		}
 
 		for (int i = 0; i < differences.size(); i++) {

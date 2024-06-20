@@ -54,7 +54,11 @@
 			<artifactId>java-diff-utils</artifactId>
 			<version>4.12</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.eclipse.epsilon</groupId>
+			<artifactId>org.eclipse.epsilon.egl.engine</artifactId>
+			<version>2.5.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -77,8 +81,10 @@
 						<configuration>
 							<shadedArtifactAttached>true</shadedArtifactAttached>
 							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>org.eclipse.epsilon.modiff.cli.ModiffCli</mainClass>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>
+										org.eclipse.epsilon.modiff.cli.ModiffCli</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>

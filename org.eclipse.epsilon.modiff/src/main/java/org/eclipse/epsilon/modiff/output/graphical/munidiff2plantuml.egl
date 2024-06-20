@@ -1,0 +1,79 @@
+[%
+var REMOVED_FG_COLOR = "#CC3311";
+var REMOVED_BG_COLOR = "#f59d89";
+
+var ADDED_FG_COLOR = "#228833";
+var ADDED_BG_COLOR = "#99e6a6";
+%]
+@startuml
+skinparam roundCorner 0
+skinparam objectBorderThickness 1
+!pragma layout smetana
+skinparam defaultFontName system-ui
+
+[%for (d in munidiff.differences) { %]
+object "[%=d.identifier%][%=d.getNodeLabel()%]" as [%=d.identifier%] [%=d.getBackgroundColor()%] {
+	[%
+	if (d.eClass().name == "ChangedElement") {
+		var fromElement = d.fromElement;
+		var toElement = d.toElement;
+		var attributes = toElement.eClass().getEAllAttributes();
+		for (attr in attributes) {
+			if (d.getChangedFeatures().contains(attr)) {%]
+				<size:8><[%=ADDED_FG_COLOR%]:heavy_plus_sign:></size> <color:[%=ADDED_FG_COLOR%]>[%=attr.name%] = [%=fromElement.getAttributeValue(attr)%]</color>
+				<size:8><[%=REMOVED_FG_COLOR%]:heavy_minus_sign:></size> <color:[%=REMOVED_FG_COLOR%]>[%=attr.name%] = [%=toElement.getAttributeValue(attr)%]</color>				
+		[%  }
+			else {
+				// if the feature is set (one check is enough here)
+				if (fromElement.eIsSet(attr)) {%]
+					[%=attr.name%] = [%=fromElement.getAttributeValue(attr)%]
+			[%  }
+			}
+		}
+	} else {
+		var element = d.element;
+		var attributes = element.eClass().getEAllAttributes().select(attr|element.eIsSet(attr));
+		for (attr in attributes){%]
+			[%=attr.name%] = [%=element.getAttributeValue(attr)%]
+	[%  }
+	}%]
+}
+[%}%]
+@enduml
+
+[%
+operation Any getNodeLabel() {
+	if (self.eClass().name == "ChangedElement") {
+		return ":" + self.fromElement.eClass().name;
+	}
+	else {
+		return ":" + self.element.eClass().name;
+	}
+}
+
+operation Any getBackgroundColor() {
+	if (self.eClass().name == "AddedElement") {
+		return ADDED_BG_COLOR;
+	}
+	else if (self.eClass().name == "RemovedElement") {
+		return REMOVED_BG_COLOR;
+	}
+	return "";
+}
+
+operation Any getAttributeValue(attr) {
+	var value = self.eGet(attr) + "";
+	value = value.escapeXml();
+	var chopped = false;
+	if (value.indexOf("\n").asVar("newLineIndex") > -1) {
+		value = value.substring(0, newLineIndex);
+		chopped = true;
+	}
+	if (value.length() > 25) { 
+		value = value.substring(0, 25);
+		chopped = true;
+	}
+	if (chopped) value += " ...";
+	return value;
+}
+%]
