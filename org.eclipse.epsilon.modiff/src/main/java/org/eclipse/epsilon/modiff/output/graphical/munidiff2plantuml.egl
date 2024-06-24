@@ -1,9 +1,9 @@
 [%
-var REMOVED_FG_COLOR = "#CC3311";
-var REMOVED_BG_COLOR = "#f59d89";
+var REMOVED_FG = "#CC3311";
+var REMOVED_BG = "#f59d89";
 
-var ADDED_FG_COLOR = "#228833";
-var ADDED_BG_COLOR = "#99e6a6";
+var ADDED_FG = "#228833";
+var ADDED_BG = "#99e6a6";
 %]
 @startuml
 skinparam roundCorner 0
@@ -11,17 +11,32 @@ skinparam objectBorderThickness 1
 !pragma layout smetana
 skinparam defaultFontName system-ui
 
-[%for (d in munidiff.differences) { %]
-object "[%=d.identifier%][%=d.getNodeLabel()%]" as [%=d.identifier%] [%=d.getBackgroundColor()%] {
+[%
+// TODO: better optimize this
+var addedElements : Set;
+var removedElements : Set;
+
+var changeDifferences : Set;
+
+var drawedNodeIds : Set;
+
+// draw elements (with attributes) belonging to a model difference
+for (d in munidiff.differences) {
+	var elem = d.getDiffElement();
+	drawedNodeIds.add(elem.getNodeId());
+%]
+object "[%=elem.getNodeId()%]:[%=elem.eClass().name%]" as [%=elem.getNodeId()%] [%=d.getBackgroundColor()%] {
 	[%
 	if (d.eClass().name == "ChangedElement") {
+		changeDifferences.add(d);
+	
 		var fromElement = d.fromElement;
 		var toElement = d.toElement;
 		var attributes = toElement.eClass().getEAllAttributes();
 		for (attr in attributes) {
 			if (d.getChangedFeatures().contains(attr)) {%]
-				<size:8><[%=ADDED_FG_COLOR%]:heavy_plus_sign:></size> <color:[%=ADDED_FG_COLOR%]>[%=attr.name%] = [%=fromElement.getAttributeValue(attr)%]</color>
-				<size:8><[%=REMOVED_FG_COLOR%]:heavy_minus_sign:></size> <color:[%=REMOVED_FG_COLOR%]>[%=attr.name%] = [%=toElement.getAttributeValue(attr)%]</color>				
+				<size:8><[%=ADDED_FG%]:heavy_plus_sign:></size> <color:[%=ADDED_FG%]>[%=attr.name%] = [%=fromElement.getAttributeValue(attr)%]</color>
+				<size:8><[%=REMOVED_FG%]:heavy_minus_sign:></size> <color:[%=REMOVED_FG%]>[%=attr.name%] = [%=toElement.getAttributeValue(attr)%]</color>				
 		[%  }
 			else {
 				// if the feature is set (one check is enough here)
@@ -31,34 +46,148 @@ object "[%=d.identifier%][%=d.getNodeLabel()%]" as [%=d.identifier%] [%=d.getBac
 			}
 		}
 	} else {
-		var element = d.element;
-		var attributes = element.eClass().getEAllAttributes().select(attr|element.eIsSet(attr));
+	
+		if (d.eClass().name == "AddedElement") {
+			addedElements.add(elem);
+		}
+		else {
+			removedElements.add(elem);
+		}
+		
+		var attributes = elem.eClass().getEAllAttributes().select(attr|elem.eIsSet(attr));
 		for (attr in attributes){%]
-			[%=attr.name%] = [%=element.getAttributeValue(attr)%]
+			[%=attr.name%] = [%=elem.getAttributeValue(attr)%]
 	[%  }
 	}%]
 }
-[%}%]
+[%
+}
+
+var commonElements : Set;
+
+// determine common elements to draw based on the references of the differences
+for (elem in addedElements.includingAll(removedElements)) {
+	for (refElem in elem.getReferenced()) {
+		if (not drawedNodeIds.includes(refElem.getNodeId())) {
+			commonElements.add(refElem);
+			drawedNodeIds.add(refElem.getNodeId());
+		}
+	}
+}
+
+for (changeDiff in changeDifferences) {
+	var refElems = changeDiff.fromElement.getReferenced();
+	refElems = refElems.includingAll(changeDiff.toElement.getReferenced());
+	for (refElem in refElems) {
+		if (not drawedNodeIds.includes(refElem.getNodeId())) {
+			commonElements.add(refElem);
+			drawedNodeIds.add(refElem.getNodeId());
+		}
+	}
+}
+
+// draw common elements (nodes and attributes)
+for (elem in commonElements) {%]
+object "[%=elem.getNodeId()%]:[%=elem.eClass().name%]" as [%=elem.getNodeId()%] {
+[%
+	var attributes = elem.eClass().getEAllAttributes().select(attr|elem.eIsSet(attr));
+		for (attr in attributes){%]
+			[%=attr.name%] = [%=elem.getAttributeValue(attr)%]
+	[%  }%]
+}
+[%
+}
+
+/*
+draw references:
+- those of added (green) or removed (red) elements
+- those of changed elements (new/added values in green, old/removed values in red, unchanged in black)
+	- depends on the reference being "many" or not
+
+many alternative options to show. Some parameters/layers could be supported
+*/
+for (added in addedElements) {
+	addReferences(added, ADDED_FG);
+}
+
+for (removed in removedElements) {
+	addReferences(removed, REMOVED_FG);
+}
+
+for (changeDiff in changeDifferences) {
+	var references = changeDiff.fromElement.eClass().getEAllReferences();
+	for (ref in references) {
+		if (changeDiff.getChangedFeatures().contains(ref)) {
+			if (ref.isMany()) {
+				var fromElemRefs = changeDiff.fromElement.eGet(ref).asSequence();
+				var toElemRefs = changeDiff.toElement.eGet(ref).asSequence();
+				
+				var deletedRefs = fromElemRefs.excludingAll(toElemRefs);
+				var addedRefs = toElemRefs.excludingAll(fromElemRefs);
+				var commonRefs = fromElemRefs.includingAll(toElemRefs).excludingAll(deletedRefs).excludingAll(addedRefs);
+				
+				for (d in deletedRefs) {
+					addReference(changeDiff.fromElement.getNodeId(), d.getNodeId(), ref.name, ref.containment, REMOVED_FG);
+				}
+				for (d in addedRefs) {
+					addReference(changeDiff.fromElement.getNodeId(), d.getNodeId(), ref.name, ref.containment, ADDED_FG);
+				}
+				for (d in commonRefs) {
+					addReference(changeDiff.fromElement.getNodeId(), d.getNodeId(), ref.name, ref.containment, "#000000");
+				}
+			}
+			else {
+				addReference(changeDiff.fromElement, ref, REMOVED_FG);
+				addReference(changeDiff.toElement, ref, ADDED_FG);
+			}
+		}
+		else {
+			addReference(changeDiff.fromElement, ref, "#000000");
+		}
+	}
+}
+%]
 @enduml
 
 [%
-operation Any getNodeLabel() {
+
+operation addReferences(elem, color) {
+	var references = elem.eClass().getEAllReferences().select(ref | elem.eIsSet(ref));
+	for (ref in references) {
+		addReference(elem, ref, color);
+	}
+}
+
+operation addReference(elem, ref, color) {
+	for (refElem in elem.eGet(ref).asSequence()) {
+		addReference(elem.getNodeId(), refElem.getNodeId(), ref.name, ref.containment, color);
+	}
+}
+
+operation addReference(sourceId, targetId, referenceName, isContainment, color) {%]
+	[%=sourceId%] [%=isContainment? "*" : ""%]--> "<color:[%=color%]>[%=referenceName%]</color>" [%=targetId%] [%=color%]
+[%
+}
+
+operation Any getNodeId() {
+	return labelProvider.getLabel(self).replaceAll("[^A-Za-z0-9]","");
+}
+
+operation Any getDiffElement() {
 	if (self.eClass().name == "ChangedElement") {
-		return ":" + self.fromElement.eClass().name;
+		return self.fromElement;
 	}
-	else {
-		return ":" + self.element.eClass().name;
-	}
+	return self.element;
 }
 
 operation Any getBackgroundColor() {
 	if (self.eClass().name == "AddedElement") {
-		return ADDED_BG_COLOR;
+		return ADDED_BG;
 	}
 	else if (self.eClass().name == "RemovedElement") {
-		return REMOVED_BG_COLOR;
+		return REMOVED_BG;
 	}
-	return "";
+	return "#ffffe6"; // changed
 }
 
 operation Any getAttributeValue(attr) {
@@ -75,5 +204,17 @@ operation Any getAttributeValue(attr) {
 	}
 	if (chopped) value += " ...";
 	return value;
+}
+
+operation Any getReferenced() {
+
+	if (self.isUndefined()) return Sequence{};
+
+	var c = self.eClass();
+	var referenced : Sequence;
+	for (r in c.getEAllReferences().select(ref|self.eIsSet(ref))) {
+		referenced.addAll(self.eGet(r).asSequence());
+	}
+	return referenced;
 }
 %]

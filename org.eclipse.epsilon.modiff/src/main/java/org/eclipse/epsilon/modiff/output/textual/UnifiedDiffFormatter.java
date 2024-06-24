@@ -121,7 +121,8 @@ public class UnifiedDiffFormatter extends MunidiffFormatter {
 	}
 
 	protected String getLabel(EObject obj) {
-		return labelProvider.getLabel(obj);
+		return String.format("%s:%s",
+				labelProvider.getLabel(obj), obj.eClass().getName());
 	}
 
 	public String format(Difference d) {

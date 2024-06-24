@@ -21,6 +21,7 @@ public class PlantumlFormatter extends MunidiffFormatter {
 			module.parse(new File("src/main/java/org/eclipse/epsilon/modiff/output/graphical/munidiff2plantuml.egl"));
 
 			module.getContext().getFrameStack().put(Variable.createReadOnlyVariable("munidiff", munidiff));
+			module.getContext().getFrameStack().put(Variable.createReadOnlyVariable("labelProvider", labelProvider));
 			result = (String) module.execute();
 		}
 		catch (Exception e) {

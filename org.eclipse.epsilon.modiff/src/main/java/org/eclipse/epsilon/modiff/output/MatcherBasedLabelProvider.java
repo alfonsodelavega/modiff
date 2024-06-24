@@ -13,7 +13,7 @@ public class MatcherBasedLabelProvider implements LabelProvider {
 
 	@Override
 	public String getLabel(EObject obj) {
-		return String.format("%s \"%s\"",
-				obj.eClass().getName(), matcher.getIdentifier(obj));
+		return matcher.getIdentifier(obj);
 	}
+
 }
