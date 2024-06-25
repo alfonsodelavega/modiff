@@ -67,7 +67,7 @@ var commonElements : Set;
 
 // determine common elements to draw based on the references of the differences
 for (elem in addedElements.includingAll(removedElements)) {
-	for (refElem in elem.getReferenced()) {
+	for (refElem in elem.getAllReferenced()) {
 		if (not drawedNodeIds.includes(refElem.getNodeId())) {
 			commonElements.add(refElem);
 			drawedNodeIds.add(refElem.getNodeId());
@@ -76,8 +76,8 @@ for (elem in addedElements.includingAll(removedElements)) {
 }
 
 for (changeDiff in changeDifferences) {
-	var refElems = changeDiff.fromElement.getReferenced();
-	refElems = refElems.includingAll(changeDiff.toElement.getReferenced());
+	var refElems = changeDiff.fromElement.getAllReferenced();
+	refElems = refElems.includingAll(changeDiff.toElement.getAllReferenced());
 	for (refElem in refElems) {
 		if (not drawedNodeIds.includes(refElem.getNodeId())) {
 			commonElements.add(refElem);
@@ -119,21 +119,23 @@ for (changeDiff in changeDifferences) {
 	for (ref in references) {
 		if (changeDiff.getChangedFeatures().contains(ref)) {
 			if (ref.isMany()) {
-				var fromElemRefs = changeDiff.fromElement.eGet(ref).asSequence();
-				var toElemRefs = changeDiff.toElement.eGet(ref).asSequence();
+				var sourceId = changeDiff.fromElement.getNodeId();
+			
+				var fromElemRefs = changeDiff.fromElement.getReferenced(ref).collect(refElem | refElem.getNodeId()).asSet();
+				var toElemRefs = changeDiff.toElement.getReferenced(ref).collect(refElem | refElem.getNodeId()).asSet();
 				
 				var deletedRefs = fromElemRefs.excludingAll(toElemRefs);
 				var addedRefs = toElemRefs.excludingAll(fromElemRefs);
 				var commonRefs = fromElemRefs.includingAll(toElemRefs).excludingAll(deletedRefs).excludingAll(addedRefs);
 				
-				for (d in deletedRefs) {
-					addReference(changeDiff.fromElement.getNodeId(), d.getNodeId(), ref.name, ref.containment, REMOVED_FG);
+				for (targetId in deletedRefs) {
+					addReference(sourceId, targetId, ref.name, ref.containment, REMOVED_FG);
 				}
-				for (d in addedRefs) {
-					addReference(changeDiff.fromElement.getNodeId(), d.getNodeId(), ref.name, ref.containment, ADDED_FG);
+				for (targetId in addedRefs) {
+					addReference(sourceId, targetId, ref.name, ref.containment, ADDED_FG);
 				}
-				for (d in commonRefs) {
-					addReference(changeDiff.fromElement.getNodeId(), d.getNodeId(), ref.name, ref.containment, BLACK);
+				for (targetId in commonRefs) {
+					addReference(sourceId, targetId, ref.name, ref.containment, BLACK);
 				}
 			}
 			else {
@@ -141,7 +143,7 @@ for (changeDiff in changeDifferences) {
 				addReference(changeDiff.toElement, ref, ADDED_FG);
 			}
 		}
-		else {
+		else if (changeDiff.fromElement.eIsSet(ref)) {
 			addReference(changeDiff.fromElement, ref, BLACK);
 		}
 	}
@@ -159,7 +161,7 @@ operation addReferences(elem, color) {
 }
 
 operation addReference(elem, ref, color) {
-	for (refElem in elem.eGet(ref).asSequence()) {
+	for (refElem in elem.getReferenced(ref)) {
 		addReference(elem.getNodeId(), refElem.getNodeId(), ref.name, ref.containment, color);
 	}
 }
@@ -206,15 +208,23 @@ operation Any getAttributeValue(attr) {
 	return value;
 }
 
-operation Any getReferenced() {
-
-	if (self.isUndefined()) return Sequence{};
-
-	var c = self.eClass();
+operation Any getReferenced(ref) {
 	var referenced : Sequence;
-	for (r in c.getEAllReferences().select(ref|self.eIsSet(ref))) {
-		referenced.addAll(self.eGet(r).asSequence());
+	for (refElem in self.eGet(ref).asSequence()) {
+		if (not refElem.isUndefined()) {
+			referenced.add(refElem);
+		}
 	}
 	return referenced;
 }
+
+operation Any getAllReferenced() {
+	var c = self.eClass();
+	var referenced : Sequence;
+	for (r in c.getEAllReferences().select(ref|self.eIsSet(ref))) {
+		referenced.addAll(self.getReferenced(r));
+	}
+	return referenced;
+}
+
 %]

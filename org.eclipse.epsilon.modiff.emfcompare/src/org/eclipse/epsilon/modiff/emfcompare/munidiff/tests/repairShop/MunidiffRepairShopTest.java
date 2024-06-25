@@ -21,11 +21,14 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.emfcompare.munidiff.transformations.EmfCompare2Munidiff;
 import org.eclipse.epsilon.modiff.matcher.IdMatcher;
+import org.eclipse.epsilon.modiff.matcher.Matcher;
 import org.eclipse.epsilon.modiff.munidiff.AddedElement;
 import org.eclipse.epsilon.modiff.munidiff.ChangedElement;
 import org.eclipse.epsilon.modiff.munidiff.Difference;
 import org.eclipse.epsilon.modiff.munidiff.Munidiff;
+import org.eclipse.epsilon.modiff.output.LabelProvider;
 import org.eclipse.epsilon.modiff.output.MatcherBasedLabelProvider;
+import org.eclipse.epsilon.modiff.output.graphical.PlantumlFormatter;
 import org.eclipse.epsilon.modiff.output.textual.UnifiedDiffFormatter;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,19 +45,22 @@ public class MunidiffRepairShopTest {
 		final IComparisonScope scope = new DefaultComparisonScope(left, right, null);
 		final Comparison comparison = EMFCompare.builder().build().compare(scope);
 
-		Munidiff md = new EmfCompare2Munidiff(new IdMatcher()).transform(comparison);
+		Matcher matcher = new IdMatcher();
+		Munidiff md = new EmfCompare2Munidiff(matcher).transform(comparison);
 
-		UnifiedDiffFormatter formatter = new UnifiedDiffFormatter(md,
-				new MatcherBasedLabelProvider(new IdMatcher()));
-
-		String report = formatter.format();
+		LabelProvider labelProvider = new MatcherBasedLabelProvider(matcher);
+		String textualReport = new UnifiedDiffFormatter(md, labelProvider).format();
+		String graphicalReport = new PlantumlFormatter(md, labelProvider).format();
 
 		if (debug) {
 			System.out.println(leftModel);
-			System.out.println(report);
+			System.out.println(textualReport);
+			System.out.println("*********************************************");
+			System.out.println(graphicalReport);
 		}
 
-		store(leftModel + "-munidiff.diff", report);
+		store(leftModel + "-munidiff.diff", textualReport);
+		store(leftModel + "-munidiff.puml", graphicalReport);
 
 		return md;
 	}
