@@ -11,6 +11,10 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.Modiff;
 import org.eclipse.epsilon.modiff.matcher.IdOrNameMatcher;
+import org.eclipse.epsilon.modiff.matcher.Matcher;
+import org.eclipse.epsilon.modiff.output.LabelProvider;
+import org.eclipse.epsilon.modiff.output.MatcherBasedLabelProvider;
+import org.eclipse.epsilon.modiff.output.textual.UnifiedDiffFormatter;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -52,7 +56,9 @@ public class ModiffCli implements Runnable {
 		}
 
 		Modiff modiff = new Modiff(fromModelFile, toModelFile);
-		modiff.setMatcher(new IdOrNameMatcher());
+
+		Matcher matcher = new IdOrNameMatcher();
+		modiff.setMatcher(matcher);
 
 		try {
 			modiff.compare();
@@ -62,7 +68,8 @@ public class ModiffCli implements Runnable {
 			e.printStackTrace();
 		}
 
-		System.out.println(modiff.reportDifferences());
+		LabelProvider labelProvider = new MatcherBasedLabelProvider(matcher);
+		System.out.println(new UnifiedDiffFormatter(modiff.getMunidiff(), labelProvider).format());
 	}
 
 	public static void main(String[] args) {

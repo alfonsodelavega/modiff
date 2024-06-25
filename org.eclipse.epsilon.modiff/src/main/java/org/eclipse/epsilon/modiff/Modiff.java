@@ -92,17 +92,17 @@ public class Modiff {
 			}
 		}
 
-		Matcher matcher = new IdMatcher();
-		
 		Modiff modiff = new Modiff("models/comics/base.model", "models/comics/left.model");
+
+		Matcher matcher = new IdMatcher();
 		modiff.setMatcher(matcher);
+
 		modiff.compare();
-		
-		System.out.println(modiff.reportDifferences());
-		
-		System.out.println("**************************************************");
 
 		LabelProvider labelProvider = new MatcherBasedLabelProvider(matcher);
+
+		System.out.println(new UnifiedDiffFormatter(modiff.getMunidiff(), labelProvider).format());
+		System.out.println("**************************************************");
 		System.out.println(new PlantumlFormatter(modiff.getMunidiff(), labelProvider).format());
 	}
 
@@ -501,10 +501,6 @@ public class Modiff {
 		}
 
 		return duplicates;
-	}
-
-	public String reportDifferences() {
-		return new UnifiedDiffFormatter(munidiff, new MatcherBasedLabelProvider(matcher)).format();
 	}
 
 	public Set<Integer> getModifiedLines(DiffSide diffSide) {

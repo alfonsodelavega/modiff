@@ -8,6 +8,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.Modiff;
 import org.eclipse.epsilon.modiff.matcher.UmlMatcher;
+import org.eclipse.epsilon.modiff.output.MatcherBasedLabelProvider;
+import org.eclipse.epsilon.modiff.output.textual.UnifiedDiffFormatter;
 import org.eclipse.uml2.uml.UMLPackage;
 
 public class CompareDifferentOrdering {
@@ -32,7 +34,8 @@ public class CompareDifferentOrdering {
 		modiff.setMatcher(new UmlMatcher());
 		modiff.compare();
 
-		System.out.println(modiff.reportDifferences());
+		System.out.println(new UnifiedDiffFormatter(modiff.getMunidiff(),
+				new MatcherBasedLabelProvider(modiff.getMatcher())).format());
 
 		System.out.println("Done");
 	}

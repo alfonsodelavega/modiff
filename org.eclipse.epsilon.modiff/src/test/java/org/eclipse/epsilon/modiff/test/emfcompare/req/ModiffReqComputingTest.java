@@ -29,6 +29,8 @@ import org.eclipse.epsilon.modiff.munidiff.AddedElement;
 import org.eclipse.epsilon.modiff.munidiff.ChangedElement;
 import org.eclipse.epsilon.modiff.munidiff.Difference;
 import org.eclipse.epsilon.modiff.munidiff.RemovedElement;
+import org.eclipse.epsilon.modiff.output.MatcherBasedLabelProvider;
+import org.eclipse.epsilon.modiff.output.textual.UnifiedDiffFormatter;
 import org.eclipse.epsilon.modiff.test.emfcompare.req.data.ReqInputData;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -88,8 +90,13 @@ public class ModiffReqComputingTest {
 	@After
 	public void reportDifferences() {
 		if (debug) {
-			System.out.println(modiff.reportDifferences());
+			System.out.println(getReport());
 		}
+	}
+
+	public String getReport() {
+		return new UnifiedDiffFormatter(modiff.getMunidiff(),
+				new MatcherBasedLabelProvider(modiff.getMatcher())).format();
 	}
 
 	@Test
