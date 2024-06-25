@@ -76,8 +76,19 @@ for (elem in addedElements.includingAll(removedElements)) {
 }
 
 for (changeDiff in changeDifferences) {
-	var refElems = changeDiff.fromElement.getAllReferenced();
-	refElems = refElems.includingAll(changeDiff.toElement.getAllReferenced());
+	var refElems : Set;
+	
+	if (hideUnchangedRefsInChangedElems) {
+		var changedRefs = changeDiff.changedFeatures.select(f | f.eClass.name == "EReference");
+		for (ref in changedRefs) {
+			refElems.addAll(changeDiff.fromElement.getReferenced(ref));
+			refElems.addAll(changeDiff.toElement.getReferenced(ref));
+		}
+	}
+	else {
+		refElems.addAll(changeDiff.fromElement.getAllReferenced());
+		refElems.addAll(changeDiff.toElement.getAllReferenced());
+	}
 	for (refElem in refElems) {
 		if (not drawedNodeIds.includes(refElem.getNodeId())) {
 			commonElements.add(refElem);
@@ -85,6 +96,7 @@ for (changeDiff in changeDifferences) {
 		}
 	}
 }
+
 
 // draw common elements (nodes and attributes)
 for (elem in commonElements) {%]
@@ -104,7 +116,7 @@ draw references:
 - those of changed elements (new/added values in green, old/removed values in red, unchanged in black)
 	- depends on the reference being "many" or not
 
-many alternative options to do. Some parameters/layers could be supported
+many alternative options to do. Lots of parameters/layers could be supported
 */
 for (added in addedElements) {
 	addReferences(added, ADDED_FG);
@@ -116,8 +128,12 @@ for (removed in removedElements) {
 
 for (changeDiff in changeDifferences) {
 	var references = changeDiff.fromElement.eClass().getEAllReferences();
+	if (hideUnchangedRefsInChangedElems) {
+		references = changeDiff.changedFeatures.select(f | f.eClass.name == "EReference");
+	}
+	
 	for (ref in references) {
-		if (changeDiff.getChangedFeatures().contains(ref)) {
+		if (changeDiff.changedFeatures.contains(ref)) {
 			if (ref.isMany()) {
 				var sourceId = changeDiff.fromElement.getNodeId();
 			
