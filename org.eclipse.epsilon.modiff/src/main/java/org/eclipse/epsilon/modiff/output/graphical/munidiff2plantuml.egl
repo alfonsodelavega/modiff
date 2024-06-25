@@ -4,6 +4,10 @@ var REMOVED_BG = "#f59d89";
 
 var ADDED_FG = "#228833";
 var ADDED_BG = "#99e6a6";
+
+var CHANGED_BG = "#ffffe6";
+
+var BLACK = "#000000";
 %]
 @startuml
 skinparam roundCorner 0
@@ -12,7 +16,6 @@ skinparam objectBorderThickness 1
 skinparam defaultFontName system-ui
 
 [%
-// TODO: better optimize this
 var addedElements : Set;
 var removedElements : Set;
 
@@ -29,7 +32,6 @@ object "[%=elem.getNodeId()%]:[%=elem.eClass().name%]" as [%=elem.getNodeId()%] 
 	[%
 	if (d.eClass().name == "ChangedElement") {
 		changeDifferences.add(d);
-	
 		var fromElement = d.fromElement;
 		var toElement = d.toElement;
 		var attributes = toElement.eClass().getEAllAttributes();
@@ -46,14 +48,12 @@ object "[%=elem.getNodeId()%]:[%=elem.eClass().name%]" as [%=elem.getNodeId()%] 
 			}
 		}
 	} else {
-	
 		if (d.eClass().name == "AddedElement") {
 			addedElements.add(elem);
 		}
 		else {
 			removedElements.add(elem);
 		}
-		
 		var attributes = elem.eClass().getEAllAttributes().select(attr|elem.eIsSet(attr));
 		for (attr in attributes){%]
 			[%=attr.name%] = [%=elem.getAttributeValue(attr)%]
@@ -104,7 +104,7 @@ draw references:
 - those of changed elements (new/added values in green, old/removed values in red, unchanged in black)
 	- depends on the reference being "many" or not
 
-many alternative options to show. Some parameters/layers could be supported
+many alternative options to do. Some parameters/layers could be supported
 */
 for (added in addedElements) {
 	addReferences(added, ADDED_FG);
@@ -133,7 +133,7 @@ for (changeDiff in changeDifferences) {
 					addReference(changeDiff.fromElement.getNodeId(), d.getNodeId(), ref.name, ref.containment, ADDED_FG);
 				}
 				for (d in commonRefs) {
-					addReference(changeDiff.fromElement.getNodeId(), d.getNodeId(), ref.name, ref.containment, "#000000");
+					addReference(changeDiff.fromElement.getNodeId(), d.getNodeId(), ref.name, ref.containment, BLACK);
 				}
 			}
 			else {
@@ -142,7 +142,7 @@ for (changeDiff in changeDifferences) {
 			}
 		}
 		else {
-			addReference(changeDiff.fromElement, ref, "#000000");
+			addReference(changeDiff.fromElement, ref, BLACK);
 		}
 	}
 }
@@ -187,7 +187,7 @@ operation Any getBackgroundColor() {
 	else if (self.eClass().name == "RemovedElement") {
 		return REMOVED_BG;
 	}
-	return "#ffffe6"; // changed
+	return CHANGED_BG;
 }
 
 operation Any getAttributeValue(attr) {
