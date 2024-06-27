@@ -28,17 +28,17 @@ for (d in munidiff.differences) {
 	var elem = d.getDiffElement();
 	drawedNodeIds.add(elem.getNodeId());
 %]
-object "[%=elem.getNodeId()%]:[%=elem.eClass().name%]" as [%=elem.getNodeId()%] [%=d.getBackgroundColor()%] {
+object "[%=elem.getNodeLabel()%]:[%=elem.eClass().name%]" as [%=elem.getNodeId()%] [%=d.getBackgroundColor()%] {
 	[%
-	if (d.eClass().name == "ChangedElement") {
+	if (d.isTypeOf(ChangedElement)) {
 		changeDifferences.add(d);
 		var fromElement = d.fromElement;
 		var toElement = d.toElement;
 		var attributes = toElement.eClass().getEAllAttributes();
 		for (attr in attributes) {
 			if (d.getChangedFeatures().contains(attr)) {%]
-				<size:8><[%=ADDED_FG%]:heavy_plus_sign:></size> <color:[%=ADDED_FG%]>[%=attr.name%] = [%=fromElement.getAttributeValue(attr)%]</color>
-				<size:8><[%=REMOVED_FG%]:heavy_minus_sign:></size> <color:[%=REMOVED_FG%]>[%=attr.name%] = [%=toElement.getAttributeValue(attr)%]</color>				
+				<size:8><[%=ADDED_FG%]:heavy_plus_sign:></size> <color:[%=ADDED_FG%]>[%=attr.name%] = [%=toElement.getAttributeValue(attr)%]</color>
+				<size:8><[%=REMOVED_FG%]:heavy_minus_sign:></size> <color:[%=REMOVED_FG%]>[%=attr.name%] = [%=fromElement.getAttributeValue(attr)%]</color>				
 		[%  }
 			else {
 				// if the feature is set (one check is enough here)
@@ -48,7 +48,7 @@ object "[%=elem.getNodeId()%]:[%=elem.eClass().name%]" as [%=elem.getNodeId()%] 
 			}
 		}
 	} else {
-		if (d.eClass().name == "AddedElement") {
+		if (d.isTypeOf(AddedElement)) {
 			addedElements.add(elem);
 		}
 		else {
@@ -79,7 +79,7 @@ for (changeDiff in changeDifferences) {
 	var refElems : Set;
 	
 	if (hideUnchangedRefsInChangedElems) {
-		var changedRefs = changeDiff.changedFeatures.select(f | f.eClass.name == "EReference");
+		var changedRefs = changeDiff.changedFeatures.select(f | f.isTypeOf(EReference));
 		for (ref in changedRefs) {
 			refElems.addAll(changeDiff.fromElement.getReferenced(ref));
 			refElems.addAll(changeDiff.toElement.getReferenced(ref));
@@ -100,7 +100,7 @@ for (changeDiff in changeDifferences) {
 
 // draw common elements (nodes and attributes)
 for (elem in commonElements) {%]
-object "[%=elem.getNodeId()%]:[%=elem.eClass().name%]" as [%=elem.getNodeId()%] {
+object "[%=elem.getNodeLabel()%]:[%=elem.eClass().name%]" as [%=elem.getNodeId()%] {
 [%
 	var attributes = elem.eClass().getEAllAttributes().select(attr|elem.eIsSet(attr));
 		for (attr in attributes){%]
@@ -129,7 +129,7 @@ for (removed in removedElements) {
 for (changeDiff in changeDifferences) {
 	var references = changeDiff.fromElement.eClass().getEAllReferences();
 	if (hideUnchangedRefsInChangedElems) {
-		references = changeDiff.changedFeatures.select(f | f.eClass.name == "EReference");
+		references = changeDiff.changedFeatures.select(f | f.isTypeOf(EReference));
 	}
 	
 	for (ref in references) {
@@ -166,7 +166,6 @@ for (changeDiff in changeDifferences) {
 }
 %]
 @enduml
-
 [%
 
 operation addReferences(elem, color) {
@@ -187,22 +186,26 @@ operation addReference(sourceId, targetId, referenceName, isContainment, color) 
 [%
 }
 
+operation Any getNodeLabel() {
+	return labelProvider.getLabel(self);
+}
+
 operation Any getNodeId() {
-	return labelProvider.getLabel(self).replaceAll("[^A-Za-z0-9]","");
+	return self.getNodeLabel().replaceAll("[^A-Za-z0-9]","");
 }
 
 operation Any getDiffElement() {
-	if (self.eClass().name == "ChangedElement") {
+	if (self.isTypeOf(ChangedElement)) {
 		return self.fromElement;
 	}
 	return self.element;
 }
 
 operation Any getBackgroundColor() {
-	if (self.eClass().name == "AddedElement") {
+	if (self.isTypeOf(AddedElement)) {
 		return ADDED_BG;
 	}
-	else if (self.eClass().name == "RemovedElement") {
+	else if (self.isTypeOf(RemovedElement)) {
 		return REMOVED_BG;
 	}
 	return CHANGED_BG;

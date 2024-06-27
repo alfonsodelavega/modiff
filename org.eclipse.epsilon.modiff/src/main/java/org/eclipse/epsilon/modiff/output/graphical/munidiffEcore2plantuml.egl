@@ -1,0 +1,311 @@
+[%
+var REMOVED_FG = "#CC3311";
+var REMOVED_BG = "#f59d89";
+
+var ADDED_FG = "#228833";
+var ADDED_BG = "#99e6a6";
+
+var CHANGED_BG = "#ffffe6";
+
+var BLACK = "#000000";
+
+%]
+@startuml
+skinparam roundCorner 0
+skinparam objectBorderThickness 1
+!pragma layout smetana
+skinparam defaultFontName system-ui
+hide circle
+[%
+var addedClasses : Set;
+var removedClasses : Set;
+
+var changedClasses : Map; // more complex than the previous two sets 
+
+// 1. find added, removed classes
+// 2. find changed classes. These are trickier later, because a class is considered
+//    changed if any of its features or operations (or parameters) change
+
+// focus at first on the differences directly related to classes
+var classDifferences = munidiff.differences.select(d | d.getDiffElement().isTypeOf(EClass));
+
+for (classDiff in classDifferences) {
+	var elem = classDiff.getDiffElement();
+	if (classDiff.isTypeOf(AddedElement)) {
+		addedClasses.add(elem);
+	}
+	else if (classDiff.isTypeOf(RemovedElement)) {
+		removedClasses.add(elem);
+	}
+	else {
+		// 2. register changed classes (more complicated than just adding them to a list)
+		registerChangedClass(classDiff);
+	}
+}
+
+// process the rest of the differences now
+for (d in munidiff.differences.excluding(classDifferences)) {
+	var elem = d.getDiffElement();
+	if (elem.isKindOf(EStructuralFeature)) {
+		// 2. changed features means changed class. Register the class (if not
+		//    registered before as added or deleted) and the difference
+		var eclass = elem.eContainingClass;
+		if (not addedClasses.includes(eclass) and not removedClasses.includes(eclass)) {
+			addFeatureDifference(d);
+		}
+	}
+	//TODO: enums, data types, packages, annotations, operations, parameters
+}
+
+
+// 3. "Draw"
+
+for (c in addedClasses.includingAll(removedClasses)) { 
+	var fg_color = addedClasses.contains(c) ? ADDED_FG : REMOVED_FG;
+	var bg_color = addedClasses.contains(c) ? ADDED_BG : REMOVED_BG;
+%]
+	class "[%=c.name%]" as [%=c.getNodeId()%] [%=bg_color%] {
+[%  for (attr in c.eAttributes) {%]
+		[%=attr.name%]: [%=attr.eAttributeType.name%]
+[%  } %]
+	}
+[%
+	// TODO: references
+}
+
+for (classId in changedClasses.keySet()) {
+	var changedClass = changedClasses.get(classId);
+	
+	classId.println("Class id: ");
+	
+	changedClass.fromClass.isDefined().println("fromClass: " );
+	changedClass.toClass.isDefined().println("toClass:" );
+	
+	for (diff in changedClass.differences) {
+		diff.println();
+	}
+	"***********".println();
+}
+
+for (classId in changedClasses.keySet()) {
+	var changedClass = changedClasses.get(classId);
+	var someClass = changedClass.fromClass.isDefined() ? changedClass.fromClass : changedClass.toClass;%]
+	
+	class "[%=someClass.getClassName()%]" as [%=someClass.getNodeId()%] [%=CHANGED_BG%] {
+[%  
+	if (changedClass.fromClass.isDefined() and changedClass.toClass.isDefined()) {
+		// class with potential changes and/or feature deletions/removals
+		var attrDifferences = changedClass.differences.select(d | d.getDiffElement().isTypeOf(EAttribute));
+		
+		if (attrDifferences.forAll(d | d.isTypeOf(AddedElement))) {
+			for (attr in changedClass.toClass.eAttributes) {
+				if (attrDifferences.includes(attr)) { %]
+					<size:8><[%=ADDED_FG%]:heavy_plus_sign:></size> <color:[%=ADDED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
+			[%	}
+				else {%]
+					[%=attr.name%] : [%=attr.eAttributeType.name%]
+			[%	}
+			}
+		}
+		else if (attrDifferences.forAll(d | d.isTypeOf(RemovedElement))) {
+			for (attr in changedClass.fromClass.eAttributes) {
+				if (attrDifferences.includes(attr)) { %]
+					<size:8><[%=REMOVED_FG%]:heavy_minus_sign:></size> <color:[%=REMOVED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
+			[%	}
+				else {%]
+					[%=attr.name%] : [%=attr.eAttributeType.name%]
+			[%	}
+			}
+		}
+		else {
+			// mixed case: traverse both lists of attributes and draw elements as needed
+			var fromAttributes = changedClass.fromClass.eAttributes;
+			var fromIndex = 0;
+			var toAttributes = changedClass.toClass.eAttributes;
+			var toIndex = 0;
+			
+			var changedAttributes = changedClass.differences.select(d | 
+					d.isTypeOf(ChangedElement) and d.getDiffElement().isTypeOf(EAttribute));
+
+			var addedAttributes = changedClass.differences.select(d | 
+					d.isTypeOf(AddedElement) and d.getDiffElement().isTypeOf(EAttribute))
+					.collect(d | d.element);
+
+			var removedAttributes = changedClass.differences.select(d | 
+					d.isTypeOf(RemovedElement) and d.getDiffElement().isTypeOf(EAttribute))
+					.collect(d | d.element);
+
+			while (fromIndex < fromAttributes.size() and toIndex < toAttributes.size()) {
+				var fromAttr = fromAttributes.get(fromIndex);
+				var toAttr = toAttributes.get(toIndex);
+				
+				if (fromAttr.name == toAttr.name) { // TODO: too weak?
+					// if changed, print changed, if not, normal. 
+				}
+				else {
+					if (addedAttributes.includes(toAttr)) { %]
+						<size:8><[%=ADDED_FG%]:heavy_plus_sign:></size> <color:[%=ADDED_FG%]>[%=toAttr.name%] : [%=toAttr.eAttributeType.name%]</color>
+				[%		toIndex += 1;
+					}
+					if (removedAttributes.includes(fromAttr)) { %]
+						<size:8><[%=REMOVED_FG%]:heavy_minus_sign:></size> <color:[%=REMOVED_FG%]>[%=fromAttr.name%] : [%=fromAttr.eAttributeType.name%]</color>
+				[%		fromIndex += 1;
+					}
+				}
+			}
+			while (fromIndex < fromAttributes.size()) {
+				// TODO:
+			}
+			while (toIndex < toAttributes.size()) {
+				// TODO:
+			}
+		}
+		//TODO: references
+	}
+	else if (changedClass.fromClass.isDefined()) {
+		// class with only removed elements
+		var removedAttrs = changedClass.differences
+				.select(d | d.isTypeOf(RemovedElement) and d.element.isTypeOf(EAttribute));
+		for (attr in changedClass.fromClass.eAttributes) {
+			if (removedAttrs.includes(attr)) { %]
+				<size:8><[%=REMOVED_FG%]:heavy_minus_sign:></size> <color:[%=REMOVED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
+		[%	}
+			else {%]
+				[%=attr.name%] : [%=attr.eAttributeType.name%]
+		[%	}
+		}
+		
+		// TODO:references
+	}
+	else if (changedClass.toClass.isDefined()) {
+		// class with only added elements
+		var addedAttrs = changedClass.differences
+				.select(d | d.isTypeOf(AddedElement) and d.element.isTypeOf(EAttribute));
+		for (attr in changedClass.toClass.eAttributes) {
+			if (addedAttrs.includes(attr)) { %]
+				<size:8><[%=ADDED_FG%]:heavy_plus_sign:></size> <color:[%=ADDED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
+		[%	}
+			else {%]
+				[%=attr.name%] : [%=attr.eAttributeType.name%]
+		[%	}
+		}
+		
+		// TODO: references
+	}
+	else {
+		"THIS ALSO CANNOT HAPPEN".println();
+	}%]
+	}
+[%
+}
+
+
+if (false) {
+%]
+class "[%=fromClass.name%]" as [%=fromClass.getNodeId()%] [%=CHANGED_BG%] {
+}
+note top of [%=fromClass.getNodeId()%] {
+[%
+	for (f in changeDiff.changedFeatures.select(f|f.isTypeOf(EAttribute))) {%]
+		<size:8><[%=ADDED_FG%]:heavy_plus_sign:></size> <color:[%=ADDED_FG%]>[%=f.name%] = [%=toClass.getAttributeValue(f)%]</color>
+		<size:8><[%=REMOVED_FG%]:heavy_minus_sign:></size> <color:[%=REMOVED_FG%]>[%=f.name%] = [%=fromClass.getAttributeValue(f)%]</color>
+[%  }
+%]
+}
+[%
+}
+%]
+@enduml
+[%
+operation EClass getClassName() {
+	var name = self.name;
+	if (self.abstract) {
+		name = "//" + name + "//"; // italics
+	}
+	return name;
+}
+
+operation Any getNodeLabel() {
+	return labelProvider.getLabel(self);
+}
+
+operation Any getNodeId() {
+	return self.getNodeLabel().replaceAll("[^A-Za-z0-9]","");
+}
+
+operation registerChangedClass(difference) {
+	var classId = difference.getDiffElement().getNodeId();
+	var changedClass = changedClasses.get(classId);
+	if (changedClass.isUndefined()) {
+		changedClass = new Tuple(
+				fromClass = difference.fromElement,
+				toClass = difference.toElement,
+				differences = Sequence {difference});
+		
+		changedClasses.put(classId, changedClass);
+	}
+	else {
+		"THIS SHOULD NOT HAPPEN!!".println();
+	}
+}
+
+operation addFeatureDifference(difference) {
+	var classId = difference.getDiffElement().eContainingClass.getNodeId();
+	var changedClass = changedClasses.get(classId);
+	if (changedClass.isDefined()) {
+		changedClass.differences.add(difference);
+		
+		// fromClass or toClass could be yet incomplete from previous differences
+		// example: first a removed feature is found (fromClass is set, toClass is not),
+		// and after that an added one appears (allowing to set toClass as well to draw both later)
+		if (changedClass.fromClass.isUndefined() and difference.isTypeOf(RemovedElement)) {
+			changedClass.fromClass = difference.element.eContainingClass;
+		}
+		else if (changedClass.toClass.isUndefined() and difference.isTypeOf(AddedElement)) {
+			changedClass.toClass = difference.element.eContainingClass;
+		}
+	}
+	// if the class is not in changed classes, then this is a change that is
+	// present only in its subelements (features, operations)
+	else {
+		var changedClass = new Tuple(
+				differences = Sequence {difference});
+		changedClasses.put(classId, changedClass);
+		
+		// determine fromClass, toClass or both (depending on the diff)
+		if (difference.isTypeOf(ChangedElement)) {
+			changedClass.fromClass = difference.fromElement.eContainingClass;
+			changedClass.toClass = difference.toElement.eContainingClass;
+		}
+		else if (difference.isTypeOf(AddedElement)) {
+			changedClass.toClass = difference.element.eContainingClass;
+		}
+		else { // removed
+			changedClass.fromClass = difference.element.eContainingClass;
+		}
+	}
+}
+
+operation Any getDiffElement() {
+	if (self.isTypeOf(ChangedElement)) {
+		return self.fromElement;
+	}
+	return self.element;
+}
+
+operation Any getAttributeValue(attr) {
+	var value = self.eGet(attr) + "";
+	value = value.escapeXml();
+	var chopped = false;
+	if (value.indexOf("\n").asVar("newLineIndex") > -1) {
+		value = value.substring(0, newLineIndex);
+		chopped = true;
+	}
+	if (value.length() > 25) { 
+		value = value.substring(0, 25);
+		chopped = true;
+	}
+	if (chopped) value += " ...";
+	return value;
+}
+%]

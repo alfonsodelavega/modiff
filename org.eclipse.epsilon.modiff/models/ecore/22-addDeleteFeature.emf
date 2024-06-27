@@ -19,7 +19,7 @@ class Status {
 @myLabel(key="value")
 class Job {
 	id attr String jobId;
-	attr String description;
+	attr String jobIssue;
 	attr String[*] tags;
 	val Status status;
 }
