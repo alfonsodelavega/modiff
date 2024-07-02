@@ -109,6 +109,9 @@ public class Modiff {
 	protected String fromModelFile;
 	protected String toModelFile;
 
+	protected String fromModelContent;
+	protected String toModelContent;
+
 	protected Set<Integer> addedLines = new LinkedHashSet<>();
 	protected Set<Integer> removedLines = new LinkedHashSet<>();
 
@@ -141,6 +144,14 @@ public class Modiff {
 		this.toModelFile = toModelFile;
 
 		matcher = new IdMatcher();
+	}
+
+	public Modiff(String modelName, String fromModelContent, String toModelContent) {
+		this.fromModelFile = modelName;
+		this.toModelFile = modelName;
+
+		this.fromModelContent = fromModelContent;
+		this.toModelContent = toModelContent;
 	}
 
 	/**
@@ -194,8 +205,17 @@ public class Modiff {
 
 	protected void getLineDiff(OutputStream out) throws IOException {
 
-		RawText rt1 = new RawText(new File(fromModelFile));
-		RawText rt2 = new RawText(new File(toModelFile));
+		RawText rt1, rt2;
+
+		if (fromModelContent == null) {
+			rt1 = new RawText(new File(fromModelFile));
+			rt2 = new RawText(new File(toModelFile));
+		}
+		else {
+			rt1 = new RawText(fromModelContent.getBytes());
+			rt2 = new RawText(toModelContent.getBytes());
+		}
+
 		EditList diffList = new EditList();
 
 		// FIXME: we would probably want to omit trailing and leading whitespace
