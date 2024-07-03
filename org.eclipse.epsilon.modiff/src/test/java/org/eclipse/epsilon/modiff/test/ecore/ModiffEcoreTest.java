@@ -1,6 +1,8 @@
 package org.eclipse.epsilon.modiff.test.ecore;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
@@ -105,6 +107,31 @@ public class ModiffEcoreTest {
 	@Test
 	public void test12() throws IOException {
 		modiff = compare("00-from", "12-className");
+
+		List<Difference> differences = modiff.getDifferences();
+		assert (differences.size() == 3);
+
+		Difference diff = getDifferenceForId(differences, "repairtests.RepairShop.workers");
+		assert (diff != null && diff instanceof ChangedElement);
+		assert (((ChangedElement) diff).getChangedFeatures().size() == 1);
+		assert (((ChangedElement) diff).getChangedFeatures().get(0).getName().equals("eType"));
+
+		diff = getDifferenceForId(differences, "repairtests.Worker");
+		assert (diff != null && diff instanceof RemovedElement);
+
+		diff = getDifferenceForId(differences, "repairtests.Employee");
+		assert (diff != null && diff instanceof AddedElement);
+	}
+
+	@Test
+	public void test12modelContents() throws IOException {
+
+		String fromModelContents = Files.readString(Paths.get("models/ecore/00-from.ecore"));
+		String toModelContents = Files.readString(Paths.get("models/ecore/12-className.ecore"));
+
+		modiff = new Modiff("repairShop.ecore", fromModelContents, toModelContents);
+		modiff.setMatcher(new EcoreMatcher());
+		modiff.compare();
 
 		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 3);

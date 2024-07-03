@@ -1,5 +1,6 @@
 package org.eclipse.epsilon.modiff;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -152,6 +153,8 @@ public class Modiff {
 
 		this.fromModelContent = fromModelContent;
 		this.toModelContent = toModelContent;
+
+		matcher = new IdMatcher();
 	}
 
 	/**
@@ -264,14 +267,34 @@ public class Modiff {
 	}
 
 	protected Resource loadFromModel() throws IOException {
-		return loadModel(fromModelFile, DiffSide.FROM);
+		if (fromModelContent != null) {
+			return loadModelFromContents(fromModelContent, DiffSide.FROM);
+		}
+		return loadModelFromFile(fromModelFile, DiffSide.FROM);
 	}
 
 	protected Resource loadToModel() throws IOException {
-		return loadModel(toModelFile, DiffSide.TO);
+		if (fromModelContent != null) {
+			return loadModelFromContents(toModelContent, DiffSide.TO);
+		}
+		return loadModelFromFile(toModelFile, DiffSide.TO);
 	}
 
-	protected Resource loadModel(String modelFile, DiffSide diffSide) throws IOException {
+	protected Resource loadModelFromContents(String modelContent, DiffSide diffSide) throws IOException {
+		ResourceSet resourceSet = new ResourceSetImpl();
+		Resource resource = resourceSet.createResource(URI.createFileURI("model.model"));
+
+		// the pool allows decorating the xml handler to get element lines
+		Map<Object, Object> loadOptions = new HashMap<>();
+		loadOptions.put(XMLResource.OPTION_USE_PARSER_POOL,
+				new ModiffXMLParserPoolImpl(this, diffSide));
+
+		resource.load(new ByteArrayInputStream(modelContent.getBytes()), loadOptions);
+
+		return resource;
+	}
+
+	protected Resource loadModelFromFile(String modelFile, DiffSide diffSide) throws IOException {
 
 		ResourceSet resourceSet = new ResourceSetImpl();
 		Resource resource = resourceSet.createResource(URI.createFileURI(modelFile));
