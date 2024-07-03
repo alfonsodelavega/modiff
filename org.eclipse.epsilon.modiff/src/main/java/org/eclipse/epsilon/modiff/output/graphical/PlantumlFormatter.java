@@ -19,7 +19,7 @@ public class PlantumlFormatter extends MunidiffFormatter {
 	}
 	
 	protected URL getTemplate() {
-		return getClass().getResource("munidiff2plantuml.egl");
+		return getClass().getResource("/output/graphical/munidiff2plantuml.egl");
 	}
 
 	protected EglModule getModule() {

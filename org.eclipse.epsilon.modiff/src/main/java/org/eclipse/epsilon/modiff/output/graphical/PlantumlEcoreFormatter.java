@@ -43,6 +43,6 @@ public class PlantumlEcoreFormatter extends PlantumlFormatter {
 
 	@Override
 	protected URL getTemplate() {
-		return getClass().getResource("munidiffEcore2plantuml.egl");
+		return getClass().getResource("/output/graphical/munidiffEcore2plantuml.egl");
 	}
 }

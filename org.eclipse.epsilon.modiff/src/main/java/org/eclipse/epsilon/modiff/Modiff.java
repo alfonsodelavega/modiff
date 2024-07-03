@@ -282,7 +282,7 @@ public class Modiff {
 
 	protected Resource loadModelFromContents(String modelContent, DiffSide diffSide) throws IOException {
 		ResourceSet resourceSet = new ResourceSetImpl();
-		Resource resource = resourceSet.createResource(URI.createFileURI("model.model"));
+		Resource resource = resourceSet.createResource(URI.createFileURI("/model.model"));
 
 		// the pool allows decorating the xml handler to get element lines
 		Map<Object, Object> loadOptions = new HashMap<>();
