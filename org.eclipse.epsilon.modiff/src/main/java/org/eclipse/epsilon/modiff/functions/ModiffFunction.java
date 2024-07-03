@@ -1,5 +1,6 @@
 package org.eclipse.epsilon.modiff.functions;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -7,9 +8,15 @@ import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.epsilon.modiff.Modiff;
 import org.eclipse.epsilon.modiff.matcher.EcoreMatcher;
@@ -39,7 +46,8 @@ public class ModiffFunction implements HttpFunction {
 		ModiffFunction function = new ModiffFunction();
 		
 		System.out.println(function.getDiff("a\nb\n", "a\nb\nc"));
-		
+
+		// test function with ecore model
 		String fromModelContents = Files.readString(Paths.get("models/ecore/00-from.ecore"));
 		String toModelContents = Files.readString(Paths.get("models/ecore/21-deleteSkill.ecore"));
 
@@ -48,6 +56,37 @@ public class ModiffFunction implements HttpFunction {
 
 		System.out.println(function.getTextualMunidiff(modiff));
 		System.out.println(function.getGraphicalMunidiff(modelName, modiff));
+
+		// test function with custom metamodel
+		modelName = "repairshop.model";
+		fromModelContents = Files.readString(Paths.get("models/repairshop/00-from.model"));
+		toModelContents = Files.readString(Paths.get("models/repairshop/61-moveJob.model"));
+
+		String metamodelContents = Files.readString(Paths.get("models/repairshop/repairshop.ecore"));
+		function.registerMetamodel(metamodelContents);
+
+		modiff = function.getModiff(modelName, fromModelContents, toModelContents);
+		System.out.println(function.getTextualMunidiff(modiff));
+		System.out.println(function.getGraphicalMunidiff(modelName, modiff));
+	}
+
+	public ModiffFunction() {
+		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
+				"*", new XMIResourceFactoryImpl());
+	}
+
+	public void registerMetamodel(String metamodelContent) throws IOException {
+		ResourceSet ecoreResourceSet = new ResourceSetImpl();
+
+		Resource ecoreResource = ecoreResourceSet.createResource(
+				URI.createFileURI("/metamodel.ecore"));
+
+		ecoreResource.load(new ByteArrayInputStream(metamodelContent.getBytes()), Collections.EMPTY_MAP);
+
+		for (EObject o : ecoreResource.getContents()) {
+			EPackage ePackage = (EPackage) o;
+			EPackage.Registry.INSTANCE.put(ePackage.getNsURI(), ePackage);
+		}
 	}
 
 	public void service(final HttpRequest request, final HttpResponse response) throws Exception {
@@ -81,6 +120,10 @@ public class ModiffFunction implements HttpFunction {
 
 		String fromModel = request.get("fromModel").getAsString() + "\n";
 		String toModel = request.get("toModel").getAsString() + "\n";
+
+		if (request.has("metamodel")) {
+			registerMetamodel(request.get("metamodel").getAsString());
+		}
 
 		response.addProperty("diff", getDiff(fromModel, toModel));
 
@@ -117,9 +160,6 @@ public class ModiffFunction implements HttpFunction {
 
 	protected Modiff getModiff(String modelName, String fromModelContent,
 			String toModelContent) throws IOException {
-
-		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
-				"*", new XMIResourceFactoryImpl());
 
 		Modiff modiff = new Modiff(modelName, fromModelContent, toModelContent);
 
