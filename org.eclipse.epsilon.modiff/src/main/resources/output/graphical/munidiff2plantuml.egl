@@ -12,8 +12,6 @@ var BLACK = "#000000";
 @startuml
 skinparam roundCorner 0
 skinparam objectBorderThickness 1
-!pragma layout smetana
-skinparam defaultFontName system-ui
 
 [%
 var addedElements : Set;
@@ -34,7 +32,7 @@ object "[%=elem.getNodeLabel()%]:[%=elem.eClass().name%]" as [%=elem.getNodeId()
 		changeDifferences.add(d);
 		var fromElement = d.fromElement;
 		var toElement = d.toElement;
-		var attributes = toElement.eClass().getEAllAttributes();
+		var attributes = toElement.eClass().getAttributes();
 		for (attr in attributes) {
 			if (d.getChangedFeatures().contains(attr)) {%]
 				<size:8><[%=ADDED_FG%]:heavy_plus_sign:></size> <color:[%=ADDED_FG%]>[%=attr.name%] = [%=toElement.getAttributeValue(attr)%]</color>
@@ -54,7 +52,7 @@ object "[%=elem.getNodeLabel()%]:[%=elem.eClass().name%]" as [%=elem.getNodeId()
 		else {
 			removedElements.add(elem);
 		}
-		var attributes = elem.eClass().getEAllAttributes().select(attr|elem.eIsSet(attr));
+		var attributes = elem.eClass().getAttributes().select(attr|elem.eIsSet(attr));
 		for (attr in attributes){%]
 			[%=attr.name%] = [%=elem.getAttributeValue(attr)%]
 	[%  }
@@ -102,7 +100,7 @@ for (changeDiff in changeDifferences) {
 for (elem in commonElements) {%]
 object "[%=elem.getNodeLabel()%]:[%=elem.eClass().name%]" as [%=elem.getNodeId()%] {
 [%
-	var attributes = elem.eClass().getEAllAttributes().select(attr|elem.eIsSet(attr));
+	var attributes = elem.eClass().getAttributes().select(attr|elem.eIsSet(attr));
 		for (attr in attributes){%]
 			[%=attr.name%] = [%=elem.getAttributeValue(attr)%]
 	[%  }%]
@@ -127,7 +125,7 @@ for (removed in removedElements) {
 }
 
 for (changeDiff in changeDifferences) {
-	var references = changeDiff.fromElement.eClass().getEAllReferences();
+	var references = changeDiff.fromElement.eClass().getReferences();
 	if (hideUnchangedRefsInChangedElems) {
 		references = changeDiff.changedFeatures.select(f | f.isTypeOf(EReference));
 	}
@@ -169,7 +167,7 @@ for (changeDiff in changeDifferences) {
 [%
 
 operation addReferences(elem, color) {
-	var references = elem.eClass().getEAllReferences().select(ref | elem.eIsSet(ref));
+	var references = elem.eClass().getReferences().select(ref | elem.eIsSet(ref));
 	for (ref in references) {
 		addReference(elem, ref, color);
 	}
@@ -240,10 +238,18 @@ operation Any getReferenced(ref) {
 operation Any getAllReferenced() {
 	var c = self.eClass();
 	var referenced : Sequence;
-	for (r in c.getEAllReferences().select(ref|self.eIsSet(ref))) {
+	for (r in c.getReferences().select(ref|self.eIsSet(ref))) {
 		referenced.addAll(self.getReferenced(r));
 	}
 	return referenced;
+}
+
+operation EClass getAttributes() {
+	return self.getEAllAttributes.select(attr | not attr.derived);
+}
+
+operation EClass getReferences() {
+	return self.getEAllReferences.select(ref | not ref.derived);
 }
 
 %]
