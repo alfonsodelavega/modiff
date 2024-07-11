@@ -147,5 +147,17 @@ public class ModiffEcoreTest {
 		diff = getDifferenceForId(differences, "repairtests.Employee");
 		assert (diff != null && diff instanceof AddedElement);
 	}
+
+	@Test
+	public void test22() throws IOException {
+
+		modiff = compare("01-from-unmodifiedRepairshop", "22-deleteSkill");
+
+		List<Difference> differences = modiff.getDifferences();
+		assert (differences.size() == 5);
+		
+		Difference diff = getDifferenceForId(differences, "repairshop.Skill");
+		assert (diff != null && diff instanceof RemovedElement);
+	}
 }
 

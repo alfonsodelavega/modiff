@@ -1,0 +1,29 @@
+@namespace(uri="repairshop", prefix="repairshop")
+
+// from 01-from metamodel
+package repairshop;
+
+class RepairShop {
+	id attr String name;
+	val Job[*] backlog;
+	val Worker[*] workers;
+}
+
+class Status {
+	id attr String statusId;
+	attr Boolean completed = false;
+	attr String status;
+	attr String lastModified;
+}
+
+class Job {
+	id attr String jobId;
+	attr String description;
+	attr String[*] tags;
+	val Status status;
+}
+
+class Worker {
+	id attr String name;
+	val Job[*] queue;
+}
