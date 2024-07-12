@@ -8,3 +8,4 @@
 - 4X cases: multi-valued attribute
 - 5X cases: multi-valued, non-containment reference
 - 6X cases: multi-valued, containment reference
+- 7X cases: mixed

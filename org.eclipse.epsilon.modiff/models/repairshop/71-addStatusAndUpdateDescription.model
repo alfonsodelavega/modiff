@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ASCII"?>
+<repairshop:RepairShop
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:repairshop="repairshop">
+  <workers name="Alice"
+      mainSkill="Disassembly"
+      secondarySkills="Microsoldering DataRecovery">
+    <queue jobId="job1"
+        description="laptop does not charge">
+      <tags>battery</tags>
+      <tags>charger</tags>
+      <status
+          statusId="st1"
+          status="pending"/>
+    </queue>
+    <queue jobId="job2"
+        description="dead battery">
+      <status
+          statusId="st2"
+          status="in progress"
+          lastModified="2023/07/24"/>
+    </queue>
+  </workers>
+  <workers name="Bob"
+      mainSkill="Microsoldering"/>
+  <skills name="Microsoldering"/>
+  <skills name="Disassembly"/>
+  <skills name="DataRecovery"/>
+</repairshop:RepairShop>

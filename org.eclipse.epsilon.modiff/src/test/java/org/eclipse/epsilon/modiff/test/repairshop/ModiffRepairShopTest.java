@@ -18,6 +18,7 @@ import org.eclipse.epsilon.modiff.munidiff.AddedElement;
 import org.eclipse.epsilon.modiff.munidiff.ChangedElement;
 import org.eclipse.epsilon.modiff.munidiff.Difference;
 import org.eclipse.epsilon.modiff.output.MatcherBasedLabelProvider;
+import org.eclipse.epsilon.modiff.output.graphical.PlantumlFormatter;
 import org.eclipse.epsilon.modiff.output.textual.UnifiedDiffFormatter;
 import org.eclipse.epsilon.modiff.test.emfcompare.req.data.ReqInputData;
 import org.junit.After;
@@ -88,11 +89,18 @@ public class ModiffRepairShopTest {
 	public void reportDifferences() {
 		if (debug) {
 			System.out.println(getReport());
+			System.out.println("+++++++++++++++++++++++++++++++++++++++++++++");
+			System.out.println(getGraphicalReport());
 		}
 	}
 
 	public String getReport() {
 		return new UnifiedDiffFormatter(modiff.getMunidiff(),
+				new MatcherBasedLabelProvider(modiff.getMatcher())).format();
+	}
+
+	public String getGraphicalReport() {
+		return new PlantumlFormatter(modiff.getMunidiff(),
 				new MatcherBasedLabelProvider(modiff.getMatcher())).format();
 	}
 
@@ -225,5 +233,13 @@ public class ModiffRepairShopTest {
 		assert (changed != null && changed instanceof ChangedElement);
 		assert (((ChangedElement) changed).getChangedFeatures().size() == 1);
 		assert (((ChangedElement) changed).getChangedFeatures().get(0).getName().equals("queue"));
+	}
+
+	@Test
+	public void test71() throws IOException {
+		modiff = compare("00-from", "71-addStatusAndUpdateDescription");
+
+		List<Difference> differences = modiff.getDifferences();
+		assert (differences.size() == 2);
 	}
 }
