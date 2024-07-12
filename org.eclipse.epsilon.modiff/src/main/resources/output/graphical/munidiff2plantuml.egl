@@ -35,8 +35,8 @@ object "[%=elem.getNodeLabel()%]:[%=elem.eClass().name%]" as [%=elem.getNodeId()
 		var attributes = toElement.eClass().getAttributes();
 		for (attr in attributes) {
 			if (d.getChangedFeatures().contains(attr)) {%]
-				<size:8><[%=ADDED_FG%]:heavy_plus_sign:></size> <color:[%=ADDED_FG%]>[%=attr.name%] = [%=toElement.getAttributeValue(attr)%]</color>
-				<size:8><[%=REMOVED_FG%]:heavy_minus_sign:></size> <color:[%=REMOVED_FG%]>[%=attr.name%] = [%=fromElement.getAttributeValue(attr)%]</color>				
+				[%=getPlusSign()%] <color:[%=ADDED_FG%]>[%=attr.name%] = [%=toElement.getAttributeValue(attr)%]</color>
+				[%=getMinusSign()%] <color:[%=REMOVED_FG%]>[%=attr.name%] = [%=fromElement.getAttributeValue(attr)%]</color>				
 		[%  }
 			else {
 				// if the feature is set (one check is enough here)
@@ -250,6 +250,14 @@ operation EClass getAttributes() {
 
 operation EClass getReferences() {
 	return self.getEAllReferences.select(ref | not ref.derived);
+}
+
+operation getPlusSign() {
+	return "<size:8><" + ADDED_FG + ":heavy_plus_sign:></size>";
+}
+
+operation getMinusSign() {
+	return "<size:8><" + REMOVED_FG + ":heavy_minus_sign:></size>";
 }
 
 %]

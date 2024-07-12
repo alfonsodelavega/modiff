@@ -13,8 +13,6 @@ var BLACK = "#000000";
 @startuml
 skinparam roundCorner 0
 skinparam objectBorderThickness 1
-!pragma layout smetana
-skinparam defaultFontName system-ui
 hide circle
 [%
 var addedClasses : Set;
@@ -60,7 +58,7 @@ for (d in munidiff.differences.excluding(classDifferences)) {
 
 // 3. "Draw"
 
-for (c in addedClasses.includingAll(removedClasses)) { 
+for (c in addedClasses.includingAll(removedClasses)) {
 	var fg_color = addedClasses.contains(c) ? ADDED_FG : REMOVED_FG;
 	var bg_color = addedClasses.contains(c) ? ADDED_BG : REMOVED_BG;
 %]
@@ -94,13 +92,13 @@ for (classId in changedClasses.keySet()) {
 	class "[%=someClass.getClassName()%]" as [%=someClass.getNodeId()%] [%=CHANGED_BG%] {
 [%  
 	if (changedClass.fromClass.isDefined() and changedClass.toClass.isDefined()) {
-		// class with potential changes and/or feature deletions/removals
+		// class with potential changes and/or feature additions and removals
 		var attrDifferences = changedClass.differences.select(d | d.getDiffElement().isTypeOf(EAttribute));
 		
 		if (attrDifferences.forAll(d | d.isTypeOf(AddedElement))) {
 			for (attr in changedClass.toClass.eAttributes) {
 				if (attrDifferences.includes(attr)) { %]
-					<size:8><[%=ADDED_FG%]:heavy_plus_sign:></size> <color:[%=ADDED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
+					[%=getPlusSign()%] <color:[%=ADDED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
 			[%	}
 				else {%]
 					[%=attr.name%] : [%=attr.eAttributeType.name%]
@@ -110,7 +108,7 @@ for (classId in changedClasses.keySet()) {
 		else if (attrDifferences.forAll(d | d.isTypeOf(RemovedElement))) {
 			for (attr in changedClass.fromClass.eAttributes) {
 				if (attrDifferences.includes(attr)) { %]
-					<size:8><[%=REMOVED_FG%]:heavy_minus_sign:></size> <color:[%=REMOVED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
+					[%=getMinusSign()%] <color:[%=REMOVED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
 			[%	}
 				else {%]
 					[%=attr.name%] : [%=attr.eAttributeType.name%]
@@ -144,11 +142,11 @@ for (classId in changedClasses.keySet()) {
 				}
 				else {
 					if (addedAttributes.includes(toAttr)) { %]
-						<size:8><[%=ADDED_FG%]:heavy_plus_sign:></size> <color:[%=ADDED_FG%]>[%=toAttr.name%] : [%=toAttr.eAttributeType.name%]</color>
+						[%=getPlusSign()%] <color:[%=ADDED_FG%]>[%=toAttr.name%] : [%=toAttr.eAttributeType.name%]</color>
 				[%		toIndex += 1;
 					}
 					if (removedAttributes.includes(fromAttr)) { %]
-						<size:8><[%=REMOVED_FG%]:heavy_minus_sign:></size> <color:[%=REMOVED_FG%]>[%=fromAttr.name%] : [%=fromAttr.eAttributeType.name%]</color>
+						[%=getMinusSign()%] <color:[%=REMOVED_FG%]>[%=fromAttr.name%] : [%=fromAttr.eAttributeType.name%]</color>
 				[%		fromIndex += 1;
 					}
 				}
@@ -159,7 +157,9 @@ for (classId in changedClasses.keySet()) {
 			while (toIndex < toAttributes.size()) {
 				// TODO:
 			}
-		}
+		}%]
+	}
+	[%
 		//TODO: references
 	}
 	else if (changedClass.fromClass.isDefined()) {
@@ -168,14 +168,20 @@ for (classId in changedClasses.keySet()) {
 				.select(d | d.isTypeOf(RemovedElement) and d.element.isTypeOf(EAttribute));
 		for (attr in changedClass.fromClass.eAttributes) {
 			if (removedAttrs.includes(attr)) { %]
-				<size:8><[%=REMOVED_FG%]:heavy_minus_sign:></size> <color:[%=REMOVED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
+				[%=getMinusSign()%] <color:[%=REMOVED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
 		[%	}
 			else {%]
 				[%=attr.name%] : [%=attr.eAttributeType.name%]
 		[%	}
+		}%]
+	}
+	[%	
+		var removedRefs = changedClass.differences
+				.select(d | d.isTypeOf(RemovedElement) and d.element.isTypeOf(EReference));
+		for (removedRef in removedRefs) {
+			addReference(changedClass.fromClass, removedRef.element, REMOVED_FG);
 		}
 		
-		// TODO:references
 	}
 	else if (changedClass.toClass.isDefined()) {
 		// class with only added elements
@@ -183,19 +189,19 @@ for (classId in changedClasses.keySet()) {
 				.select(d | d.isTypeOf(AddedElement) and d.element.isTypeOf(EAttribute));
 		for (attr in changedClass.toClass.eAttributes) {
 			if (addedAttrs.includes(attr)) { %]
-				<size:8><[%=ADDED_FG%]:heavy_plus_sign:></size> <color:[%=ADDED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
+				[%=getPlusSign()%] <color:[%=ADDED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
 		[%	}
 			else {%]
 				[%=attr.name%] : [%=attr.eAttributeType.name%]
 		[%	}
-		}
-		
+		}%]
+	}
+	[%
 		// TODO: references
 	}
 	else {
 		"THIS ALSO CANNOT HAPPEN".println();
 	}%]
-	}
 [%
 }
 
@@ -207,8 +213,8 @@ class "[%=fromClass.name%]" as [%=fromClass.getNodeId()%] [%=CHANGED_BG%] {
 note top of [%=fromClass.getNodeId()%] {
 [%
 	for (f in changeDiff.changedFeatures.select(f|f.isTypeOf(EAttribute))) {%]
-		<size:8><[%=ADDED_FG%]:heavy_plus_sign:></size> <color:[%=ADDED_FG%]>[%=f.name%] = [%=toClass.getAttributeValue(f)%]</color>
-		<size:8><[%=REMOVED_FG%]:heavy_minus_sign:></size> <color:[%=REMOVED_FG%]>[%=f.name%] = [%=fromClass.getAttributeValue(f)%]</color>
+		[%=getPlusSign()%] <color:[%=ADDED_FG%]>[%=f.name%] = [%=toClass.getAttributeValue(f)%]</color>
+		[%=getMinusSign()%] <color:[%=REMOVED_FG%]>[%=f.name%] = [%=fromClass.getAttributeValue(f)%]</color>
 [%  }
 %]
 }
@@ -308,4 +314,32 @@ operation Any getAttributeValue(attr) {
 	if (chopped) value += " ...";
 	return value;
 }
+
+operation getPlusSign() {
+	return "<size:8><" + ADDED_FG + ":heavy_plus_sign:></size>";
+}
+
+operation getMinusSign() {
+	return "<size:8><" + REMOVED_FG + ":heavy_minus_sign:></size>";
+}
+
+operation EReference getCardinality() {
+	var cardinality = "";
+	if (self.many) {
+		var upperBound = self.upperBound < 0 ? "*" : self.upperBound;
+		cardinality = " [" + self.lowerBound + ".." + upperBound + "]";
+	}
+	return cardinality;
+}
+
+operation addReference(elem, ref, color) {
+	addReference(elem.getNodeId(), ref.eReferenceType.getNodeId(), ref.name, 
+			ref.getCardinality(), ref.containment, color);
+}
+
+operation addReference(sourceId, targetId, referenceName, cardinality, isContainment, color) {%]
+	[%=sourceId%] [%=isContainment? "*" : ""%]--> "<color:[%=color%]>[%=referenceName%][%=cardinality%]</color>" [%=targetId%] [%=color%]
+[%
+}
+
 %]

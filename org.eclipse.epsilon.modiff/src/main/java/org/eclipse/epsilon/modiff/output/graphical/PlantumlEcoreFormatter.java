@@ -18,12 +18,18 @@ public class PlantumlEcoreFormatter extends PlantumlFormatter {
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
 				"*", new XMIResourceFactoryImpl());
 
-		Modiff modiff = new Modiff("models/ecore/00-from.ecore",
+		Modiff modiff = new Modiff(
 
-				//				"models/ecore/11-class2abstract.ecore");
-				//				"models/ecore/12-className.ecore");
-				"models/ecore/21-deleteSkill.ecore");
-		//		"models/ecore/22-addDeleteFeature.ecore");	
+				//"models/ecore/00-from.ecore",
+				"models/ecore/01-from-unmodifiedRepairshop.ecore",
+
+				//				"models/ecore/11-class2abstract.ecore"
+				//				"models/ecore/12-className.ecore"
+				//				"models/ecore/21-deleteSkill.ecore"
+				//				"models/ecore/22-addDeleteFeature.ecore"
+
+				"models/ecore/22-deleteSkill.ecore" // for 01-from
+		);
 
 		Matcher matcher = new EcoreMatcher();
 		modiff.setMatcher(matcher);
