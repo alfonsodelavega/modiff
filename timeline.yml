@@ -1,7 +1,0 @@
-model_extensions:
-  - model
-  - ecore
-metamodels:
-  - org.eclipse.epsilon.modiff.demo/metamodel/repairshop.ecore
-options:
-  - hideUnchangedRefsInChangedElems: true
