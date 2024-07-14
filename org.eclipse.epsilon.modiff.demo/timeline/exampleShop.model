@@ -15,7 +15,12 @@
           status="pending"/>
     </queue>
     <queue jobId="job2"
-        description="broken phone screen"/>
+        description="dead battery">
+      <status
+          statusId="st2"
+          status="in progress"
+          lastModified="2023/07/24"/>
+    </queue>
   </workers>
   <workers name="Bob"
       mainSkill="Microsoldering"/>
