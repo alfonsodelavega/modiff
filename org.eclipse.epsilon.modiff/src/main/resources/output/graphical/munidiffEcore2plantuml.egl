@@ -14,6 +14,8 @@ var BLACK = "#000000";
 skinparam roundCorner 0
 skinparam objectBorderThickness 1
 hide circle
+!pragma layout smetana
+
 [%
 var addedClasses : Set;
 var removedClasses : Set;

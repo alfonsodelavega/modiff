@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -36,8 +37,14 @@ import org.eclipse.jgit.diff.RawTextComparator;
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import net.sourceforge.plantuml.FileFormat;
+import net.sourceforge.plantuml.FileFormatOption;
+import net.sourceforge.plantuml.SourceStringReader;
 
 public class ModiffFunction implements HttpFunction {
 
@@ -121,8 +128,12 @@ public class ModiffFunction implements HttpFunction {
 		String fromModel = request.get("fromModel").getAsString() + "\n";
 		String toModel = request.get("toModel").getAsString() + "\n";
 
-		if (request.has("metamodel")) {
-			registerMetamodel(request.get("metamodel").getAsString());
+		if (request.has("metamodels")) {
+			JsonArray metamodels = request.get("metamodels").getAsJsonArray();
+			for (JsonElement element : metamodels) {
+				String metamodel = element.getAsString();
+				registerMetamodel(metamodel);
+			}
 		}
 
 		response.addProperty("diff", getDiff(fromModel, toModel));
@@ -182,12 +193,22 @@ public class ModiffFunction implements HttpFunction {
 		return JsonParser.parseString(json).getAsJsonObject();
 	}
 
-	public String getGraphicalMunidiff(String modelName, Modiff modiff) {
+	public String getGraphicalMunidiff(String modelName, Modiff modiff) throws IOException {
 		LabelProvider labelProvider = new MatcherBasedLabelProvider(modiff.getMatcher());
+		String plantumlDiagram;
 		if (modelName.endsWith(".ecore")) {
-			return new PlantumlEcoreFormatter(modiff.getMunidiff(), labelProvider).format();
+			plantumlDiagram = new PlantumlEcoreFormatter(modiff.getMunidiff(), labelProvider).format();
 		}
-		return new PlantumlFormatter(modiff.getMunidiff(), labelProvider).format();
+		else {
+			plantumlDiagram = new PlantumlFormatter(modiff.getMunidiff(), labelProvider).format();
+		}
+
+		SourceStringReader reader = new SourceStringReader(plantumlDiagram);
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		reader.outputImage(os, new FileFormatOption(FileFormat.SVG));
+		os.close();
+
+		return new String(os.toByteArray(), Charset.forName("UTF-8"));
 	}
 
 	public String getTextualMunidiff(Modiff modiff) {

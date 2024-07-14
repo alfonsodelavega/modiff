@@ -12,6 +12,7 @@ var BLACK = "#000000";
 @startuml
 skinparam roundCorner 0
 skinparam objectBorderThickness 1
+!pragma layout smetana
 
 [%
 var addedElements : Set;
