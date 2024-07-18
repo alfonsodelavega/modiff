@@ -246,11 +246,11 @@ operation Any getAllReferenced() {
 }
 
 operation EClass getAttributes() {
-	return self.getEAllAttributes.select(attr | not attr.derived);
+	return self.getEAllAttributes.select(attr | not attr.derived and not attr.transient);
 }
 
 operation EClass getReferences() {
-	return self.getEAllReferences.select(ref | not ref.derived);
+	return self.getEAllReferences.select(ref | not ref.derived and not ref.transient);
 }
 
 operation getPlusSign() {

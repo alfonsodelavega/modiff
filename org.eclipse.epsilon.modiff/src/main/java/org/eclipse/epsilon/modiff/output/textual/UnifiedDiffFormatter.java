@@ -176,7 +176,7 @@ public class UnifiedDiffFormatter extends MunidiffFormatter {
 		return featuresMap(obj, objId,
 				obj.eClass().getEAllStructuralFeatures()
 						.stream()
-						.filter(feat -> obj.eIsSet(feat))
+						.filter(feat -> !feat.isDerived() && !feat.isTransient() && obj.eIsSet(feat))
 						.collect(Collectors.toList()),
 				prefix);
 	}

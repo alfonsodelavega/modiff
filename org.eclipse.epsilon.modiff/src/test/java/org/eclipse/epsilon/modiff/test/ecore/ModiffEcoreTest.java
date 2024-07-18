@@ -157,6 +157,24 @@ public class ModiffEcoreTest {
 	}
 
 	@Test
+	public void test12emptyFromContents() throws IOException {
+
+		String fromModelContents = "";
+		String toModelContents = Files.readString(Paths.get("models/ecore/12-className.ecore"));
+
+		modiff = new Modiff("repairShop.ecore", fromModelContents, toModelContents);
+		modiff.setMatcher(new EcoreMatcher());
+		modiff.compare();
+
+		List<Difference> differences = modiff.getDifferences();
+		assert (differences.size() == 39);
+
+		for (Difference d : differences) {
+			assert (d instanceof AddedElement);
+		}
+	}
+
+	@Test
 	public void test22() throws IOException {
 
 		modiff = compare("01-from-unmodifiedRepairshop", "22-deleteSkill");

@@ -284,12 +284,15 @@ public class Modiff {
 		ResourceSet resourceSet = new ResourceSetImpl();
 		Resource resource = resourceSet.createResource(URI.createFileURI("/model.model"));
 
-		// the pool allows decorating the xml handler to get element lines
-		Map<Object, Object> loadOptions = new HashMap<>();
-		loadOptions.put(XMLResource.OPTION_USE_PARSER_POOL,
-				new ModiffXMLParserPoolImpl(this, diffSide));
+		// do not load the model if the contents are empty
+		if (!modelContent.equals("")) {
+			// the pool allows decorating the xml handler to get element lines
+			Map<Object, Object> loadOptions = new HashMap<>();
+			loadOptions.put(XMLResource.OPTION_USE_PARSER_POOL,
+					new ModiffXMLParserPoolImpl(this, diffSide));
 
-		resource.load(new ByteArrayInputStream(modelContent.getBytes()), loadOptions);
+			resource.load(new ByteArrayInputStream(modelContent.getBytes()), loadOptions);
+		}
 
 		return resource;
 	}
