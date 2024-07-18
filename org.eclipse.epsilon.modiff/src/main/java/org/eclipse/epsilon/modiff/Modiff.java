@@ -285,7 +285,7 @@ public class Modiff {
 		Resource resource = resourceSet.createResource(URI.createFileURI("/model.model"));
 
 		// do not load the model if the contents are empty
-		if (!modelContent.equals("")) {
+		if (!modelContent.trim().equals("")) {
 			// the pool allows decorating the xml handler to get element lines
 			Map<Object, Object> loadOptions = new HashMap<>();
 			loadOptions.put(XMLResource.OPTION_USE_PARSER_POOL,

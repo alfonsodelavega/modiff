@@ -238,7 +238,7 @@ operation Any getNodeLabel() {
 }
 
 operation Any getNodeId() {
-	return self.getNodeLabel().replaceAll("[^A-Za-z0-9]","");
+	return self.getNodeLabel()?.replaceAll("[^A-Za-z0-9]","") + "id";
 }
 
 operation registerChangedClass(difference) {
