@@ -24,7 +24,8 @@ var changedClasses : Map; // more complex than the previous two sets
 
 // 1. find added, removed classes
 // 2. find changed classes. These are trickier later, because a class is considered
-//    changed if any of its features or operations (or parameters) change
+//    changed if any of its features or operations (or parameters) change.
+//    More comments on changedClasses in the registerChangedClass operation below
 
 // focus at first on the differences directly related to classes
 var classDifferences = munidiff.differences.select(d | d.getDiffElement().isTypeOf(EClass));
@@ -58,7 +59,7 @@ for (d in munidiff.differences.excluding(classDifferences)) {
 }
 
 
-// 3. "Draw"
+// 3. Render
 
 for (c in addedClasses.includingAll(removedClasses)) {
 	var fg_color = addedClasses.contains(c) ? ADDED_FG : REMOVED_FG;
@@ -70,21 +71,6 @@ for (c in addedClasses.includingAll(removedClasses)) {
 [%  } %]
 	}
 [%
-	// TODO: references
-}
-
-for (classId in changedClasses.keySet()) {
-	var changedClass = changedClasses.get(classId);
-	
-	classId.println("Class id: ");
-	
-	changedClass.fromClass.isDefined().println("fromClass: " );
-	changedClass.toClass.isDefined().println("toClass:" );
-	
-	for (diff in changedClass.differences) {
-		diff.println();
-	}
-	"***********".println();
 }
 
 for (classId in changedClasses.keySet()) {
@@ -93,135 +79,134 @@ for (classId in changedClasses.keySet()) {
 	
 	class "[%=someClass.getClassName()%]" as [%=someClass.getNodeId()%] [%=CHANGED_BG%] {
 [%  
-	if (changedClass.fromClass.isDefined() and changedClass.toClass.isDefined()) {
-		// class with potential changes and/or feature additions and removals
-		var attrDifferences = changedClass.differences.select(d | d.getDiffElement().isTypeOf(EAttribute));
-		
-		if (attrDifferences.forAll(d | d.isTypeOf(AddedElement))) {
-			for (attr in changedClass.toClass.eAttributes) {
-				if (attrDifferences.includes(attr)) { %]
-					[%=getPlusSign()%] <color:[%=ADDED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
-			[%	}
-				else {%]
-					[%=attr.name%] : [%=attr.eAttributeType.name%]
-			[%	}
-			}
-		}
-		else if (attrDifferences.forAll(d | d.isTypeOf(RemovedElement))) {
-			for (attr in changedClass.fromClass.eAttributes) {
-				if (attrDifferences.includes(attr)) { %]
-					[%=getMinusSign()%] <color:[%=REMOVED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
-			[%	}
-				else {%]
-					[%=attr.name%] : [%=attr.eAttributeType.name%]
-			[%	}
-			}
-		}
-		else {
-			// mixed case: traverse both lists of attributes and draw elements as needed
-			var fromAttributes = changedClass.fromClass.eAttributes;
-			var fromIndex = 0;
-			var toAttributes = changedClass.toClass.eAttributes;
-			var toIndex = 0;
+	// class with potential changes and/or feature additions and removals
+	var attrDifferences = changedClass.differences.select(d | d.getDiffElement().isTypeOf(EAttribute));
+	
+	var changeDifferences = changedClass.differences.select(d | d.isTypeOf(ChangedElement));
+
+	var addedAttributes = changedClass.differences.select(d | d.isTypeOf(AddedElement))
+			.collect(d | d.element);
+
+	var removedAttributes = changedClass.differences.select(d | d.isTypeOf(RemovedElement))
+			.collect(d | d.element);
+	
+	var fromAttributes;
+	var fromIndex = 0;
+	var toAttributes;
+	var toIndex = 0;
+	
+	if (not changedClass.fromClass.isDefined() or 
+			attrDifferences.forAll(d | d.isTypeOf(AddedElement))) {
 			
-			var changedAttributes = changedClass.differences.select(d | 
-					d.isTypeOf(ChangedElement) and d.getDiffElement().isTypeOf(EAttribute));
+		fromAttributes = Sequence {};
+		toAttributes = changedClass.toClass.eAttributes;
+	}
+	else if (not changedClass.toClass.isDefined() or 
+		attrDifferences.forAll(d | d.isTypeOf(RemovedElement))) {
 
-			var addedAttributes = changedClass.differences.select(d | 
-					d.isTypeOf(AddedElement) and d.getDiffElement().isTypeOf(EAttribute))
-					.collect(d | d.element);
-
-			var removedAttributes = changedClass.differences.select(d | 
-					d.isTypeOf(RemovedElement) and d.getDiffElement().isTypeOf(EAttribute))
-					.collect(d | d.element);
-
-			while (fromIndex < fromAttributes.size() and toIndex < toAttributes.size()) {
-				var fromAttr = fromAttributes.get(fromIndex);
-				var toAttr = toAttributes.get(toIndex);
-				
-				if (fromAttr.name == toAttr.name) { // TODO: too weak?
-					// if changed, print changed, if not, normal. 
-				}
-				else {
-					if (addedAttributes.includes(toAttr)) { %]
-						[%=getPlusSign()%] <color:[%=ADDED_FG%]>[%=toAttr.name%] : [%=toAttr.eAttributeType.name%]</color>
-				[%		toIndex += 1;
-					}
-					if (removedAttributes.includes(fromAttr)) { %]
-						[%=getMinusSign()%] <color:[%=REMOVED_FG%]>[%=fromAttr.name%] : [%=fromAttr.eAttributeType.name%]</color>
-				[%		fromIndex += 1;
-					}
-				}
-			}
-			while (fromIndex < fromAttributes.size()) {
-				// TODO:
-			}
-			while (toIndex < toAttributes.size()) {
-				// TODO:
-			}
-		}%]
-	}
-	[%
-		//TODO: references
-	}
-	else if (changedClass.fromClass.isDefined()) {
-		// class with only removed elements
-		var removedAttrs = changedClass.differences
-				.select(d | d.isTypeOf(RemovedElement) and d.element.isTypeOf(EAttribute));
-		for (attr in changedClass.fromClass.eAttributes) {
-			if (removedAttrs.includes(attr)) { %]
-				[%=getMinusSign()%] <color:[%=REMOVED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
-		[%	}
-			else {%]
-				[%=attr.name%] : [%=attr.eAttributeType.name%]
-		[%	}
-		}%]
-	}
-	[%	
-		var removedRefs = changedClass.differences
-				.select(d | d.isTypeOf(RemovedElement) and d.element.isTypeOf(EReference));
-		for (removedRef in removedRefs) {
-			addReference(changedClass.fromClass, removedRef.element, REMOVED_FG);
-		}
-		
-	}
-	else if (changedClass.toClass.isDefined()) {
-		// class with only added elements
-		var addedAttrs = changedClass.differences
-				.select(d | d.isTypeOf(AddedElement) and d.element.isTypeOf(EAttribute));
-		for (attr in changedClass.toClass.eAttributes) {
-			if (addedAttrs.includes(attr)) { %]
-				[%=getPlusSign()%] <color:[%=ADDED_FG%]>[%=attr.name%] : [%=attr.eAttributeType.name%]</color>
-		[%	}
-			else {%]
-				[%=attr.name%] : [%=attr.eAttributeType.name%]
-		[%	}
-		}%]
-	}
-	[%
-		// TODO: references
+		fromAttributes = changedClass.fromClass.eAttributes;
+		toAttributes = Sequence {};
 	}
 	else {
-		"THIS ALSO CANNOT HAPPEN".println();
+		// most tedious case: lists might be of difference length, content, and order
+		// hence the alternating loop ahead
+		fromAttributes = changedClass.fromClass.eAttributes;
+		toAttributes = changedClass.toClass.eAttributes;
+	}	
+
+	var renderedAttributes = Set {}; // to avoid duplicate renderings later
+
+	while (fromIndex < fromAttributes.size() and toIndex < toAttributes.size()) {
+		var fromAttr = fromAttributes.get(fromIndex);
+		var toAttr = toAttributes.get(toIndex);
+
+		if (fromAttr.getNodeId() == toAttr.getNodeId()) {
+			if (changeDifferences.exists(d | d.fromElement = fromAttr)) {
+				renderAffectedAttribute(getPlusSign(), ADDED_FG, toAttr);
+				renderAffectedAttribute(getMinusSign(), REMOVED_FG, fromAttr);
+			}
+			else {
+				renderAttribute(fromAttr);
+			}
+			fromIndex += 1;
+			toIndex += 1;
+		}
+		else {
+			if (addedAttributes.includes(toAttr)) {
+				renderAffectedAttribute(getPlusSign(), ADDED_FG, toAttr);
+				toIndex += 1;
+			}
+			else if (removedAttributes.includes(fromAttr)) {
+				renderAffectedAttribute(getMinusSign(), REMOVED_FG, fromAttr);
+				fromIndex += 1;
+			}
+			else {
+				// we might arrive at this case if attributes are reordered
+				// in the class, and they are not modified (so they are not)
+				// detected as changed
+				// we would also need an attribute change (or an addition and a
+				// removal) to arrive at this case (apart from the reordering)
+				
+				// look ahead the list of attributes to see if it's a common one
+				if (renderedAttributes.includes(toAttr.getNodeId())) {
+					toIndex += 1; // already rendered
+				}
+				else if (fromAttributes.hasAttribute(toAttr, fromIndex)) {
+					renderAttribute(toAttr);
+					renderedAttributes.add(toAttr.getNodeId());
+					toIndex += 1;
+				}
+
+				if (renderedAttributes.includes(fromAttr.getNodeId())) {
+					fromIndex += 1; // already rendered
+				}
+				else if (toAttributes.hasAttribute(fromAttr, toIndex)) {
+					renderAttribute(fromAttr);
+					renderedAttributes.add(fromAttr.getNodeId());
+					fromIndex += 1;
+				}
+			}
+		}
+	}
+	// only one of these loops would be entered
+	while (fromIndex < fromAttributes.size()) {
+		var attr = fromAttributes.get(fromIndex);
+		fromIndex += 1;
+		if (attrDifferences.includes(attr)) {
+			renderAffectedAttribute(getMinusSign(), REMOVED_FG, attr);
+		}
+		else {
+			renderAttribute(attr);
+		}
+	}
+	while (toIndex < toAttributes.size()) {
+		var attr = toAttributes.get(toIndex);
+		toIndex += 1;
+		if (addedAttributes.includes(attr)) {
+			renderAffectedAttribute(getPlusSign(), ADDED_FG, attr);
+		}
+		else {
+			renderAttribute(attr);
+		}
 	}%]
+	}
 [%
 }
 
+// now that all affected classes are drawn, add references between them.
 
-if (false) {
-%]
-class "[%=fromClass.name%]" as [%=fromClass.getNodeId()%] [%=CHANGED_BG%] {
+// TODO: we need a set of common classes in case any reference points to them
+//  and not to a changed element
+
+
+/*
+var removedRefs = changedClass.differences
+		.select(d | d.isTypeOf(RemovedElement) and d.element.isTypeOf(EReference));
+for (removedRef in removedRefs) {
+	addReference(changedClass.fromClass, removedRef.element, REMOVED_FG);
 }
-note top of [%=fromClass.getNodeId()%] {
-[%
-	for (f in changeDiff.changedFeatures.select(f|f.isTypeOf(EAttribute))) {%]
-		[%=getPlusSign()%] <color:[%=ADDED_FG%]>[%=f.name%] = [%=toClass.getAttributeValue(f)%]</color>
-		[%=getMinusSign()%] <color:[%=REMOVED_FG%]>[%=f.name%] = [%=fromClass.getAttributeValue(f)%]</color>
-[%  }
-%]
-}
-[%
-}
+*/
+
 %]
 @enduml
 [%
@@ -241,6 +226,23 @@ operation Any getNodeId() {
 	return self.getNodeLabel()?.replaceAll("[^A-Za-z0-9]","") + "id";
 }
 
+/*
+	fields of the changedClass tuple:
+		fromClass:   modified class from the from file
+		toClass:     modified class from the to file
+		differences: list of differences
+		
+	A class might have only a fromClass or a toClass reference. That means that
+	class is a deleted one or an added one, respectively.
+	
+	A changed class (with a fromClass and a toClass) can be so by changes on any
+	of its contained elements:
+		- Estructuralfeatures: attributes and references
+		- EOperations: and their parameters
+	
+	This last bit means that changed classes are trickier to detect and register
+	as a tuple, which reflects in the transformation code above
+*/
 operation registerChangedClass(difference) {
 	var classId = difference.getDiffElement().getNodeId();
 	var changedClass = changedClasses.get(classId);
@@ -252,6 +254,8 @@ operation registerChangedClass(difference) {
 		
 		changedClasses.put(classId, changedClass);
 	}
+	// registering changed classes takes place first thing in the transformation,
+	// and each class should only appear as changed once
 	else {
 		"THIS SHOULD NOT HAPPEN!!".println();
 	}
@@ -325,7 +329,28 @@ operation getMinusSign() {
 	return "<size:8><" + REMOVED_FG + ":heavy_minus_sign:></size>";
 }
 
-operation EReference getCardinality() {
+operation renderAttribute(attr) {%]
+	[%=attr.name%] : [%=attr.eAttributeType.name%][%=attr.getCardinality()%]
+[%
+}
+
+operation renderAffectedAttribute(sign, color, attr) {%]
+	[%=sign%] <color:[%=color%]>[%=attr.name%] : [%=attr.eAttributeType.name%][%=attr.getCardinality()%]</color>
+[%
+}
+
+operation Any hasAttribute(attr, index) {
+	var attrId = attr.getNodeId();
+	while (index < self.size()) {
+		if (attrId == self.get(index).getNodeId()) {
+			return true;
+		}
+		index += 1;
+	}
+	return false;
+}
+
+operation ETypedElement getCardinality() {
 	var cardinality = "";
 	if (self.many) {
 		var upperBound = self.upperBound < 0 ? "*" : self.upperBound;
