@@ -1,0 +1,34 @@
+@namespace(uri="repairshop", prefix="repairshop")
+package repairshop;
+
+class RepairShop {
+	id attr String name;
+	val Job[*] backlog;
+	val Worker[*] workers;
+	val Skill[*] skills;
+}
+
+class Status {
+	id attr String statusId;
+	attr Boolean completed = false;
+	attr String status;
+	attr String lastModified;
+}
+
+class Job {
+	id attr String jobId;
+	attr String description;
+	attr String[*] tags;
+	val Status status;
+}
+
+class Skill {
+	id attr String name;
+}
+
+class Worker {
+	id attr String name;
+	val Job[*] queue;
+	ref Skill mainSkill;
+	ref Skill secondarySkill;
+}

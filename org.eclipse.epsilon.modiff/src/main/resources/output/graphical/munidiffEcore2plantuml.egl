@@ -95,14 +95,14 @@ for (classId in changedClasses.keySet()) {
 	var toAttributes;
 	var toIndex = 0;
 	
-	if (not changedClass.fromClass.isDefined() or 
-			attrDifferences.forAll(d | d.isTypeOf(AddedElement))) {
-			
+	if ((not changedClass.fromClass.isDefined()) or 
+			(attrDifferences.notEmpty() and attrDifferences.forAll(d | d.isTypeOf(AddedElement)))) {
+		
 		fromAttributes = Sequence {};
 		toAttributes = changedClass.toClass.eAttributes;
 	}
 	else if (not changedClass.toClass.isDefined() or 
-		attrDifferences.forAll(d | d.isTypeOf(RemovedElement))) {
+			(attrDifferences.notEmpty() and attrDifferences.forAll(d | d.isTypeOf(RemovedElement)))) {
 
 		fromAttributes = changedClass.fromClass.eAttributes;
 		toAttributes = Sequence {};
@@ -112,7 +112,7 @@ for (classId in changedClasses.keySet()) {
 		// hence the alternating loop ahead
 		fromAttributes = changedClass.fromClass.eAttributes;
 		toAttributes = changedClass.toClass.eAttributes;
-	}	
+	}
 
 	var renderedAttributes = Set {}; // to avoid duplicate renderings later
 
@@ -193,20 +193,43 @@ for (classId in changedClasses.keySet()) {
 [%
 }
 
-// now that all affected classes are drawn, add references between them.
+// now that all affected classes are rendered, add references between them.
 
-// TODO: we need a set of common classes in case any reference points to them
-//  and not to a changed element
+var renderedClasses : Set = addedClasses.includingAll(removedClasses)
+		.collect(c | c.getNodeId())
+		.includingAll(changedClasses.keySet())
+		.asSet();
 
-
-/*
-var removedRefs = changedClass.differences
-		.select(d | d.isTypeOf(RemovedElement) and d.element.isTypeOf(EReference));
-for (removedRef in removedRefs) {
-	addReference(changedClass.fromClass, removedRef.element, REMOVED_FG);
+// references of added/removed classes (only one edge of the appropriate color)
+for (c in addedClasses.includingAll(removedClasses)) {
+	var fg_color = addedClasses.contains(c) ? ADDED_FG : REMOVED_FG;
+	for (ref in c.eReferences) {
+		var refClass = ref.eReferenceType;
+		addReference(renderedClasses, c, ref, fg_color);
+	}
 }
-*/
 
+// references of changed classes:
+//   - one edge for unchanged/added/removed refs
+//   - two for refs with changed type, cardinality (what else?)
+
+for (classId in changedClasses.keySet()) {
+	var changedClass = changedClasses.get(classId);
+	var someClass = changedClass.fromClass.isDefined() ? changedClass.fromClass : changedClass.toClass;
+	
+	var refDifferences = changedClass.differences.select(d | d.getDiffElement().isTypeOf(EReference));
+	
+	for (diff in refDifferences) {
+		if (diff.isTypeOf(ChangedElement)) {
+			addReference(renderedClasses, someClass, diff.toElement, ADDED_FG);
+			addReference(renderedClasses, someClass, diff.fromElement, REMOVED_FG);
+		}
+		else {
+			var fgColor = diff.isTypeOf(AddedElement) ? ADDED_FG : REMOVED_FG;
+			addReference(renderedClasses, someClass, diff.getDiffElement(), fgColor);
+		}
+	}
+}
 %]
 @enduml
 [%
@@ -329,6 +352,15 @@ operation getMinusSign() {
 	return "<size:8><" + REMOVED_FG + ":heavy_minus_sign:></size>";
 }
 
+operation renderCommonClass (c) { %]
+	class "[%=c.name%]" as [%=c.getNodeId()%] {
+[%  for (attr in c.eAttributes) { 
+		renderAttribute(attr);
+	} %]
+	}
+[%
+}
+
 operation renderAttribute(attr) {%]
 	[%=attr.name%] : [%=attr.eAttributeType.name%][%=attr.getCardinality()%]
 [%
@@ -357,6 +389,19 @@ operation ETypedElement getCardinality() {
 		cardinality = " [" + self.lowerBound + ".." + upperBound + "]";
 	}
 	return cardinality;
+}
+
+operation addReference(renderedClasses, elem, ref, color) {
+	renderIfNeeded(renderedClasses, ref.eReferenceType);
+	addReference(elem, ref, color);
+}
+
+operation renderIfNeeded(renderedClasses, clazz) {
+	var id = clazz.getNodeId();
+	if (not renderedClasses.contains(id)) {
+		renderCommonClass(clazz);
+		renderedClasses.add(id);
+	}
 }
 
 operation addReference(elem, ref, color) {
