@@ -177,7 +177,7 @@ public class ModiffEcoreTest {
 	@Test
 	public void test22() throws IOException {
 
-		modiff = compare("01-from-unmodifiedRepairshop", "22-deleteSkill");
+		modiff = compare("01-from-unmodifiedRepairshop", "31-deleteSkill");
 
 		List<Difference> differences = modiff.getDifferences();
 		assert (differences.size() == 5);
