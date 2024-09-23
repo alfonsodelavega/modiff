@@ -207,6 +207,9 @@ for (c in addedClasses.includingAll(removedClasses)) {
 		var refClass = ref.eReferenceType;
 		addReference(renderedClasses, c, ref, fg_color);
 	}
+	for (superType in c.eSuperTypes) {
+		addInheritance(renderedClasses, c, superType, fg_color);
+	}
 }
 
 // references of changed classes:
@@ -227,6 +230,18 @@ for (classId in changedClasses.keySet()) {
 		else {
 			var fgColor = diff.isTypeOf(AddedElement) ? ADDED_FG : REMOVED_FG;
 			addReference(renderedClasses, someClass, diff.getDiffElement(), fgColor);
+		}
+	}
+
+	// rendering inheritance changes
+	var classDiff = changedClass.differences.selectOne(d | d.getDiffElement().isTypeOf(EClass));
+	if (classDiff.isDefined() and classDiff.changedFeatures.exists(f | f.name = "eSuperTypes")) {
+		// TODO: a superType can be in both if unchanged (and using multiple supertypes)
+		for (fromSuperType in classDiff.getFromElement().eSuperTypes) {
+			addInheritance(renderedClasses, someClass, fromSuperType, REMOVED_FG);
+		}
+		for (toSuperType in classDiff.getToElement().eSuperTypes) {
+			addInheritance(renderedClasses, someClass, toSuperType, ADDED_FG);
 		}
 	}
 }
@@ -389,6 +404,16 @@ operation ETypedElement getCardinality() {
 		cardinality = " [" + self.lowerBound + ".." + upperBound + "]";
 	}
 	return cardinality;
+}
+
+operation addInheritance(renderedClasses, subType, superType, color) {
+	renderIfNeeded(renderedClasses, superType);
+	addInheritance(subType, superType, color);
+}
+
+operation addInheritance(subType, superType, color) {%]
+	[%=superType.getNodeId()%] <|-- [%=subType.getNodeId()%] [%=color%]
+[%
 }
 
 operation addReference(renderedClasses, elem, ref, color) {
