@@ -47,6 +47,10 @@ public class ModiffRepairShopTest {
 	}
 
 	protected Modiff compare(String fromModel, String toModel) throws IOException {
+		if (debug) {
+			System.out.println("from " + fromModel + " to " + toModel);
+			System.out.println();
+		}
 		modiff = new Modiff(getFullPath(fromModel), getFullPath(toModel));
 		matcher = new IdMatcher();
 		modiff.setMatcher(matcher);
@@ -91,6 +95,8 @@ public class ModiffRepairShopTest {
 			System.out.println(getReport());
 			System.out.println("+++++++++++++++++++++++++++++++++++++++++++++");
 			System.out.println(getGraphicalReport());
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 		}
 	}
 
