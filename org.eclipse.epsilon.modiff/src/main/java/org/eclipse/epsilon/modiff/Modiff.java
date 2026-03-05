@@ -63,7 +63,7 @@ import io.reflectoring.diffparser.api.model.Line;
  * Equivalences: <br/>
  * fromModelFile / toModelFile <br/>
  * old / new <br/>
- * left / right <br/>
+ * right / left <br/>
  * -lines / +lines <br/>
  * removed / added <br/>
  * 
@@ -113,11 +113,12 @@ public class Modiff {
 	protected String fromModelContent;
 	protected String toModelContent;
 
-	protected Set<Integer> addedLines = new LinkedHashSet<>();
+	// lines are removed in the "from" model, and added in the "to" model
 	protected Set<Integer> removedLines = new LinkedHashSet<>();
+	protected Set<Integer> addedLines = new LinkedHashSet<>();
 
-	protected Set<EObject> addedElements = new LinkedHashSet<>();
-	protected Set<EObject> removedElements = new LinkedHashSet<>();
+	protected Set<EObject> fromElements = new LinkedHashSet<>();
+	protected Set<EObject> toElements = new LinkedHashSet<>();
 
 	protected Resource fromModel;
 	protected Resource toModel;
@@ -339,28 +340,28 @@ public class Modiff {
 
 		checkForDuplicates();
 
-		for (EObject addedElement : addedElements) {
+		for (EObject toElement : toElements) {
 			boolean matched = false;
-			for (EObject removedElement : removedElements) {
-				if (matcher.matches(addedElement, removedElement)) {
+			for (EObject fromElement : fromElements) {
+				if (matcher.matches(toElement, fromElement)) {
 
-					registerChangedElement(removedElement, addedElement);
+					registerChangedElement(fromElement, toElement);
 
-					removedElements.remove(removedElement);
+					fromElements.remove(fromElement);
 					matched = true;
 					break;
 				}
 			}
 			if (!matched) {
 				AddedElement added = munidiffFactory.createAddedElement();
-				added.setIdentifier(matcher.getIdentifier(addedElement));
-				added.setElement(addedElement);
+				added.setIdentifier(matcher.getIdentifier(toElement));
+				added.setElement(toElement);
 				differences.add(added);
 			}
 		}
 
 		// any element that remains is a removed one
-		for (EObject removedElement : removedElements) {
+		for (EObject removedElement : fromElements) {
 			RemovedElement removed = munidiffFactory.createRemovedElement();
 			removed.setIdentifier(matcher.getIdentifier(removedElement));
 			removed.setElement(removedElement);
@@ -396,7 +397,7 @@ public class Modiff {
 				for (EObject fromValue : fromValues) {
 					EObject toValue = findMatch(fromValue, toValues);
 					if (toValue == null) {
-						EObject removedValue = findMatch(fromValue, removedElements);
+						EObject removedValue = findMatch(fromValue, fromElements);
 						if (removedValue == null || isMarkedForReview(removedValue)) {
 							// we have an element container swap, and this is the original place of such element
 							// we need to loop the toModel to find its new container to check for differences
@@ -415,7 +416,7 @@ public class Modiff {
 				for (EObject toValue : toValues) {
 					EObject fromValue = findMatch(toValue, fromValues);
 					if (fromValue == null) {
-						EObject addedValue = findMatch(toValue, addedElements);
+						EObject addedValue = findMatch(toValue, toElements);
 						if (addedValue == null || isMarkedForReview(addedValue)) {
 							// we have an element container swap, and this is the destination of such element
 							// we need to loop the fromModel to find its old container to check for differences
@@ -554,7 +555,7 @@ public class Modiff {
 	}
 
 	public Set<EObject> getModifiedElements(DiffSide diffSide) {
-		return diffSide == DiffSide.FROM ? removedElements : addedElements;
+		return diffSide == DiffSide.FROM ? fromElements : toElements;
 	}
 
 	public void markForReview(EObject element) {
