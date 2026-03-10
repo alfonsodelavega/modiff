@@ -28,4 +28,36 @@ class ChangedElement extends Difference {
 	op boolean hasDifferences();
 }
 
+/*
+ * 3-way comparison extension (including conflicts detection)
+ */
+class Munidiff3 {
+	val Munidiff[1] ancestorToLeft;
+	val Munidiff[1] ancestorToRight;
+	val Conflict[*] conflicts;
+}
 
+abstract class Conflict {
+}
+
+class UpdateUpdate extends Conflict {
+	ref ChangedElement[1] updatedLeft;
+	ref ChangedElement[1] updatedRight;
+}
+
+class UpdateRemove extends Conflict {
+	// no left and right because it can be reversed (RemoveUpdate)
+	ref ChangedElement[1] updated;
+	ref RemovedElement[1] deleted;
+}
+
+class ReferenceToRemoved extends Conflict {
+	ref Difference[1] referencingElement; // either AddedElement or ChangedElement
+	ref RemovedElement[1] referencedElement;
+}
+
+class DuplicateId extends Conflict {
+	// again, either AddedElement or ChangedElement
+	ref Difference[1] leftElement;
+	ref Difference[1] rightElement;
+}
