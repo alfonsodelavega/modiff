@@ -13,10 +13,16 @@ package org.eclipse.epsilon.modiff.emfcompare.munidiff.tests.emfCompare.conflict
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.Comparison;
+import org.eclipse.emf.compare.Conflict;
+import org.eclipse.emf.compare.Diff;
 import org.eclipse.emf.compare.EMFCompare;
+import org.eclipse.emf.compare.Match;
 import org.eclipse.emf.compare.scope.DefaultComparisonScope;
 import org.eclipse.emf.compare.scope.IComparisonScope;
 import org.eclipse.emf.ecore.EObject;
@@ -25,9 +31,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.epsilon.modiff.differences.Munidiff;
 import org.eclipse.epsilon.modiff.emfcompare.munidiff.tests.emfCompare.conflict.data.ConflictInputData;
-import org.eclipse.epsilon.modiff.emfcompare.munidiff.transformations.EmfCompare2Munidiff;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -62,7 +66,29 @@ public class MunidiffConflictTest {
 		final IComparisonScope scope = new DefaultComparisonScope(left, right, origin);
 		final Comparison comparison = EMFCompare.builder().build().compare(scope);
 
-		System.out.println(comparison);
+		System.out.println(testCase);
+		if (!comparison.getConflicts().isEmpty()) {
+			for (Conflict c : comparison.getConflicts()) {
+				// separate conflicting differences in left and right, and make
+				// a Munidiff model for each one
+
+				// here, I'm not sure if its best to use the differences or the
+				// matches to get the munidiff model. We can get both as follows:
+
+				List<Diff> leftDifferences = c.getLeftDifferences();
+				List<Diff> rightDifferences = c.getRightDifferences();
+
+				Set<Match> leftMatches = getMatches(c.getLeftDifferences());
+				Set<Match> rightMatches = getMatches(c.getRightDifferences());
+
+				// the EmfCompare2Munidiff transformation uses the matches. The
+				//   issue I see is that in a match there can be more differences
+				//   than the conflicting ones, so maybe we need to filter them
+
+				// use a breakpoint here to see the contents of the collections with the debugger
+				System.out.println();
+			}
+		}
 		//		Munidiff md = new EmfCompare2Munidiff().transform(comparison);
 		//
 		//		String report = md.report();
@@ -72,6 +98,14 @@ public class MunidiffConflictTest {
 		//		}
 		//
 		//		store(testCase, report);
+	}
+
+	protected Set<Match> getMatches(List<Diff> differences) {
+		Set<Match> result = new LinkedHashSet<>();
+		for (Diff d : differences) {
+			result.add(d.getMatch());
+		}
+		return result;
 	}
 
 	protected void store(String testCase, String report) {
