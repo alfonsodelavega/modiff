@@ -16,7 +16,7 @@ import org.eclipse.epsilon.modiff.munidiff.ChangedElement;
 import org.eclipse.epsilon.modiff.munidiff.Difference;
 import org.eclipse.epsilon.modiff.munidiff.RemovedElement;
 import org.eclipse.epsilon.modiff.output.MatcherBasedLabelProvider;
-import org.eclipse.epsilon.modiff.output.graphical.PlantumlFormatter;
+import org.eclipse.epsilon.modiff.output.graphical.PlantumlEcoreFormatter;
 import org.eclipse.epsilon.modiff.output.textual.UnifiedDiffFormatter;
 import org.eclipse.epsilon.modiff.test.emfcompare.req.data.ReqInputData;
 import org.junit.After;
@@ -82,7 +82,7 @@ public class ModiffEcoreTest {
 	}
 
 	public String getGraphicalReport() {
-		return new PlantumlFormatter(modiff.getMunidiff(),
+		return new PlantumlEcoreFormatter(modiff.getMunidiff(),
 				new MatcherBasedLabelProvider(modiff.getMatcher())).format();
 	}
 
